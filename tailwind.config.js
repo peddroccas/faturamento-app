@@ -3,12 +3,18 @@ export default {
   content: ["./src/**/*.{html,tsx,ts}"],
   theme: {
     extend: {
+      fontFamily: {
+        agdasima: 'Agdasima',
+        montserrat: 'Montserrat'
+      },
       colors: {
         aliceblue: '#f0f8ff',
-        blueSr: '#0C4B80',
-        blueDSr: '#093A62',
-        redSr: '#E4252F',
-        redDSr: '#C62028',
+        'bluesr-200' : '#116EBA',
+        'bluesr-400': '#0C4B80',
+        'bluesr-500': '#093A62',
+        'bluesr-800' : '#041728',
+        'redsr-400': '#E4252F',
+        'redsr-500': '#C62028',
       }
     },
   },
