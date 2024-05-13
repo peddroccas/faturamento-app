@@ -27,14 +27,14 @@ export function LoginForm() {
         <div className="flex flex-col mt-4 gap-2">
           <input
             type="email"
-            className="w-80 p-1 rounded border border-solid focus:outline-none"
+            className="w-80 p-1 rounded border border-solid focus:outline-none focus:border-bluesr-200"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
-            className="w-80 p-1 rounded border border-solid focus:outline-none"
+            className="w-80 p-1 rounded border border-solid focus:outline-none focus:border-bluesr-200"
             placeholder="Senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
