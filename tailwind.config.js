@@ -7,6 +7,7 @@ export default {
         app: 'minmax(18rem, 20rem) 1fr',
       },
       fontFamily: {
+        roboto: 'Roboto',
         agdasima: 'Agdasima',
         montserrat: 'Montserrat'
       },

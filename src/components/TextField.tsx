@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { ChangeEvent } from "react";
 
 interface TextFieldProps {
   value: string,
@@ -11,12 +11,12 @@ interface TextFieldProps {
 
 
 export function BasicTextField({ value, type, onChange }: TextFieldProps) {
-  
+
   function setPlaceholder(type: string) {
     if (type == 'password') {
       return "Senha"
     }
-    else{
+    else {
       return "Email"
     }
   }
@@ -35,7 +35,10 @@ export function BasicTextField({ value, type, onChange }: TextFieldProps) {
         value={value}
         type={type}
         label={setPlaceholder(type)}
-        variant="outlined" />
+        variant="outlined" 
+        color='bluesr-400'
+        />
+        
     </Box>
   );
 }
