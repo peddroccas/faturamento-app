@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { auth } from "../services/firebase.ts";
 import { useNavigate } from "react-router-dom";
+import { BasicTextField } from "../components/TextField.tsx";
 
 
 export function LoginForm() {
@@ -22,26 +23,28 @@ export function LoginForm() {
 
   return (
     <div className="flex justify-center m-auto px-4 py-0">
-      <form onSubmit={handleLogin} className="h-max flex flex-col items-center justify-center rounded-lg p-4 mt-20 gap-px text-bluesr-400 bg-aliceblue">
+      <div onSubmit={handleLogin} className="h-max flex flex-col items-center justify-center rounded-lg p-4 mt-20 gap-px text-bluesr-400 bg-aliceblue">
         <h1 className="font-agdasima text-3xl font-bold">Sign in</h1>
         <div className="flex flex-col mt-4 gap-2">
-          <input
+          <BasicTextField
             type="email"
-            className="w-80 p-1 rounded border border-solid focus:outline-none focus:border-bluesr-200"
-            placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(event) => {
+              console.log(event);
+              setEmail(event.target.value)
+            }}
           />
-          <input
+          <BasicTextField
             type="password"
-            className="w-80 p-1 rounded border border-solid focus:outline-none focus:border-bluesr-200"
-            placeholder="Senha"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(event) => {
+              console.log(event);
+              setPassword(event.target.value)
+            }}
           />
         </div>
         <button className="box-border px-3 py-px mt-4 bg-bluesr-400 text-aliceblue font-medium rounded focus:outline-none border focus:border-bluesr-800 hover:bg-bluesr-500" type="submit">Entrar</button>
-      </form>
+      </div>
     </div>
   );
 }
