@@ -1,10 +1,12 @@
 import { Outlet } from 'react-router-dom'
-import { Sidebar } from '../components/Sidebar'
+
+// import { Sidebar } from '../components/Sidebar'
 
 export function HomeLayout() {
   return (
-    <div className="grid grid-cols-app h-screen bg-bluesr-400 font-montserrat">
-      <Sidebar />
+    // grid grid-cols-app
+    <div className=" h-screen bg-bluesr-400 font-montserrat text-aliceblue">
+      {/* <Sidebar > */}
       <Outlet />
     </div>
   )

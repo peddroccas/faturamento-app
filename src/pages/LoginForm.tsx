@@ -15,7 +15,7 @@ export function LoginForm() {
     try {
       setLoading(true)
       await auth.signInWithEmailAndPassword(email, password)
-      navigate('/home')
+      navigate('/home/faturamento')
       // Lógica adicional após o login bem-sucedido (redirecionamento, etc.)
     } catch (error) {
       alert('Usuário não autenticado')

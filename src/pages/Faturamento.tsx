@@ -1,3 +1,9 @@
 export function Faturamento() {
-  return <h1>faturamento</h1>
+  return (
+    <div className="h-screen w-auto p-6 flex flex-col items-center">
+      <h1 className="text-4xl mb-12">Faturamento</h1>
+      <p>Tabela</p>
+
+    </div>
+  )
 }
