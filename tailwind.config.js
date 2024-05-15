@@ -13,6 +13,7 @@ export default {
       },
       colors: {
         aliceblue: '#f0f8ff',
+        'aliceblue-500': '#D4DCE2',
         'bluesr-200' : '#116EBA',
         'bluesr-400': '#0C4B80',
         'bluesr-500': '#093A62',
