@@ -1,5 +1,3 @@
-export function Faturamento(){
-    return (
-        <h1>faturamento</h1>
-    )
+export function Faturamento() {
+  return <h1>faturamento</h1>
 }

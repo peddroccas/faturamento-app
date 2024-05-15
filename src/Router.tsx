@@ -1,13 +1,11 @@
-import { Routes, Route } from "react-router-dom";
-import { LoginForm } from "./pages/LoginForm";
-import { Home } from "./pages/Home";
-import { HeaderLayout } from "./layouts/HeaderLayout";
-import { HomeLayout } from "./layouts/HomeLayout"
-import { Faturamento } from "./pages/Faturamento";
-
+import { Routes, Route } from 'react-router-dom'
+import { LoginForm } from './pages/LoginForm'
+import { Home } from './pages/Home'
+import { HeaderLayout } from './layouts/HeaderLayout'
+import { HomeLayout } from './layouts/HomeLayout'
+import { Faturamento } from './pages/Faturamento'
 
 export function Router() {
-
   return (
     <Routes>
       <Route path="/" element={<HeaderLayout />}>
@@ -18,5 +16,5 @@ export function Router() {
         <Route path="/login" element={<LoginForm />} />
       </Route>
     </Routes>
-  );
+  )
 }
