@@ -1,26 +1,31 @@
-import { Box } from '@mui/material/'
-import TextField from '@mui/material/TextField'
-import { ChangeEvent } from 'react'
+import { Box } from "@mui/material/";
+import TextField from "@mui/material/TextField";
+import { ChangeEvent } from "react";
 
 interface TextFieldProps {
-  value: string
-  type: string
-  onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void
+  value: string | number;
+  type: string;
+  onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 export function BasicTextField({ value, type, onChange }: TextFieldProps) {
   function setPlaceholder(type: string) {
-    if (type === 'password') {
-      return 'Senha'
-    } else {
-      return 'Email'
+    switch (type) {
+      case "password":
+        return "Senha";
+      case "email":
+        return "Email";
+      case "number":
+        return "Número";
+      case "select":
+        return 'Selecione'
     }
   }
   return (
     <Box
       component="form"
       sx={{
-        '& > :not(style)': { m: 1, width: '20rem' },
+        "& > :not(style)": { m: 1, width: "20rem" },
       }}
       noValidate
       autoComplete="off"
@@ -35,5 +40,5 @@ export function BasicTextField({ value, type, onChange }: TextFieldProps) {
         color="bluesr-400"
       />
     </Box>
-  )
+  );
 }
