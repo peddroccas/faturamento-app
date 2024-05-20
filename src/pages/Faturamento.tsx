@@ -1,8 +1,8 @@
 import { Table } from "../components/Table";
-import { yearData } from "../services/api";
+import { monthRow } from "../services/api";
 
 export function Faturamento() {
-  const rows = yearData;
+  const row = monthRow;
   return (
     <div className="flex-1 h-screen w-auto flex flex-col">
       <header className="flex gap-4 p-4 border-b border-b-aliceblue">
@@ -14,7 +14,7 @@ export function Faturamento() {
       </header>
       <main className="m-4 gap-2 text-bluesr-500">
         <section className="w-fit bg-aliceblue rounded">
-          <Table headers={['Valor', 'Mês passado', 'Ano passado']} rows={2}></Table>
+          <Table headers={['Valor', 'Mês passado', 'Ano passado']} values={row!} rows={2}></Table>
         </section>
         <section className="w-full  bg-aliceblue rounded">
           <p>helloword</p>

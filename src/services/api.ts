@@ -3,63 +3,41 @@ import { useState } from "react";
 
 
 // Faturamento
-interface Row {
-    month: string;
-    value: number,
-    lastYear: number,
-    lastMonth: number
-};
-
 const months = ['janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 const years = ['2017', '2018', '2019', '2020', '2021', '2022', '2023'];
-const rows: Row[] = [];
-
 
 const db = firestore;
 
-async function getValueMonthByYear(year: string, months) {
+function percentage(reference: number, compared: number) {
+    const percentage = ((reference - compared) / reference) * 100
+    return percentage.toFixed(2)
+}
+
+async function getValues(year: string, month: string) {
     try {
-        const yearRows: Row[] = [];
-        for (const mes of months) {
-            const monthDoc = db.collection(year).doc(mes)
-            const monthData = await monthDoc.get()
+        const lastMonth = months[months.indexOf(month) - 1]
+        const lastYear = years[years.indexOf(year) - 1]
 
 
-            if (monthData.exists) {
-                // Extrair dados de cada documento
-                const data = monthData.data() as Row
-                const month = mes; // Supondo que 'month' é um campo no documento
-                const value = data.value; // Supondo que 'value' é um campo no documento
-                const lastYear = data.lastYear; // Supondo que 'lastYear' é um campo no documento
-                const lastMonth = data.lastMonth; // Supondo que 'lastMonth' é um campo no documento
+        const monthDoc = db.collection(year).doc(month)
+        const lastMonthDoc = db.collection(year).doc(lastMonth)
+        const lastYearDoc = db.collection(lastYear).doc(month)
 
-                // Criar objeto Row com os dados extraídos
-                const row: Row = { month, value, lastYear, lastMonth };
-                yearRows.push(row);
-            }
-        }
-        return yearRows;
+        const monthValue: number = (await monthDoc.get()).data()!.value
+        const lastMonthValue: number = (await lastMonthDoc.get()).data()!.value
+        const lastYearValue: number = await (await lastYearDoc.get()).data()!.value
+
+        const lastMonthGrowth = percentage(monthValue, lastMonthValue)
+        const lastYearGrowth = percentage(monthValue, lastYearValue)
+
+        const monthRow = [monthValue, lastMonthGrowth, lastYearGrowth]
+
+
+        return monthRow;
     }
     catch (error) {
         console.error(error)
     }
 }
 
-export const yearData = await getValueMonthByYear('2023', months)
-
-async function getYear(year: string) {
-    const yearDoc = await db.collection(year)
-}
-
-
-async function readData(year, month) {
-    const data = (await firestore.collection(year).doc(month).get()).data()
-    return data.value
-}
-
-function load_Data(year: '2023', months: string[]) {
-    months.forEach(async (month: string) => {
-        const data = await readData(year, month)
-        rows.push({ month: month, value: data, lastYear: 0, lastMonth: 0 })
-    })
-}
+export const monthRow = await getValues('2022', 'novembro')

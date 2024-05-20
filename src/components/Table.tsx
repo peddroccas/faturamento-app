@@ -1,9 +1,10 @@
 interface TableProps {
   headers: string[];
+  values: string[] | number[];
   rows: number;
 }
 
-export function Table({ headers, rows }: TableProps) {
+export function Table({ headers, values, rows }: TableProps) {
   return (
     <div className="my-4 p-2 border border-aliceblue rounded">
       <table className="">
@@ -14,11 +15,13 @@ export function Table({ headers, rows }: TableProps) {
             ))}
           </tr>
         </thead>
-        <tbody className="text-center border-t border-l-4 rounded-l">
+        <tbody className="text-center">
           <tr className="">
-            <td className="leading-4 p-2 bg-bluesr-400  text-aliceblue">{[30, 1, 2]}</td>
-            <td className="leading-4 p-2 bg-bluesr-400  text-aliceblue">{"30%"}</td>
-            <td className="leading-4 p-2 bg-bluesr-400  text-aliceblue">{"10%"}</td>
+            {values.map((value, cellIndex) => (
+              <td className={`leading-4 p-2 bg-bluesr-400 text-aliceblue ${cellIndex === 0 ? 'first:rounded-l-lg' : ''} ${cellIndex === values.length - 1 ? 'last:rounded-r-lg' : ''}`}>{value}</td>
+
+            ))}
+
           </tr>
         </tbody>
       </table>
