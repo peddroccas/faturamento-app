@@ -1,16 +1,15 @@
 import { firestore } from "../services/firebase";
-import { useState } from "react";
-
+const db = firestore;
+export const months = ['janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+export const years = ['2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'];
 
 // Faturamento
-const months = ['janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-const years = ['2017', '2018', '2019', '2020', '2021', '2022', '2023'];
 
-const db = firestore;
+
 
 function percentage(reference: number, compared: number) {
     const percentage = ((reference - compared) / reference) * 100
-    return percentage.toFixed(2)
+    return Number(percentage.toFixed(2))
 }
 
 async function getValues(year: string, month: string) {
