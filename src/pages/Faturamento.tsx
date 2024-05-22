@@ -4,6 +4,7 @@ import { getValues } from "../services/api";
 import { months, years } from "../services/api";
 import { CircularProgress } from "@mui/material";
 import { capitalize } from 'lodash';
+import { BarGraphic } from "../components/BarGraphic";
 
 interface Month {
   monthRow: number[],
@@ -71,13 +72,16 @@ export function Faturamento() {
           ))}
         </select>
       </header>
-      <main className="m-4 gap-2 text-bluesr-500">
-        <section className="w-fit bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
+      <main className="m-4 gap-2 text-bluesr-500 flex">
+        <section className="w-fit h-min bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
           <Table headers={['Valor', 'Mês passado', 'Ano passado']} rows={[data!.monthRow, data!.monthGrowth]} isLoading={isLoading}></Table>
           <CircularProgress color="bluesr-200" className={`${isVisible} fixed`} />
         </section>
-        <section className="w-full bg-aliceblue rounded">
-          <p>helloword</p>
+        <section className=" my-4 p-2 w-full flex items-center justify-center bg-aliceblue rounded-2xl">
+          <div className="flex items-center justify-center">
+          <BarGraphic monthRow={data!.monthRow} ></BarGraphic>
+          <CircularProgress color="bluesr-200" className={`${isVisible} fixed`} />
+          </div>
         </section>
       </main>
     </div>
