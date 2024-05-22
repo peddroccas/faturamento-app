@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { Table } from "../components/Table";
 import { getValues } from "../services/api";
 import { months, years } from "../services/api";
+import { CircularProgress } from "@mui/material";
 
 interface Month {
   monthRow: number[],
@@ -11,9 +12,27 @@ interface Month {
 export function Faturamento() {
   const [selectedMonth, setSelectedMonth] = useState(months[0]);
   const [selectedYear, setSelectedYear] = useState(years[1]);
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [data, setData] = useState<Month | undefined>({ monthRow: [], monthGrowth: [] });
+  const [isVisible, setIsVisible] = useState<string>()
 
+  // Observa para ver se está carregando, se tiver ele põe o componente de carregamento
+  useEffect(() => {
+   function loading() {
+      try {
+        if(isLoading){
+          setIsVisible('visible max-h-none')
+        }
+        else{
+          setIsVisible('invisible max-h-0')
+        }
+      } catch (error) {
+      }
+    }
+    loading();
+  }, [isLoading]);
+
+// Busca no db os dados assim que carrega a página
   useEffect(() => {
     async function fetchData() {
       try {
@@ -52,8 +71,9 @@ export function Faturamento() {
         </select>
       </header>
       <main className="m-4 gap-2 text-bluesr-500">
-        <section className="w-fit bg-aliceblue rounded-2xl my-4 p-2">
+        <section className="w-fit bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
           <Table headers={['Valor', 'Mês passado', 'Ano passado']} rows={[data!.monthRow, data!.monthGrowth]} isLoading={isLoading}></Table>
+          <CircularProgress className={`${isVisible} fixed`} />
         </section>
         <section className="w-full  bg-aliceblue rounded">
           <p>helloword</p>
