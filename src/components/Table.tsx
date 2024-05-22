@@ -1,7 +1,3 @@
-import { CircularProgress } from "@mui/material/";
-import Box from "@mui/material/Box";
-import { useEffect, useState } from "react";
-
 interface TableProps {
   headers: string[];
   rows: (number | string)[][];
@@ -16,7 +12,7 @@ export function Table({ headers, rows, isLoading }: TableProps) {
         <thead>
           <tr>
             {headers.map((header) => (
-              <th className="p-4" id={header}>
+              <th key={header} className="p-4" id={header}>
                 {header}
               </th>
             ))}

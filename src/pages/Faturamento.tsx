@@ -3,6 +3,7 @@ import { Table } from "../components/Table";
 import { getValues } from "../services/api";
 import { months, years } from "../services/api";
 import { CircularProgress } from "@mui/material";
+import { capitalize } from 'lodash';
 
 interface Month {
   monthRow: number[],
@@ -59,12 +60,12 @@ export function Faturamento() {
     <div className="flex-1 h-screen w-auto flex flex-col">
       <header className="flex gap-4 p-4 border-b border-b-slate-400">
         <h1 className="text-3xl">Faturamento</h1>
-        <select value={selectedMonth} onChange={handleMonth} className="text-bluesr-500 rounded-xl text-center">
+        <select value={selectedMonth} onChange={handleMonth} className="text-bluesr-500 rounded-xl text-center focus-visible: outline-bluesr-500">
           {months.map((month) => (
-            <option key={month} className="text" value={month}>{month.toUpperCase()}</option>
+            <option key={month} className="" value={month}>{capitalize(month)}</option>
           ))}
         </select>
-        <select value={selectedYear} onChange={handleYear} className="text-bluesr-500 rounded-xl">
+        <select value={selectedYear} onChange={handleYear} className="text-bluesr-500 rounded-xl text-center focus-visible: outline-bluesr-500">
           {years.map((year) => (
             <option key={year} className="text" value={year}>{year.toUpperCase()}</option>
           ))}
@@ -73,9 +74,9 @@ export function Faturamento() {
       <main className="m-4 gap-2 text-bluesr-500">
         <section className="w-fit bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
           <Table headers={['Valor', 'Mês passado', 'Ano passado']} rows={[data!.monthRow, data!.monthGrowth]} isLoading={isLoading}></Table>
-          <CircularProgress className={`${isVisible} fixed`} />
+          <CircularProgress color="bluesr-200" className={`${isVisible} fixed`} />
         </section>
-        <section className="w-full  bg-aliceblue rounded">
+        <section className="w-full bg-aliceblue rounded">
           <p>helloword</p>
         </section>
       </main>

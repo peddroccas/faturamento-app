@@ -1,7 +1,7 @@
 import { firestore } from "../services/firebase";
 
 const db = firestore;
-export const months = ['janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+export const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 export const years = ['2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'];
 
 // Faturamento
@@ -26,7 +26,10 @@ function getPreviousMonth(month: string, year: string): [string, string] {
         prevMonth = months[monthIndex - 1];
         prevYear = year;
     }
-    
+    if (month === 'abril') {
+        prevMonth = 'marco'
+    }
+
     return [prevMonth, prevYear];
 }
 
@@ -35,9 +38,14 @@ export async function getValues(month: string, year: string) {
         const [lastMonth, lastMonthYear] = getPreviousMonth(month, year);
         const lastYear = years[years.indexOf(year) - 1]
 
+        if (month === 'março') {
+            month = 'marco'
+        }
+
         const monthDoc = db.collection(year).doc(month)
         const lastMonthDoc = db.collection(lastMonthYear).doc(lastMonth)
         const lastYearDoc = db.collection(lastYear).doc(month)
+
 
         const monthValue: number = (await monthDoc.get()).data()!.value
         const lastMonthValue: number = (await lastMonthDoc.get()).data()!.value
