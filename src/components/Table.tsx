@@ -1,12 +1,16 @@
+import { Opacity } from "@mui/icons-material";
+
 interface TableProps {
   headers: string[];
   rows: (number|string)[][];
+  isLoading: boolean
 }
 
-export function Table({ headers, rows }: TableProps) {
+export function Table({ headers, rows, isLoading }: TableProps) {
   return (
-    <div>
-      <table className="">
+
+    <div className={`w-full ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+      <table className="w-full border-collapse table-fixed">
         <thead>
           <tr>
             {headers.map((header) => (

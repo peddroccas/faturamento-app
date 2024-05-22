@@ -1,8 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { Table } from "../components/Table";
-import { getValues, teste } from "../services/api";
+import { getValues } from "../services/api";
 import { months, years } from "../services/api";
-import { SelectChangeEvent } from "@mui/material";
 
 interface Month {
   monthRow: number[],
@@ -12,6 +11,7 @@ interface Month {
 export function Faturamento() {
   const [selectedMonth, setSelectedMonth] = useState(months[0]);
   const [selectedYear, setSelectedYear] = useState(years[1]);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [data, setData] = useState<Month | undefined>({ monthRow: [], monthGrowth: [] });
 
   useEffect(() => {
@@ -19,6 +19,7 @@ export function Faturamento() {
       try {
         const response = await getValues(selectedMonth, selectedYear);
         setData(response);
+        setIsLoading(false)
       } catch (error) {
       }
     }
@@ -27,10 +28,13 @@ export function Faturamento() {
 
   function handleMonth(event: ChangeEvent<HTMLSelectElement>){
     setSelectedMonth(event.target.value)
+    setIsLoading(true)
   }
 
   function handleYear(event: ChangeEvent<HTMLSelectElement>){
     setSelectedYear(event.target.value)
+    setIsLoading(true)
+
   }
   return (
     <div className="flex-1 h-screen w-auto flex flex-col">
@@ -49,7 +53,7 @@ export function Faturamento() {
       </header>
       <main className="m-4 gap-2 text-bluesr-500">
         <section className="w-fit bg-aliceblue rounded-2xl my-4 p-2">
-          <Table headers={['Valor', 'Mês passado', 'Ano passado']} rows={[data!.monthRow, data!.monthGrowth]}></Table>
+          <Table headers={['Valor', 'Mês passado', 'Ano passado']} rows={[data!.monthRow, data!.monthGrowth]} isLoading={isLoading}></Table>
         </section>
         <section className="w-full  bg-aliceblue rounded">
           <p>helloword</p>
