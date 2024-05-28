@@ -12,7 +12,7 @@ export function Table({ headers, rows, isLoading }: TableProps) {
         <thead>
           <tr>
             {headers.map((header) => (
-              <th key={header} className="p-4" id={header}>
+              <th key={header} className="p-4 text-center" id={header}>
                 {header}
               </th>
             ))}

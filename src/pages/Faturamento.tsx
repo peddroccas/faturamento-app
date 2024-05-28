@@ -45,7 +45,7 @@ export function Faturamento() {
         } else {
           setIsVisible("invisible max-h-0");
         }
-      } catch (error) {}
+      } catch (error) { }
     }
     loading();
   }, [isLoading]);
@@ -57,7 +57,7 @@ export function Faturamento() {
         const response = await getValues(selectedMonth, selectedYear);
         setData(response);
         setIsLoading(false);
-      } catch (error) {}
+      } catch (error) { }
     }
     fetchData();
   }, [selectedMonth, selectedYear]);
@@ -77,7 +77,7 @@ export function Faturamento() {
     try {
       setLoading(true);
       await addFaturamentoMonth("year", "month", value);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
@@ -107,24 +107,26 @@ export function Faturamento() {
           ))}
         </select>
       </header>
-      <main className="m-4 gap-2 text-bluesr-500 flex">
-        <div className="w-fit h-min">
-          <section className=" bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
-            <Table
-              headers={[
-                capitalize(dates.today),
-                capitalize(dates.lastMonth),
-                capitalize(dates.lastYear),
-              ]}
-              rows={[data!.monthRow, data!.monthGrowth]}
-              isLoading={isLoading}
-            ></Table>
-            <CircularProgress
-              color="bluesr-200"
-              className={`${isVisible} fixed`}
-            />
-          </section>
-          <div className="bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center gap-4">
+      <main className="w-auto m-4 gap-2 text-bluesr-500 flex 2xl:flex-row items-center flex-col">
+        <div className="h-full w-1/6">
+          <h1 className="text-aliceblue">draven</h1>
+        </div>
+        <section className="flex-1 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
+          <Table
+            headers={[
+              capitalize(dates.today),
+              capitalize(dates.lastMonth),
+              capitalize(dates.lastYear),
+            ]}
+            rows={[data!.monthRow, data!.monthGrowth]}
+            isLoading={isLoading}
+          ></Table>
+          <CircularProgress
+            color="bluesr-200"
+            className={`${isVisible} fixed`}
+          />
+        </section>
+        {/* <div className="w-auto bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center gap-4">
             <h1 className="mt-2 font-roboto  text-xl font-medium">Novo Faturamento</h1>
             <div className="flex flex-row items-center">
               <BasicTextField
@@ -147,10 +149,9 @@ export function Faturamento() {
                 value="Enviar"
               />
             </div>
-          </div>
-        </div>
-        <section className=" my-4 p-2 w-full flex items-center justify-center bg-aliceblue rounded-2xl">
-          <div className="flex items-center justify-center">
+          </div> */}
+        <section className="flex-1 flex items-center justify-center">
+          <div className="my-4 p-2 flex items-center justify-center bg-aliceblue rounded-2xl">
             <BarGraphic label={dates} monthRow={data!.monthRow}></BarGraphic>
             <CircularProgress
               color="bluesr-200"
