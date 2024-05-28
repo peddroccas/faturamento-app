@@ -17,7 +17,7 @@ export function LoadingButtonComponent({
   return (
     <Box sx={{ '& > button': { m: 1 } }}>
       <LoadingButton
-        size="small"
+        size="large"
         onClick={onClick}
         endIcon={<SendIcon />}
         loading={loading}

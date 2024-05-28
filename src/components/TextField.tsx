@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 import { ChangeEvent } from "react";
 
 interface TextFieldProps {
-  value: string | number;
+  value: string | number | undefined;
   type: string;
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }
@@ -18,7 +18,12 @@ export function BasicTextField({ value, type, onChange }: TextFieldProps) {
       case "number":
         return "Número";
       case "select":
-        return 'Selecione'
+        return 'Selecione';
+      case "value":
+        return 'Valor';
+      case "dae":
+        return "Data";
+      
     }
   }
   return (
