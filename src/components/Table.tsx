@@ -7,7 +7,7 @@ interface TableProps {
 export function Table({ headers, rows, isLoading }: TableProps) {
 
   return (
-    <div className={`w-full ${isLoading ? "opacity-30" : ""}`}>
+    <div className={`w-full font-montserrat ${isLoading ? "opacity-30" : ""}`}>
       <table className="w-full border-collapse table-fixed">
         <thead>
           <tr>
@@ -33,11 +33,11 @@ export function Table({ headers, rows, isLoading }: TableProps) {
                 return (
                   <td
                     key={cellIndex}
-                    className={`border border-aliceblue leading-4 p-2 ${cellIndex && rowIndex ? bgColor : "bg-bluesr-400"} text-aliceblue ${roundedClass}`}
+                    className={`border border-aliceblue leading-4 p-2 ${rowIndex ? bgColor : "bg-bluesr-400"} text-aliceblue ${roundedClass}`}
                   >
                     {rowIndex
                       ? cell.toLocaleString("pt-br") +
-                        (!cellIndex || !rowIndex ? "" : "%")
+                        ( !rowIndex ? "" : "%")
                       : cell.toLocaleString("pt-br", {
                           style: "currency",
                           currency: "BRL",
