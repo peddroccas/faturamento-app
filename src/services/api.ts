@@ -1,6 +1,6 @@
 import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../services/firebase";
-import { mapKeys } from "lodash";
+import { capitalize } from "lodash";
 
 const db = firestore;
 export const lojas = ['São Rafael', "Estrela", "Antunes", "São Rafael 2"]
@@ -26,6 +26,7 @@ export const years = [
   "2021",
   "2022",
   "2023",
+  "2024"
 ];
 
 // Faturamento
@@ -38,13 +39,42 @@ function percentage(reference: number, compared: number) {
   return Number(percentage.toFixed(2))
 }
 
-export async function getYearsValues(month: string) {
+
+/**  @returns {number} O indice do mês atual.*/
+export function disabledMonths(): number {
+  const today = new Date();
+  return today.getMonth()
+}
+
+function getLastThreeMonths(month: string, monthYear: string) {
+  const indexMonth = months.indexOf(month)
+  let lastThreeMonths = [];
+
+  for (let i = 0; i < 3; i++) {
+    const monthIndex = (indexMonth - i + 12) % 12;
+    if (((indexMonth - i + 12) / 12) < 1) {
+      lastThreeMonths.push({ month: months[monthIndex], year: String(Number(monthYear)-1) });
+    }
+    else {
+      lastThreeMonths.push({ month: months[monthIndex], year: String(monthYear) });
+    }
+  }
+
+  return lastThreeMonths;
+}
+
+export async function getYearsValues(month: string): Promise<{
+  values: number[];
+  growth: (string | number)[];
+  dates: string[];
+} | undefined> {
   try {
     if (month === "março") {
       month = "marco";
     }
     const yearsValues: number[] = []
-    const yearsGrowth : number[] = []
+    const yearsGrowth: (number | string)[] = []
+    const dates: string[] = []
 
     for (const year of years) {
       const monthDoc = db.collection(year).doc(month);
@@ -52,12 +82,51 @@ export async function getYearsValues(month: string) {
       const monthGrowth = percentage(monthValue, yearsValues[yearsValues.length - 1])
       yearsValues.push(monthValue)
       yearsGrowth.push(monthGrowth)
+      dates.push(capitalize(`${month}/${year}`))
     }
     yearsGrowth.shift()
+    yearsGrowth.unshift('Sem valor de referência')
 
     return {
-      yearsValues: yearsValues,
-      yearsGrowth: yearsGrowth
+      dates: dates,
+      values: yearsValues,
+      growth: yearsGrowth
+    }
+
+  } catch (error) {
+    console.log("Erro no acesso ao banco");
+    console.error(error);
+  }
+}
+
+export async function getMonthsValues(month: string, year: string) {
+  try {
+    const lastThreeMonths = getLastThreeMonths(month, year).reverse()
+
+    const monthsValues: number[] = []
+    const monthsGrowth: (number | string)[] = []
+    const dates: string[] = []
+
+
+    for (let month of lastThreeMonths) {
+      if (month.month == 'março') {
+        month.month = 'marco'
+      }
+      const monthDoc = db.collection(month.year).doc(month.month);
+      const monthValue: number = (await monthDoc.get()).data()!.value;
+      const monthGrowth = percentage(monthValue, monthsValues[monthsValues.length - 1])
+      monthsValues.push(monthValue)
+      monthsGrowth.push(monthGrowth)
+      dates.push(capitalize(`${month.month}/${month.year}`))
+
+    }
+    monthsGrowth.shift()
+    monthsGrowth.unshift('Sem valor de referência')
+
+    return {
+      dates: dates,
+      values: monthsValues,
+      growth: monthsGrowth
     }
 
   } catch (error) {

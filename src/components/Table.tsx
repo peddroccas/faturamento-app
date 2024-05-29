@@ -33,15 +33,15 @@ export function Table({ headers, rows, isLoading }: TableProps) {
                 return (
                   <td
                     key={cellIndex}
-                    className={`border border-aliceblue leading-4 p-2 ${rowIndex ? bgColor : "bg-bluesr-400"} text-aliceblue ${roundedClass}`}
+                    className={`border border-aliceblue leading-4 p-2 ${cellIndex && rowIndex ? bgColor : "bg-bluesr-400"} text-aliceblue ${roundedClass}`}
                   >
                     {rowIndex
                       ? cell.toLocaleString("pt-br") +
-                        ( !rowIndex ? "" : "%")
+                      (!cellIndex || !rowIndex ? "" : "%")
                       : cell.toLocaleString("pt-br", {
-                          style: "currency",
-                          currency: "BRL",
-                        })}
+                        style: "currency",
+                        currency: "BRL",
+                      })}
                   </td>
                 );
               })}
