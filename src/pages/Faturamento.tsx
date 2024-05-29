@@ -104,7 +104,7 @@ export function Faturamento() {
           />
         </article>
         <article className="flex-1 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
-          <h2 className="font-medium text-2xl font-roboto">Últimos meses</h2>
+          <h2 className="font-medium text-2xl font-roboto">Últimos anos</h2>
           <Table
             headers={monthsData!.dates}
             rows={[monthsData!.values, monthsData!.growth]}

@@ -53,7 +53,7 @@ function getLastThreeMonths(month: string, monthYear: string) {
   for (let i = 0; i < 3; i++) {
     const monthIndex = (indexMonth - i + 12) % 12;
     if (((indexMonth - i + 12) / 12) < 1) {
-      lastThreeMonths.push({ month: months[monthIndex], year: String(Number(monthYear)-1) });
+      lastThreeMonths.push({ month: months[monthIndex], year: String(Number(monthYear) - 1) });
     }
     else {
       lastThreeMonths.push({ month: months[monthIndex], year: String(monthYear) });
@@ -82,7 +82,13 @@ export async function getYearsValues(month: string): Promise<{
       const monthGrowth = percentage(monthValue, yearsValues[yearsValues.length - 1])
       yearsValues.push(monthValue)
       yearsGrowth.push(monthGrowth)
-      dates.push(capitalize(`${month}/${year}`))
+      if (month === "marco") {
+        dates.push(capitalize(`${'março'}/${year}`))
+      }
+      else {
+        dates.push(capitalize(`${month}/${year}`))
+
+      }
     }
     yearsGrowth.shift()
     yearsGrowth.unshift('Sem valor de referência')
@@ -117,7 +123,12 @@ export async function getMonthsValues(month: string, year: string) {
       const monthGrowth = percentage(monthValue, monthsValues[monthsValues.length - 1])
       monthsValues.push(monthValue)
       monthsGrowth.push(monthGrowth)
-      dates.push(capitalize(`${month.month}/${month.year}`))
+      if (month.month === "marco") {
+        dates.push(capitalize(`${'março'}/${month.year}`))
+      }
+      else {
+        dates.push(capitalize(`${month.month}/${month.year}`))
+      }
 
     }
     monthsGrowth.shift()
