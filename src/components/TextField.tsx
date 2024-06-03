@@ -23,11 +23,12 @@ export function BasicTextField({ value, type, onChange }: TextFieldProps) {
         return 'Valor';
       case "dae":
         return "Data";
-      
+
     }
   }
   return (
     <Box
+      className="hover:border-redsr-400" 
       component="form"
       sx={{
         "& > :not(style)": { m: 1, width: "20rem" },
@@ -36,6 +37,7 @@ export function BasicTextField({ value, type, onChange }: TextFieldProps) {
       autoComplete="off"
     >
       <TextField
+
         id={type}
         onChange={onChange}
         value={value}

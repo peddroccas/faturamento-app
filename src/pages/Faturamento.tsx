@@ -10,6 +10,7 @@ import { CircularProgress } from "@mui/material";
 import { Select } from "../components/Select";
 import { Add } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
+import { NewFaturamentoDialog } from "../components/NewFaturamentoDialog";
 
 interface DataValue {
   values: number[];
@@ -33,6 +34,7 @@ export function Faturamento() {
     dates: []
   });
   const [isVisible, setIsVisible] = useState<string>();
+  const [open, setOpen] = useState<boolean>(false)
 
 
   // Observa para ver se está carregando, se tiver ele põe o componente de carregamento
@@ -83,6 +85,13 @@ export function Faturamento() {
     setSelectedYear(event.target.value);
     setIsLoading(true);
   }
+  function handleNewFaturamentoOnClick() {
+    setOpen(true)
+  }
+
+  function handleCloseFaturamentoDialog() {
+    setOpen(false)
+  }
 
   return (
     <div className="flex-1 h-screen w-auto flex flex-col">
@@ -97,10 +106,11 @@ export function Faturamento() {
             <Select id='years' value={selectedYear} onChange={handleYearOnChange} options={years} />
           </div>
           <Tooltip title='Adicionar novo faturamento' placement="right">
-            <button className="h-fit p-1 transition-all hover:bg-bluesr-500 rounded-full flex items-center">
+            <button onClick={handleNewFaturamentoOnClick} className="h-fit p-1 transition-all hover:bg-bluesr-500 rounded-full flex items-center">
               <Add />
             </button>
           </Tooltip>
+          <NewFaturamentoDialog open={open} onClose={handleCloseFaturamentoDialog}/>
         </div>
         <article className="flex-1 w-5/6 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
           <h2 className="font-medium text-2xl font-roboto">Últimos anos</h2>
