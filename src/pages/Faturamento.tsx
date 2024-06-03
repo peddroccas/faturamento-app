@@ -8,7 +8,8 @@ import {
 import { months, years } from "../services/api";
 import { CircularProgress } from "@mui/material";
 import { Select } from "../components/Select";
-
+import { Add } from '@mui/icons-material';
+import { Tooltip } from '@mui/material';
 
 interface DataValue {
   values: number[];
@@ -18,7 +19,7 @@ interface DataValue {
 
 
 export function Faturamento() {
-  const [selectedMonth, setSelectedMonth] = useState(months[disabledMonths() - 1]);
+  const [selectedMonth, setSelectedMonth] = useState(months[disabledMonths() - 2]);
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [yearsData, setYearsData] = useState<DataValue | undefined>({
@@ -87,10 +88,20 @@ export function Faturamento() {
     <div className="flex-1 h-screen w-auto flex flex-col">
       <header className="flex gap-4 p-4 border-b border-b-slate-400">
         <h1 className="text-3xl">Faturamento</h1>
-        <Select id='months' disabledOptions={disabledMonths()} value={selectedMonth} onChange={handleMonthOnChange} options={months} />
-        <Select id='years' value={selectedYear} onChange={handleYearOnChange} options={years} />
       </header>
       <main className="w-auto m-4 gap-2 text-bluesr-500 flex items-center flex-col">
+        <div className="flex items-center text-center justify-center w-1/2 p-2 gap-2 text-aliceblue rounded-xl">
+          <div className="flex p-2 gap-2">
+            <h2 className="flex items-center font-roboto font-medium text-xl">Mês em destaque:</h2>
+            <Select id='months' disabledOptions={disabledMonths()} value={selectedMonth} onChange={handleMonthOnChange} options={months} />
+            <Select id='years' value={selectedYear} onChange={handleYearOnChange} options={years} />
+          </div>
+          <Tooltip title='Adicionar novo faturamento' placement="right">
+            <button className="h-fit p-1 transition-all hover:bg-bluesr-500 rounded-full flex items-center">
+              <Add />
+            </button>
+          </Tooltip>
+        </div>
         <article className="flex-1 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
           <h2 className="font-medium text-2xl font-roboto">Últimos anos</h2>
           <Table
@@ -103,8 +114,8 @@ export function Faturamento() {
             className={`${isVisible} fixed`}
           />
         </article>
-        <article className="flex-1 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
-          <h2 className="font-medium text-2xl font-roboto">Últimos anos</h2>
+        <article className="flex-1 w-1/2 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
+          <h2 className="font-medium text-2xl font-roboto">Últimos meses</h2>
           <Table
             headers={monthsData!.dates}
             rows={[monthsData!.values, monthsData!.growth]}

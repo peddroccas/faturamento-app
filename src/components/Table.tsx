@@ -23,7 +23,7 @@ export function Table({ headers, rows, isLoading }: TableProps) {
             <tr key={rowIndex}>
               {row.map((cell, cellIndex) => {
                 const bgColor =
-                  Number(cell) >= 0 ? "bg-green-500" : "bg-redsr-400";
+                  Number(cell) >= 0 ? "bg-green-700" : "bg-redsr-400";
                 const roundedClass = `
                   ${rowIndex === 0 && cellIndex === 0 ? "rounded-tl-lg" : ""}
                   ${rowIndex === 0 && cellIndex === row.length - 1 ? "rounded-tr-lg" : ""}
