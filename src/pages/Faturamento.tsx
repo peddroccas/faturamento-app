@@ -102,7 +102,7 @@ export function Faturamento() {
             </button>
           </Tooltip>
         </div>
-        <article className="flex-1 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
+        <article className="flex-1 w-5/6 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
           <h2 className="font-medium text-2xl font-roboto">Últimos anos</h2>
           <Table
             headers={yearsData!.dates}

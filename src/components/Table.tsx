@@ -8,47 +8,49 @@ export function Table({ headers, rows, isLoading }: TableProps) {
 
   return (
     <div className={`w-full font-montserrat ${isLoading ? "opacity-30" : ""}`}>
-      <table className="w-full border-collapse table-fixed">
-        <thead>
-          <tr>
-            {headers.map((header) => (
-              <th key={header} className="p-4 text-center" id={header}>
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="text-center">
-          {rows.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((cell, cellIndex) => {
-                const bgColor =
-                  Number(cell) >= 0 ? "bg-green-700" : "bg-redsr-400";
-                const roundedClass = `
+      <div className="overflow-x-scroll w-full">
+        <table className="w-full border-collapse table-auto truncate">
+          <thead>
+            <tr>
+              {headers.map((header) => (
+                <th key={header} className="p-4 text-center" id={header}>
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="text-center">
+            {rows.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {row.map((cell, cellIndex) => {
+                  const bgColor =
+                    Number(cell) >= 0 ? "bg-green-700" : "bg-redsr-400";
+                  const roundedClass = `
                   ${rowIndex === 0 && cellIndex === 0 ? "rounded-tl-lg" : ""}
                   ${rowIndex === 0 && cellIndex === row.length - 1 ? "rounded-tr-lg" : ""}
                   ${rowIndex === rows.length - 1 && cellIndex === 0 ? "rounded-bl-lg" : ""}
                   ${rowIndex === rows.length - 1 && cellIndex === row.length - 1 ? "rounded-br-lg" : ""}
                 `;
-                return (
-                  <td
-                    key={cellIndex}
-                    className={`border border-aliceblue leading-4 p-2 ${cellIndex && rowIndex ? bgColor : "bg-bluesr-400"} text-aliceblue ${roundedClass}`}
-                  >
-                    {rowIndex
-                      ? cell.toLocaleString("pt-br") +
-                      (!cellIndex || !rowIndex ? "" : "%")
-                      : cell.toLocaleString("pt-br", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  return (
+                    <td
+                      key={cellIndex}
+                      className={`border border-aliceblue leading-4 p-2 ${cellIndex && rowIndex ? bgColor : "bg-bluesr-400"} text-aliceblue ${roundedClass} `}
+                    >
+                      {rowIndex
+                        ? cell.toLocaleString("pt-br") +
+                        (!cellIndex || !rowIndex ? "" : "%")
+                        : cell.toLocaleString("pt-br", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
