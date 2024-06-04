@@ -99,7 +99,7 @@ export function Faturamento() {
         <h1 className="text-3xl">Faturamento</h1>
       </header>
       <main className="w-auto m-4 gap-2 text-bluesr-500 flex items-center flex-col">
-        <div className="flex items-center text-center justify-center w-1/2 p-2 gap-2 text-aliceblue rounded-xl">
+        <div className="flex items-center text-center justify-center p-2 gap-2 text-aliceblue rounded-xl">
           <div className="flex p-2 gap-2">
             <h2 className="flex items-center font-roboto font-medium text-xl">Mês em destaque:</h2>
             <Select id='months' disabledOptions={disabledMonths()} value={selectedMonth} onChange={handleMonthOnChange} options={months} />
@@ -110,7 +110,7 @@ export function Faturamento() {
               <Add />
             </button>
           </Tooltip>
-          <NewFaturamentoDialog open={open} onClose={handleCloseFaturamentoDialog}/>
+          <NewFaturamentoDialog  open={open} onClose={handleCloseFaturamentoDialog}/>
         </div>
         <article className="flex-1 w-5/6 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
           <h2 className="font-medium text-2xl font-roboto">Últimos anos</h2>

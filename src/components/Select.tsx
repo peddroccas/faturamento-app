@@ -10,7 +10,7 @@ interface SelectProps{
     onChange: (event: ChangeEvent<HTMLSelectElement>) => void
 }
 
-export function Select({options, value, onChange, disabledOptions = 11, className}: SelectProps){
+export function Select({options, value, onChange, disabledOptions = 12, className}: SelectProps){
     return(
         <select
           value={value}

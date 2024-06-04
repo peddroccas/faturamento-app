@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react'
 import { auth } from '../services/firebase.ts'
 import { useNavigate } from 'react-router-dom'
-import { BasicTextField } from '../components/TextField.tsx'
+import { BasicTextField } from '../components/BasicTextField.tsx'
 import { LoadingButtonComponent } from '../components/LoadingButton.tsx'
 
 export function LoginForm() {

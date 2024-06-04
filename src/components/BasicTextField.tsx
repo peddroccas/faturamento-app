@@ -1,12 +1,13 @@
 import { Box } from "@mui/material/";
-import TextField from "@mui/material/TextField";
+import { TextField } from "@mui/material/";
 import { ChangeEvent } from "react";
 
 interface TextFieldProps {
   value: string | number | undefined;
   type: string;
-  onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
+
 
 export function BasicTextField({ value, type, onChange }: TextFieldProps) {
   function setPlaceholder(type: string) {
@@ -28,7 +29,6 @@ export function BasicTextField({ value, type, onChange }: TextFieldProps) {
   }
   return (
     <Box
-      className="hover:border-redsr-400" 
       component="form"
       sx={{
         "& > :not(style)": { m: 1, width: "20rem" },
@@ -37,7 +37,6 @@ export function BasicTextField({ value, type, onChange }: TextFieldProps) {
       autoComplete="off"
     >
       <TextField
-
         id={type}
         onChange={onChange}
         value={value}
