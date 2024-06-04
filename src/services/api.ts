@@ -46,21 +46,21 @@ export function disabledMonths(): number {
   return today.getMonth()
 }
 
-function getLastThreeMonths(month: string, monthYear: string) {
+function getLastSixMonths(month: string, monthYear: string) {
   const indexMonth = months.indexOf(month)
-  let lastThreeMonths = [];
+  let lastSixMonths = [];
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 6; i++) {
     const monthIndex = (indexMonth - i + 12) % 12;
     if (((indexMonth - i + 12) / 12) < 1) {
-      lastThreeMonths.push({ month: months[monthIndex], year: String(Number(monthYear) - 1) });
+      lastSixMonths.push({ month: months[monthIndex], year: String(Number(monthYear) - 1) });
     }
     else {
-      lastThreeMonths.push({ month: months[monthIndex], year: String(monthYear) });
+      lastSixMonths.push({ month: months[monthIndex], year: String(monthYear) });
     }
   }
 
-  return lastThreeMonths;
+  return lastSixMonths;
 }
 
 export async function getYearsValues(month: string): Promise<{
@@ -107,14 +107,14 @@ export async function getYearsValues(month: string): Promise<{
 
 export async function getMonthsValues(month: string, year: string) {
   try {
-    const lastThreeMonths = getLastThreeMonths(month, year).reverse()
+    const lastSixMonths = getLastSixMonths(month, year).reverse()
 
     const monthsValues: number[] = []
     const monthsGrowth: (number | string)[] = []
     const dates: string[] = []
 
 
-    for (let month of lastThreeMonths) {
+    for (let month of lastSixMonths) {
       if (month.month == 'março') {
         month.month = 'marco'
       }
@@ -146,7 +146,7 @@ export async function getMonthsValues(month: string, year: string) {
   }
 }
 
-export function getPreviousThreeMonths(
+export function getPreviousSixMonths(
   month: string,
   year: string
 ): [string, string][] {

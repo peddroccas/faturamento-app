@@ -124,7 +124,7 @@ export function Faturamento() {
             className={`${isVisible} fixed`}
           />
         </article>
-        <article className="flex-1 w-1/2 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
+        <article className="flex-1 w-5/6 bg-aliceblue rounded-2xl my-4 p-2 flex flex-col items-center justify-center">
           <h2 className="font-medium text-2xl font-roboto">Últimos meses</h2>
           <Table
             headers={monthsData!.dates}
