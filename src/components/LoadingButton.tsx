@@ -1,6 +1,6 @@
 import { FormEvent } from 'react'
 import { LoadingButton } from '@mui/lab/'
-import {Box} from '@mui/material/'
+import { Box } from '@mui/material/'
 import SendIcon from '@mui/icons-material/Send'
 
 interface LoadingButtonProps {

@@ -25,13 +25,13 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex justify-center m-auto px-4 py-0">
+    <div className="m-auto flex justify-center px-4 py-0">
       <div
         onSubmit={handleLogin}
-        className="h-max flex flex-col items-center justify-center rounded-lg p-4 mt-20 gap-px text-redsr-400 bg-aliceblue"
+        className="mt-20 flex h-max flex-col items-center justify-center gap-px rounded-lg bg-aliceblue p-4 text-redsr-400"
       >
         <h1 className="mt-2 font-roboto  text-2xl font-medium">ENTRAR</h1>
-        <div className="flex flex-col mt-4 gap-2">
+        <div className="mt-4 flex flex-col gap-2">
           <BasicTextField
             type="email"
             value={email}
