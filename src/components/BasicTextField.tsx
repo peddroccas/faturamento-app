@@ -1,14 +1,19 @@
-import { Box, TextField } from '@mui/material/'
+import { Box } from '@mui/material/'
+import TextField from '@mui/material/TextField'
 
 import { ChangeEvent } from 'react'
 
-interface TextFieldProps {
+export interface TextFieldProps {
   value: string | number | undefined
-  type: string
+  type?: string
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-export function BasicTextField({ value, type, onChange }: TextFieldProps) {
+export function BasicTextField({
+  value,
+  type = 'value',
+  onChange,
+}: TextFieldProps) {
   function setPlaceholder(type: string) {
     switch (type) {
       case 'password':
@@ -25,6 +30,7 @@ export function BasicTextField({ value, type, onChange }: TextFieldProps) {
         return 'Data'
     }
   }
+
   return (
     <Box
       component="form"
@@ -35,6 +41,23 @@ export function BasicTextField({ value, type, onChange }: TextFieldProps) {
       autoComplete="off"
     >
       <TextField
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderWidth: '2px',
+            },
+            '&.Mui-focused': {
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'bluesr-400',
+              },
+            },
+            '&:hover:not(.Mui-focused)': {
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#0C4B80',
+              },
+            },
+          },
+        }}
         id={type}
         onChange={onChange}
         value={value}
