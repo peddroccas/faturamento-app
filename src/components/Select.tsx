@@ -7,6 +7,7 @@ interface SelectProps {
   options: Array<string>
   className?: string
   disabledOptions?: number
+  reverse?: true
   onChange: (event: ChangeEvent<HTMLSelectElement>) => void
 }
 
@@ -14,6 +15,7 @@ export function Select({
   options,
   value,
   onChange,
+  reverse,
   disabledOptions = 12,
   className,
 }: SelectProps) {
@@ -28,7 +30,9 @@ export function Select({
           key={option}
           className=""
           value={option}
-          disabled={index >= disabledOptions}
+          disabled={
+            reverse ? index <= disabledOptions : index > disabledOptions
+          }
         >
           {capitalize(option)}
         </option>

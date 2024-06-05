@@ -29,6 +29,8 @@ export const years = [
   '2024',
 ]
 
+async function add() {}
+add()
 // Faturamento
 
 function percentage(reference: number, compared: number) {
@@ -39,10 +41,24 @@ function percentage(reference: number, compared: number) {
 }
 
 /**  @returns {number} O indice do mês atual. */
-export function disabledMonths(): number {
-  const today = new Date()
-  return today.getMonth()
+export async function getLastMonthFilled(): Promise<number> {
+  try {
+    const collection = await db.collection('2024').where('value', '==', 0).get()
+    let lastMonth = 11
+    for (const month of collection.docs) {
+      if (months.indexOf(month.id) < lastMonth) {
+        lastMonth = months.indexOf(month.id)
+      }
+    }
+    console.log(lastMonth)
+    return lastMonth - 1
+  } catch (error) {
+    console.error('Erro ao ler mês não preenchido')
+    return 11
+  }
 }
+
+export const lastMonthFilled = await getLastMonthFilled()
 
 function getLastSixMonths(month: string, monthYear: string) {
   const indexMonth = months.indexOf(month)
@@ -72,9 +88,6 @@ export async function getYearsValues(month: string): Promise<
   | undefined
 > {
   try {
-    if (month === 'março') {
-      month = 'marco'
-    }
     const yearsValues: number[] = []
     const yearsGrowth: (number | string)[] = []
     const dates: string[] = []
@@ -88,11 +101,8 @@ export async function getYearsValues(month: string): Promise<
       )
       yearsValues.push(monthValue)
       yearsGrowth.push(monthGrowth)
-      if (month === 'marco') {
-        dates.push(capitalize(`${'março'}/${year}`))
-      } else {
-        dates.push(capitalize(`${month}/${year}`))
-      }
+
+      dates.push(capitalize(`${month}/${year}`))
     }
     yearsGrowth.shift()
     yearsGrowth.unshift('Sem valor de referência')
@@ -117,9 +127,6 @@ export async function getMonthsValues(month: string, year: string) {
     const dates: string[] = []
 
     for (const month of lastSixMonths) {
-      if (month.month === 'março') {
-        month.month = 'marco'
-      }
       const monthDoc = db.collection(month.year).doc(month.month)
       const monthValue: number = (await monthDoc.get()).data()!.value
       const monthGrowth = percentage(
@@ -128,11 +135,8 @@ export async function getMonthsValues(month: string, year: string) {
       )
       monthsValues.push(monthValue)
       monthsGrowth.push(monthGrowth)
-      if (month.month === 'marco') {
-        dates.push(capitalize(`${'março'}/${month.year}`))
-      } else {
-        dates.push(capitalize(`${month.month}/${month.year}`))
-      }
+
+      dates.push(capitalize(`${month.month}/${month.year}`))
     }
     monthsGrowth.shift()
     monthsGrowth.unshift('Sem valor de referência')

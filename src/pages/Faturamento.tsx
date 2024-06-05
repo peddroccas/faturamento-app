@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { Table } from '../components/Table'
 import {
-  disabledMonths,
+  lastMonthFilled,
   getMonthsValues,
   getYearsValues,
   months,
@@ -21,9 +21,7 @@ interface DataValue {
 }
 
 export function Faturamento() {
-  const [selectedMonth, setSelectedMonth] = useState(
-    months[disabledMonths() - 2],
-  )
+  const [selectedMonth, setSelectedMonth] = useState(months[lastMonthFilled])
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [yearsData, setYearsData] = useState<DataValue | undefined>({
@@ -108,7 +106,7 @@ export function Faturamento() {
             </h2>
             <Select
               id="months"
-              disabledOptions={disabledMonths()}
+              disabledOptions={lastMonthFilled}
               value={selectedMonth}
               onChange={handleMonthOnChange}
               options={months}

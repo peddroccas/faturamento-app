@@ -9,7 +9,7 @@ import {
 import { ChangeEvent, useState } from 'react'
 import { BasicNumberField } from './BasicNumberField'
 import { Select } from './Select'
-import { disabledMonths, months, years } from '../services/api'
+import { lastMonthFilled, months, years } from '../services/api'
 
 interface NewFaturamentoDialogProps {
   open: boolean
@@ -22,7 +22,7 @@ export function NewFaturamentoDialog({
 }: NewFaturamentoDialogProps) {
   const [value, setValue] = useState<string>('')
   const [selectedMonth, setSelectedMonth] = useState(
-    months[disabledMonths() - 1],
+    months[lastMonthFilled + 1],
   )
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
 
@@ -54,7 +54,8 @@ export function NewFaturamentoDialog({
           <Select
             id="months"
             value={selectedMonth}
-            disabledOptions={disabledMonths()}
+            disabledOptions={lastMonthFilled}
+            reverse
             options={months}
             onChange={handleMonthOnChange}
           />
