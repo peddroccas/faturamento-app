@@ -23,12 +23,12 @@ export function Select({
     <select
       value={value}
       onChange={onChange}
-      className={`focus-visible: rounded-xl text-center text-bluesr-500 outline-bluesr-500 ${className}`}
+      className={`focus-visible: rounded-xl bg-aliceblue-500 text-center text-bluesr-500 outline-bluesr-500 ${className}`}
     >
       {options.map((option, index) => (
         <option
           key={option}
-          className=""
+          className="disabled:text-gray-400"
           value={option}
           disabled={
             reverse ? index <= disabledOptions : index > disabledOptions

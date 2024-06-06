@@ -51,7 +51,7 @@ export function Faturamento() {
     loading()
   }, [isLoading])
 
-  // Busca no db os dados assim que carrega a página
+  // Busca no db os dados assim que carrega a página e toda vez que o usuário selecionar mês ou ano diferentes
   useEffect(() => {
     async function fetchYears() {
       try {
@@ -98,7 +98,7 @@ export function Faturamento() {
       <header className="flex gap-4 border-b border-b-slate-400 p-4">
         <h1 className="text-3xl">Faturamento</h1>
       </header>
-      <main className=" m-4 flex w-auto flex-col  items-center gap-2 text-bluesr-500 ">
+      <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
         <div className="flex items-center justify-center gap-2 rounded-xl p-2 text-center text-aliceblue">
           <div className="flex gap-2 p-2">
             <h2 className="flex items-center font-roboto text-xl font-medium">

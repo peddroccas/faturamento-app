@@ -9,7 +9,13 @@ import {
 import { ChangeEvent, useState } from 'react'
 import { BasicNumberField } from './BasicNumberField'
 import { Select } from './Select'
-import { lastMonthFilled, months, years } from '../services/api'
+import {
+  lastMonthFilled,
+  months,
+  setNewFaturamentoMonth,
+  years,
+} from '../services/api'
+import { AlertComponent, Severity } from './AlertComponent'
 
 interface NewFaturamentoDialogProps {
   open: boolean
@@ -25,6 +31,25 @@ export function NewFaturamentoDialog({
     months[lastMonthFilled + 1],
   )
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
+  const [severity, setSeverity] = useState<Severity>()
+
+  const handleAlertClose = () => {
+    setIsAlertOpen(false)
+  }
+
+  async function handleSubmitNewFaturamento() {
+    try {
+      const valueNumber = Number(value.replace(/[^\d,]/g, '').replace(',', '.'))
+      await setNewFaturamentoMonth(valueNumber, selectedMonth, selectedYear)
+      setIsAlertOpen(true)
+      setSeverity('success')
+    } catch (error) {
+      setIsAlertOpen(true)
+      setSeverity('error')
+      console.error(error)
+    }
+  }
 
   function handleOnChangeValue(event: ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value)
@@ -73,9 +98,19 @@ export function NewFaturamentoDialog({
         <Button onClick={onClose} color="redsr-400">
           Cancelar
         </Button>
-        <Button type="submit" color="bluesr-500" disabled={!value}>
+        <Button
+          onClick={handleSubmitNewFaturamento}
+          type="submit"
+          color="bluesr-500"
+          disabled={!value}
+        >
           Cadastrar
         </Button>
+        <AlertComponent
+          open={isAlertOpen}
+          onClose={handleAlertClose}
+          severity={severity}
+        ></AlertComponent>
       </DialogActions>
     </Dialog>
   )
