@@ -95,17 +95,6 @@ export function Faturamento() {
     fetchMonths()
   }, [selectedMonth, selectedYear, lastMonthFilled])
 
-  // useEffect(() => {
-  //   async function reloadPage() {
-  //     try {
-  //       if (reload) {
-  //         window.location.reload()
-  //       }
-  //     } catch (error) {}
-  //   }
-  //   reloadPage()
-  // }, [reload])
-
   function handleMonthOnChange(event: ChangeEvent<HTMLSelectElement>) {
     setSelectedMonth(event.target.value)
     setIsLoading(true)
