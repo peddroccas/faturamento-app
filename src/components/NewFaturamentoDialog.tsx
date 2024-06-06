@@ -6,16 +6,12 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { BasicNumberField } from './BasicNumberField'
 import { Select } from './Select'
-import {
-  lastMonthFilled,
-  months,
-  setNewFaturamentoMonth,
-  years,
-} from '../services/api'
+import { months, setNewFaturamentoMonth, years } from '../services/api'
 import { AlertComponent, Severity } from './AlertComponent'
+import { ReloadContext } from '../contexts/FaturamentoContext'
 
 interface NewFaturamentoDialogProps {
   open: boolean
@@ -26,16 +22,23 @@ export function NewFaturamentoDialog({
   open,
   onClose,
 }: NewFaturamentoDialogProps) {
+  const { lastMonthFilled, setReload } = useContext(ReloadContext)
   const [value, setValue] = useState<string>('')
-  const [selectedMonth, setSelectedMonth] = useState(
-    months[lastMonthFilled + 1],
-  )
+  const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
   const [severity, setSeverity] = useState<Severity>()
 
+  useEffect(() => {
+    async function fetchLastMonthFilled() {
+      setSelectedMonth(months[lastMonthFilled! + 1])
+    }
+    fetchLastMonthFilled()
+  }, [lastMonthFilled])
+
   const handleAlertClose = () => {
     setIsAlertOpen(false)
+    handleOnClose()
   }
 
   async function handleSubmitNewFaturamento() {
@@ -57,6 +60,8 @@ export function NewFaturamentoDialog({
 
   function handleOnClose() {
     setValue('')
+    setIsAlertOpen(false)
+    setReload(true)
     onClose()
   }
 
@@ -95,7 +100,7 @@ export function NewFaturamentoDialog({
         <BasicNumberField value={value} onChange={handleOnChangeValue} />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="redsr-400">
+        <Button onClick={handleOnClose} color="redsr-400">
           Cancelar
         </Button>
         <Button

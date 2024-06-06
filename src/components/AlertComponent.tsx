@@ -13,9 +13,8 @@ export function AlertComponent({ severity, open, onClose }: AlertProps) {
     <Snackbar
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       open={open}
-      onClose={onClose}
     >
-      <Alert severity={severity}>
+      <Alert severity={severity} onClose={onClose}>
         {' '}
         {severity === 'success'
           ? `Dados cadastrados com sucesso`
