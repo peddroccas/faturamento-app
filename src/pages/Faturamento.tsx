@@ -6,6 +6,7 @@ import {
   months,
   years,
   getLastMonthFilled,
+  lojas,
 } from '../services/api'
 
 import { CircularProgress, Tooltip } from '@mui/material'
@@ -14,6 +15,7 @@ import { Add } from '@mui/icons-material'
 
 import { NewFaturamentoDialog } from '../components/NewFaturamentoDialog'
 import { ReloadContext } from '../contexts/FaturamentoContext'
+import { db } from '../services/firebase'
 
 interface DataValue {
   values: number[]
@@ -22,6 +24,21 @@ interface DataValue {
 }
 
 export function Faturamento() {
+  useEffect(() => {
+    const databaseRef = db.ref('antunes/2017/janeiro') // Caminho dos dados
+    const fetchData = async () => {
+      try {
+        const snapshot = await databaseRef.once('value')
+        console.log(snapshot.val()) // Atualize o estado com os dados obtidos
+        console.log('aquiiiiiiiiii')
+      } catch (error) {
+        console.error('Erro ao buscar os dados do banco de dados: ', error)
+      }
+    }
+
+    fetchData()
+  }, [])
+
   const [reload, setReload] = useState<boolean>(true)
   const [lastMonthFilled, setLastMonthFilled] = useState<number>()
   const [selectedMonth, setSelectedMonth] = useState<string>('')
@@ -39,6 +56,7 @@ export function Faturamento() {
   })
   const [isVisible, setIsVisible] = useState<string>()
   const [open, setOpen] = useState<boolean>(false)
+  const [loja, setLoja] = useState<string>(lojas[2])
 
   useEffect(() => {
     async function fetchLastMonthFilled() {
@@ -114,11 +132,21 @@ export function Faturamento() {
     setOpen(false)
   }
 
+  function handleOnChangeLoja(event: ChangeEvent<HTMLSelectElement>) {
+    setLoja(event.target.value)
+  }
+
   return (
     <ReloadContext.Provider value={{ reload, setReload, lastMonthFilled }}>
       <div className="flex h-screen w-auto flex-1 flex-col">
         <header className="flex gap-4 border-b border-b-slate-400 p-4">
           <h1 className="text-3xl">Faturamento</h1>
+          <Select
+            id="lojas"
+            options={lojas}
+            value={loja}
+            onChange={handleOnChangeLoja}
+          />
         </header>
         <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
           <div className="flex items-center justify-center gap-2 rounded-xl p-2 text-center text-aliceblue">

@@ -1,8 +1,16 @@
 import { doc, setDoc } from 'firebase/firestore'
-import { firestore } from '../services/firebase'
-import { capitalize } from 'lodash'
+import { db } from '../services/firebase'
+import { useEffect } from 'react'
 
-const db = firestore
+export function capitalizeFirstLetters(string: string) {
+  return string
+    .split(' ')
+    .map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join(' ')
+}
+
 export const lojas = ['São Rafael', 'Estrela', 'Antunes', 'São Rafael 2']
 export const months = [
   'janeiro',
@@ -109,7 +117,7 @@ export async function getYearsValues(month: string): Promise<
       yearsValues.push(monthValue)
       yearsGrowth.push(monthGrowth)
 
-      dates.push(capitalize(`${month}/${year}`))
+      dates.push(capitalizeFirstLetters(`${month}/${year}`))
     }
     yearsGrowth.shift()
     yearsGrowth.unshift('Sem valor de referência')
@@ -143,7 +151,7 @@ export async function getMonthsValues(month: string, year: string) {
       monthsValues.push(monthValue)
       monthsGrowth.push(monthGrowth)
 
-      dates.push(capitalize(`${month.month}/${month.year}`))
+      dates.push(capitalizeFirstLetters(`${month.month}/${month.year}`))
     }
     monthsGrowth.shift()
     monthsGrowth.unshift('Sem valor de referência')

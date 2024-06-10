@@ -1,5 +1,5 @@
-import { capitalize } from 'lodash'
 import { ChangeEvent } from 'react'
+import { capitalizeFirstLetters } from '../services/api'
 
 interface SelectProps {
   id: string
@@ -16,7 +16,7 @@ export function Select({
   value,
   onChange,
   reverse,
-  disabledOptions = 12,
+  disabledOptions = 100,
   className,
 }: SelectProps) {
   return (
@@ -34,7 +34,7 @@ export function Select({
             reverse ? index <= disabledOptions : index > disabledOptions
           }
         >
-          {capitalize(option)}
+          {capitalizeFirstLetters(option)}
         </option>
       ))}
     </select>
