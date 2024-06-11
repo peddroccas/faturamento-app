@@ -45,24 +45,25 @@ function percentage(reference: number, compared: number) {
   return Number(percentage.toFixed(2))
 }
 
-export async function getLastMonthFilled(): Promise<number> {
+export async function getLastMonthFilled(loja: string): Promise<number> {
   try {
-    const collection = await db.collection('2024').where('value', '==', 0).get()
-    let lastMonth = 11
-    for (const month of collection.docs) {
-      if (months.indexOf(month.id) < lastMonth) {
-        lastMonth = months.indexOf(month.id)
+    const databaseRef = db.ref(`${loja}/2024`)
+
+    const snapShot = await databaseRef.once('value')
+    const data = snapShot.val()
+    let lastMonth = 0
+    for (const month in data) {
+      if (months.indexOf(month) > lastMonth) {
+        lastMonth = months.indexOf(month)
       }
     }
-    return lastMonth - 1
+
+    return lastMonth
   } catch (error) {
     console.error('Erro ao ler mês não preenchido')
     return 11
   }
 }
-
-/**  @returns {number} O indice do último mês preenchido no db. */
-export const lastMonthFilled = await getLastMonthFilled()
 
 export async function setNewFaturamentoMonth(
   value: number,

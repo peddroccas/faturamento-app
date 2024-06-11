@@ -24,21 +24,6 @@ interface DataValue {
 }
 
 export function Faturamento() {
-  useEffect(() => {
-    const databaseRef = db.ref('antunes/2024') // Caminho dos dados
-    const fetchData = async () => {
-      try {
-        const snapshot = await databaseRef.once('value')
-        const data = snapshot.val() // Atualize o estado com os dados obtidos
-        console.log(data.Junho)
-      } catch (error) {
-        console.error('Erro ao buscar os dados do banco de dados: ', error)
-      }
-    }
-
-    fetchData()
-  }, [])
-
   const [reload, setReload] = useState<boolean>(true)
   const [lastMonthFilled, setLastMonthFilled] = useState<number>()
   const [selectedMonth, setSelectedMonth] = useState<string>('')
@@ -59,9 +44,24 @@ export function Faturamento() {
   const [loja, setLoja] = useState<string>(lojas[2])
 
   useEffect(() => {
+    const databaseRef = db.ref('antunes/2024') // Caminho dos dados
+    const fetchData = async () => {
+      try {
+        const snapshot = await databaseRef.once('value')
+        const data = snapshot.val() // Atualize o estado com os dados obtidos
+      } catch (error) {
+        console.error('Erro ao buscar os dados do banco de dados: ', error)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  useEffect(() => {
     async function fetchLastMonthFilled() {
       if (reload) {
-        const lastMonth = await getLastMonthFilled()
+        const lastMonth = await getLastMonthFilled('antunes')
+        console.log(lastMonth)
         setLastMonthFilled(lastMonth)
         setSelectedMonth(months[lastMonth])
         setReload(false)
