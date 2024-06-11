@@ -11,10 +11,11 @@ import {
 
 import { CircularProgress, Tooltip } from '@mui/material'
 import { Select } from '../components/Select'
-import { Add } from '@mui/icons-material'
+import { Add, Edit } from '@mui/icons-material'
 
 import { NewFaturamentoDialog } from '../components/NewFaturamentoDialog'
 import { ReloadContext } from '../contexts/FaturamentoContext'
+import { EditFaturamentoDialog } from '../components/EditFaturamentoDialog'
 
 interface DataValue {
   values: number[]
@@ -41,6 +42,7 @@ export function Faturamento() {
   })
   const [isVisible, setIsVisible] = useState<string>()
   const [open, setOpen] = useState<boolean>(false)
+  const [editOpen, setEditOpen] = useState<boolean>(false)
 
   // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
   useEffect(() => {
@@ -129,6 +131,14 @@ export function Faturamento() {
     setIsLoading(true)
   }
 
+  function handleOnClickEditFaturamento() {
+    setEditOpen(true)
+  }
+
+  function handleCloseEditFaturamentoDialog() {
+    setEditOpen(false)
+  }
+
   return (
     <ReloadContext.Provider
       value={{ reload, handleReload, lastMonthFilled, selectedStore }}
@@ -162,6 +172,18 @@ export function Faturamento() {
                 options={years}
               />
             </div>
+            <Tooltip title="Editar faturamento" placement="right">
+              <button
+                onClick={handleOnClickEditFaturamento}
+                className="flex h-fit items-center rounded-full p-1 transition-all hover:bg-bluesr-500"
+              >
+                <Edit />
+              </button>
+            </Tooltip>
+            <EditFaturamentoDialog
+              open={editOpen}
+              onClose={handleCloseEditFaturamentoDialog}
+            />
             <Tooltip title="Adicionar novo faturamento" placement="right">
               <button
                 onClick={handleNewFaturamentoOnClick}

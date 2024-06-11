@@ -45,7 +45,7 @@ function percentage(reference: number, compared: number) {
   return Number(percentage.toFixed(2))
 }
 
-async function getValues(
+export async function getValues(
   lojaUnformatted: string,
   year: string = '',
   month: string = '',
@@ -62,7 +62,7 @@ async function getValues(
   } catch (error) {}
 }
 
-async function setValues(
+export async function setValues(
   value: number,
   lojaUnformatted: string,
   year: string,

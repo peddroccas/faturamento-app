@@ -25,6 +25,9 @@ export function Select({
       onChange={onChange}
       className={`focus-visible: rounded-xl bg-aliceblue-500 text-center text-bluesr-500 outline-bluesr-500 ${className}`}
     >
+      <option value="Selecione" selected>
+        Selecione
+      </option>
       {options.map((option, index) => (
         <option
           key={option}

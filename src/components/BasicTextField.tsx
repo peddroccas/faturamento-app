@@ -7,12 +7,14 @@ export interface TextFieldProps {
   value: string | number | undefined
   type?: string
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
+  disabled?: boolean
 }
 
 export function BasicTextField({
   value,
   type = 'value',
   onChange,
+  disabled,
 }: TextFieldProps) {
   function setPlaceholder(type: string) {
     switch (type) {
@@ -41,6 +43,7 @@ export function BasicTextField({
       autoComplete="off"
     >
       <TextField
+        disabled={disabled}
         sx={{
           '& .MuiOutlinedInput-root': {
             '& .MuiOutlinedInput-notchedOutline': {
