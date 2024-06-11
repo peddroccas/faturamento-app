@@ -23,11 +23,11 @@ interface DataValue {
 }
 
 export function Faturamento() {
-  const [reload, setReload] = useState<boolean>(true)
+  const [reload, setReload] = useState<boolean>(false)
   const [lastMonthFilled, setLastMonthFilled] = useState<number>()
   const [selectedMonth, setSelectedMonth] = useState<string>('')
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
-  const [selectedStore, setselectedStore] = useState<string>(stores[2])
+  const [selectedStore, setselectedStore] = useState<string>(stores[0])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [yearsData, setYearsData] = useState<DataValue | undefined>({
     values: [],
@@ -42,17 +42,17 @@ export function Faturamento() {
   const [isVisible, setIsVisible] = useState<string>()
   const [open, setOpen] = useState<boolean>(false)
 
+  // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
   useEffect(() => {
     async function fetchLastMonthFilled() {
-      if (reload) {
-        const lastMonth = await getLastMonthFilled(selectedStore)
-        setLastMonthFilled(lastMonth)
-        setSelectedMonth(months[lastMonth])
-        setReload(false)
-      }
+      const lastMonth = await getLastMonthFilled(selectedStore)
+      setLastMonthFilled(lastMonth)
+      setSelectedMonth(months[lastMonth])
+      setReload(false)
     }
     fetchLastMonthFilled()
   }, [reload, selectedStore])
+
   // Observa para ver se está carregando, se tiver ele põe o componente de carregamento
   useEffect(() => {
     function loading() {
@@ -111,31 +111,36 @@ export function Faturamento() {
     setIsLoading(true)
   }
 
-  function handleOnChangeLoja(event: ChangeEvent<HTMLSelectElement>) {
+  function handleOnChangeStore(event: ChangeEvent<HTMLSelectElement>) {
     setselectedStore(event.target.value)
     setIsLoading(true)
   }
 
   function handleNewFaturamentoOnClick() {
-    setReload(!reload)
     setOpen(true)
   }
 
   function handleCloseFaturamentoDialog() {
-    setReload(!reload)
     setOpen(false)
   }
 
+  function handleReload() {
+    setReload(true)
+    setIsLoading(true)
+  }
+
   return (
-    <ReloadContext.Provider value={{ reload, setReload, lastMonthFilled }}>
+    <ReloadContext.Provider
+      value={{ reload, handleReload, lastMonthFilled, selectedStore }}
+    >
       <div className="flex h-screen w-auto flex-1 flex-col">
         <header className="flex gap-4 border-b border-b-slate-400 p-4">
           <h1 className="text-3xl">Faturamento</h1>
           <Select
-            id="lojas"
+            id="Stores"
             options={stores}
             value={selectedStore}
-            onChange={handleOnChangeLoja}
+            onChange={handleOnChangeStore}
           />
         </header>
         <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
@@ -146,7 +151,6 @@ export function Faturamento() {
               </h2>
               <Select
                 id="months"
-                disabledOptions={lastMonthFilled}
                 value={selectedMonth}
                 onChange={handleMonthOnChange}
                 options={months}

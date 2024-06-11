@@ -22,7 +22,8 @@ export function NewFaturamentoDialog({
   open,
   onClose,
 }: NewFaturamentoDialogProps) {
-  const { lastMonthFilled, setReload } = useContext(ReloadContext)
+  const { lastMonthFilled, handleReload, selectedStore } =
+    useContext(ReloadContext)
   const [value, setValue] = useState<string>('')
   const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
@@ -46,12 +47,15 @@ export function NewFaturamentoDialog({
       const valueNumber = Number(value.replace(/[^\d,]/g, '').replace(',', '.'))
       await setNewFaturamentoMonth(
         valueNumber,
-        'antunes',
+        selectedStore,
         selectedMonth,
         selectedYear,
       )
+
       setIsAlertOpen(true)
       setSeverity('success')
+      handleReload()
+      setValue('')
     } catch (error) {
       setIsAlertOpen(true)
       setSeverity('error')
@@ -66,7 +70,6 @@ export function NewFaturamentoDialog({
   function handleOnClose() {
     setValue('')
     setIsAlertOpen(false)
-    setReload(true)
     onClose()
   }
 
