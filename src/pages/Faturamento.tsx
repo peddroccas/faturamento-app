@@ -6,6 +6,7 @@ import {
   months,
   years,
   getLastMonthFilled,
+  stores,
 } from '../services/api'
 
 import { CircularProgress, Tooltip } from '@mui/material'
@@ -22,10 +23,11 @@ interface DataValue {
 }
 
 export function Faturamento() {
-  const [reload, setReload] = useState<boolean>(true)
+  const [reload, setReload] = useState<boolean>(false)
   const [lastMonthFilled, setLastMonthFilled] = useState<number>()
   const [selectedMonth, setSelectedMonth] = useState<string>('')
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
+  const [selectedStore, setselectedStore] = useState<string>(stores[0])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [yearsData, setYearsData] = useState<DataValue | undefined>({
     values: [],
@@ -40,17 +42,17 @@ export function Faturamento() {
   const [isVisible, setIsVisible] = useState<string>()
   const [open, setOpen] = useState<boolean>(false)
 
+  // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
   useEffect(() => {
     async function fetchLastMonthFilled() {
-      if (reload) {
-        const lastMonth = await getLastMonthFilled()
-        setLastMonthFilled(lastMonth)
-        setSelectedMonth(months[lastMonth])
-        setReload(false)
-      }
+      const lastMonth = await getLastMonthFilled(selectedStore)
+      setLastMonthFilled(lastMonth)
+      setSelectedMonth(months[lastMonth])
+      setReload(false)
     }
     fetchLastMonthFilled()
-  }, [reload])
+  }, [reload, selectedStore])
+
   // Observa para ver se está carregando, se tiver ele põe o componente de carregamento
   useEffect(() => {
     function loading() {
@@ -71,7 +73,7 @@ export function Faturamento() {
     async function fetchYears() {
       try {
         if (lastMonthFilled) {
-          const response = await getYearsValues(selectedMonth)
+          const response = await getYearsValues(selectedStore, selectedMonth)
           // console.log(response)
           setYearsData(response)
           setIsLoading(false)
@@ -79,13 +81,17 @@ export function Faturamento() {
       } catch (error) {}
     }
     fetchYears()
-  }, [selectedMonth, lastMonthFilled])
+  }, [selectedStore, selectedMonth, lastMonthFilled])
 
   useEffect(() => {
     async function fetchMonths() {
       try {
         if (lastMonthFilled) {
-          const response = await getMonthsValues(selectedMonth, selectedYear)
+          const response = await getMonthsValues(
+            selectedStore,
+            selectedMonth,
+            selectedYear,
+          )
           // console.log(response)
           setMonthsData(response)
           setIsLoading(false)
@@ -93,7 +99,7 @@ export function Faturamento() {
       } catch (error) {}
     }
     fetchMonths()
-  }, [selectedMonth, selectedYear, lastMonthFilled])
+  }, [selectedStore, selectedMonth, selectedYear, lastMonthFilled])
 
   function handleMonthOnChange(event: ChangeEvent<HTMLSelectElement>) {
     setSelectedMonth(event.target.value)
@@ -104,21 +110,38 @@ export function Faturamento() {
     setSelectedYear(event.target.value)
     setIsLoading(true)
   }
+
+  function handleOnChangeStore(event: ChangeEvent<HTMLSelectElement>) {
+    setselectedStore(event.target.value)
+    setIsLoading(true)
+  }
+
   function handleNewFaturamentoOnClick() {
-    setReload(!reload)
     setOpen(true)
   }
 
   function handleCloseFaturamentoDialog() {
-    setReload(!reload)
     setOpen(false)
   }
 
+  function handleReload() {
+    setReload(true)
+    setIsLoading(true)
+  }
+
   return (
-    <ReloadContext.Provider value={{ reload, setReload, lastMonthFilled }}>
+    <ReloadContext.Provider
+      value={{ reload, handleReload, lastMonthFilled, selectedStore }}
+    >
       <div className="flex h-screen w-auto flex-1 flex-col">
         <header className="flex gap-4 border-b border-b-slate-400 p-4">
           <h1 className="text-3xl">Faturamento</h1>
+          <Select
+            id="Stores"
+            options={stores}
+            value={selectedStore}
+            onChange={handleOnChangeStore}
+          />
         </header>
         <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
           <div className="flex items-center justify-center gap-2 rounded-xl p-2 text-center text-aliceblue">
@@ -128,7 +151,6 @@ export function Faturamento() {
               </h2>
               <Select
                 id="months"
-                disabledOptions={lastMonthFilled}
                 value={selectedMonth}
                 onChange={handleMonthOnChange}
                 options={months}

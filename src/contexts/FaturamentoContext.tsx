@@ -2,7 +2,8 @@ import { createContext } from 'react'
 
 interface ReloadContextType {
   reload: boolean
-  setReload: React.Dispatch<React.SetStateAction<boolean>> // Tipagem do setState
+  handleReload: () => void // Tipagem do setState
   lastMonthFilled?: number
+  selectedStore: string
 }
 export const ReloadContext = createContext({} as ReloadContextType)

@@ -1,9 +1,16 @@
-import { doc, setDoc } from 'firebase/firestore'
-import { firestore } from '../services/firebase'
-import { capitalize } from 'lodash'
+import { db } from '../services/firebase'
+import { camelCase } from 'lodash'
 
-const db = firestore
-export const lojas = ['São Rafael', 'Estrela', 'Antunes', 'São Rafael 2']
+export function capitalizeFirstLetters(string: string) {
+  return string
+    .split(' ')
+    .map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join(' ')
+}
+
+export const stores = ['São Rafael', 'Estrela', 'Antunes', 'São Rafael 2']
 export const months = [
   'janeiro',
   'fevereiro',
@@ -29,8 +36,6 @@ export const years = [
   '2024',
 ]
 
-async function add() {}
-add()
 // Faturamento
 
 function percentage(reference: number, compared: number) {
@@ -40,31 +45,72 @@ function percentage(reference: number, compared: number) {
   return Number(percentage.toFixed(2))
 }
 
-export async function getLastMonthFilled(): Promise<number> {
+async function getValues(
+  lojaUnformatted: string,
+  year: string = '',
+  month: string = '',
+) {
   try {
-    const collection = await db.collection('2024').where('value', '==', 0).get()
-    let lastMonth = 11
-    for (const month of collection.docs) {
-      if (months.indexOf(month.id) < lastMonth) {
-        lastMonth = months.indexOf(month.id)
+    const loja = camelCase(lojaUnformatted.toLowerCase())
+    const databaseRef = db.ref(`${loja}/${year}/${month}`)
+    const snapShot = await databaseRef.once('value')
+    const data = snapShot.val()
+    // console.log(data)
+    if (data) {
+      return data
+    }
+  } catch (error) {}
+}
+
+async function setValues(
+  value: number,
+  lojaUnformatted: string,
+  year: string,
+  month: string,
+) {
+  try {
+    const loja = camelCase(lojaUnformatted.toLowerCase())
+    const databaseRef = db.ref(`${loja}/${year}/${month}`)
+    await databaseRef.set(value, (error) => {
+      if (error) {
+        console.error('Erro ao adicionar ao banco de dados: ', error)
+      } else {
+        console.log('Dados adicionados com sucesso!')
+      }
+    })
+  } catch (error) {}
+}
+
+export async function getLastMonthFilled(
+  lojaUnformatted: string,
+): Promise<number> {
+  try {
+    const yearData = await getValues(lojaUnformatted, '2024')
+    let lastMonth = 0
+    for (const month in yearData) {
+      if (months.indexOf(month) > lastMonth) {
+        lastMonth = months.indexOf(month)
       }
     }
-    return lastMonth - 1
+
+    return lastMonth
   } catch (error) {
     console.error('Erro ao ler mês não preenchido')
     return 11
   }
 }
 
-/**  @returns {number} O indice do último mês preenchido no db. */
-export const lastMonthFilled = await getLastMonthFilled()
-
 export async function setNewFaturamentoMonth(
   value: number,
+  lojaUnformatted: string,
   month: string,
   year: string,
 ) {
-  await db.collection(year).doc(month).set({ value })
+  try {
+    await setValues(value, lojaUnformatted, year, month)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 function getLastSixMonths(month: string, monthYear: string) {
@@ -86,7 +132,10 @@ function getLastSixMonths(month: string, monthYear: string) {
   return lastSixMonths
 }
 
-export async function getYearsValues(month: string): Promise<
+export async function getYearsValues(
+  lojaUnformatted: string,
+  month: string,
+): Promise<
   | {
       values: number[]
       growth: (string | number)[]
@@ -100,16 +149,16 @@ export async function getYearsValues(month: string): Promise<
     const dates: string[] = []
 
     for (const year of years) {
-      const monthDoc = db.collection(year).doc(month)
-      const monthValue: number = (await monthDoc.get()).data()!.value
+      const monthValue: number = await getValues(lojaUnformatted, year, month)
       const monthGrowth = percentage(
         monthValue,
         yearsValues[yearsValues.length - 1],
       )
-      yearsValues.push(monthValue)
-      yearsGrowth.push(monthGrowth)
-
-      dates.push(capitalize(`${month}/${year}`))
+      if (monthValue) {
+        yearsValues.push(monthValue)
+        yearsGrowth.push(monthGrowth)
+        dates.push(capitalizeFirstLetters(`${month}/${year}`))
+      }
     }
     yearsGrowth.shift()
     yearsGrowth.unshift('Sem valor de referência')
@@ -125,7 +174,11 @@ export async function getYearsValues(month: string): Promise<
   }
 }
 
-export async function getMonthsValues(month: string, year: string) {
+export async function getMonthsValues(
+  lojaUnformatted: string,
+  month: string,
+  year: string,
+) {
   try {
     const lastSixMonths = getLastSixMonths(month, year).reverse()
 
@@ -134,16 +187,22 @@ export async function getMonthsValues(month: string, year: string) {
     const dates: string[] = []
 
     for (const month of lastSixMonths) {
-      const monthDoc = db.collection(month.year).doc(month.month)
-      const monthValue: number = (await monthDoc.get()).data()!.value
+      const monthValue = await getValues(
+        lojaUnformatted,
+        month.year,
+        month.month,
+      )
       const monthGrowth = percentage(
         monthValue,
         monthsValues[monthsValues.length - 1],
       )
-      monthsValues.push(monthValue)
-      monthsGrowth.push(monthGrowth)
 
-      dates.push(capitalize(`${month.month}/${month.year}`))
+      if (monthValue) {
+        monthsValues.push(monthValue)
+        monthsGrowth.push(monthGrowth)
+
+        dates.push(capitalizeFirstLetters(`${month.month}/${month.year}`))
+      }
     }
     monthsGrowth.shift()
     monthsGrowth.unshift('Sem valor de referência')
@@ -157,68 +216,4 @@ export async function getMonthsValues(month: string, year: string) {
     console.log('Erro no acesso ao banco')
     console.error(error)
   }
-}
-
-export function getPreviousSixMonths(
-  month: string,
-  year: string,
-): [string, string][] {
-  const monthIndex = months.indexOf(month)
-
-  const result: [string, string][] = []
-
-  for (let i = 1; i <= 3; i++) {
-    let prevMonthIndex = monthIndex - i
-    let prevYear = year
-
-    if (prevMonthIndex < 0) {
-      prevMonthIndex += 12
-      prevYear = (parseInt(year, 10) - 1).toString()
-    }
-
-    result.push([months[prevMonthIndex], prevYear])
-  }
-
-  return result
-}
-
-// export async function getValues(month: string, year: string) {
-//   try {
-//     const [lastMonth, lastMonthYear] = getPreviousMonth(month, year);
-//     const lastYear = years[years.indexOf(year) - 1];
-
-//     if (month === "março") {
-//       month = "marco";
-//     }
-
-//     const monthDoc = db.collection(year).doc(month);
-//     const lastMonthDoc = db.collection(lastMonthYear).doc(lastMonth);
-//     const lastYearDoc = db.collection(lastYear).doc(month);
-
-//     const monthValue: number = (await monthDoc.get()).data()!.value;
-//     const lastMonthValue: number = (await lastMonthDoc.get()).data()!.value;
-//     const lastYearValue: number = await (await lastYearDoc.get()).data()!.value;
-
-//     const lastMonthGrowth = percentage(monthValue, lastMonthValue);
-//     const lastYearGrowth = percentage(monthValue, lastYearValue);
-
-//     const monthRow = [monthValue, lastMonthValue, lastYearValue];
-//     const monthGrowth = ["Crescimento", lastMonthGrowth, lastYearGrowth];
-
-//     return {
-//       monthRow: monthRow,
-//       monthGrowth: monthGrowth,
-//     };
-//   } catch (error) {
-//     console.log("Erro no acesso ao banco");
-//     console.error(error);
-//   }
-// }
-
-export async function addFaturamentoMonth(
-  year: string,
-  month: string,
-  value: number,
-) {
-  await setDoc(doc(db, year, month), { value })
 }
