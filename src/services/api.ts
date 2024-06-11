@@ -50,11 +50,16 @@ async function getValues(
   year: string = '',
   month: string = '',
 ) {
-  const loja = camelCase(lojaUnformatted.toLowerCase())
-  const databaseRef = db.ref(`${loja}/${year}/${month}`)
-  const snapShot = await databaseRef.once('value')
-  const data = snapShot.val()
-  return data
+  try {
+    const loja = camelCase(lojaUnformatted.toLowerCase())
+    const databaseRef = db.ref(`${loja}/${year}/${month}`)
+    const snapShot = await databaseRef.once('value')
+    const data = snapShot.val()
+    // console.log(data)
+    if (data) {
+      return data
+    }
+  } catch (error) {}
 }
 
 async function setValues(
@@ -144,15 +149,16 @@ export async function getYearsValues(
     const dates: string[] = []
 
     for (const year of years) {
-      const monthValue = await getValues(lojaUnformatted, year, month)
+      const monthValue: number = await getValues(lojaUnformatted, year, month)
       const monthGrowth = percentage(
         monthValue,
         yearsValues[yearsValues.length - 1],
       )
-      yearsValues.push(monthValue)
-      yearsGrowth.push(monthGrowth)
-
-      dates.push(capitalizeFirstLetters(`${month}/${year}`))
+      if (monthValue) {
+        yearsValues.push(monthValue)
+        yearsGrowth.push(monthGrowth)
+        dates.push(capitalizeFirstLetters(`${month}/${year}`))
+      }
     }
     yearsGrowth.shift()
     yearsGrowth.unshift('Sem valor de referência')
@@ -190,10 +196,13 @@ export async function getMonthsValues(
         monthValue,
         monthsValues[monthsValues.length - 1],
       )
-      monthsValues.push(monthValue)
-      monthsGrowth.push(monthGrowth)
 
-      dates.push(capitalizeFirstLetters(`${month.month}/${month.year}`))
+      if (monthValue) {
+        monthsValues.push(monthValue)
+        monthsGrowth.push(monthGrowth)
+
+        dates.push(capitalizeFirstLetters(`${month.month}/${month.year}`))
+      }
     }
     monthsGrowth.shift()
     monthsGrowth.unshift('Sem valor de referência')
@@ -207,27 +216,4 @@ export async function getMonthsValues(
     console.log('Erro no acesso ao banco')
     console.error(error)
   }
-}
-
-export function getPreviousSixMonths(
-  month: string,
-  year: string,
-): [string, string][] {
-  const monthIndex = months.indexOf(month)
-
-  const result: [string, string][] = []
-
-  for (let i = 1; i <= 3; i++) {
-    let prevMonthIndex = monthIndex - i
-    let prevYear = year
-
-    if (prevMonthIndex < 0) {
-      prevMonthIndex += 12
-      prevYear = (parseInt(year, 10) - 1).toString()
-    }
-
-    result.push([months[prevMonthIndex], prevYear])
-  }
-
-  return result
 }
