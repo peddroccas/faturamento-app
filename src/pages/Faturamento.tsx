@@ -89,7 +89,7 @@ export function Faturamento() {
     async function fetchYears() {
       try {
         if (lastMonthFilled) {
-          const response = await getYearsValues(selectedMonth)
+          const response = await getYearsValues('antunes', selectedMonth)
           // console.log(response)
           setYearsData(response)
           setIsLoading(false)
@@ -103,7 +103,11 @@ export function Faturamento() {
     async function fetchMonths() {
       try {
         if (lastMonthFilled) {
-          const response = await getMonthsValues(selectedMonth, selectedYear)
+          const response = await getMonthsValues(
+            'antunes',
+            selectedMonth,
+            selectedYear,
+          )
           // console.log(response)
           setMonthsData(response)
           setIsLoading(false)

@@ -1,5 +1,6 @@
 import { doc, setDoc } from 'firebase/firestore'
 import { db } from '../services/firebase'
+import { camelCase } from 'lodash'
 
 export function capitalizeFirstLetters(string: string) {
   return string
@@ -45,14 +46,25 @@ function percentage(reference: number, compared: number) {
   return Number(percentage.toFixed(2))
 }
 
-export async function getLastMonthFilled(loja: string): Promise<number> {
-  try {
-    const databaseRef = db.ref(`${loja}/2024`)
+async function getValues(
+  lojaUnformatted: string,
+  year: string = '',
+  month: string = '',
+) {
+  const loja = camelCase(lojaUnformatted.toLowerCase())
+  const databaseRef = db.ref(`${loja}/${year}/${month}`)
+  const snapShot = await databaseRef.once('value')
+  const data = snapShot.val()
+  return data
+}
 
-    const snapShot = await databaseRef.once('value')
-    const data = snapShot.val()
+export async function getLastMonthFilled(
+  lojaUnformatted: string,
+): Promise<number> {
+  try {
+    const yearData = await getValues(lojaUnformatted, '2024')
     let lastMonth = 0
-    for (const month in data) {
+    for (const month in yearData) {
       if (months.indexOf(month) > lastMonth) {
         lastMonth = months.indexOf(month)
       }
@@ -92,7 +104,10 @@ function getLastSixMonths(month: string, monthYear: string) {
   return lastSixMonths
 }
 
-export async function getYearsValues(month: string): Promise<
+export async function getYearsValues(
+  lojaUnformatted: string,
+  month: string,
+): Promise<
   | {
       values: number[]
       growth: (string | number)[]
@@ -106,8 +121,7 @@ export async function getYearsValues(month: string): Promise<
     const dates: string[] = []
 
     for (const year of years) {
-      const monthDoc = db.collection(year).doc(month)
-      const monthValue: number = (await monthDoc.get()).data()!.value
+      const monthValue = await getValues(lojaUnformatted, year, month)
       const monthGrowth = percentage(
         monthValue,
         yearsValues[yearsValues.length - 1],
@@ -131,7 +145,11 @@ export async function getYearsValues(month: string): Promise<
   }
 }
 
-export async function getMonthsValues(month: string, year: string) {
+export async function getMonthsValues(
+  lojaUnformatted: string,
+  month: string,
+  year: string,
+) {
   try {
     const lastSixMonths = getLastSixMonths(month, year).reverse()
 
@@ -140,8 +158,11 @@ export async function getMonthsValues(month: string, year: string) {
     const dates: string[] = []
 
     for (const month of lastSixMonths) {
-      const monthDoc = db.collection(month.year).doc(month.month)
-      const monthValue: number = (await monthDoc.get()).data()!.value
+      const monthValue = await getValues(
+        lojaUnformatted,
+        month.year,
+        month.month,
+      )
       const monthGrowth = percentage(
         monthValue,
         monthsValues[monthsValues.length - 1],
