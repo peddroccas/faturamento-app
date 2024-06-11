@@ -6,7 +6,7 @@ import {
   months,
   years,
   getLastMonthFilled,
-  lojas,
+  stores,
 } from '../services/api'
 
 import { CircularProgress, Tooltip } from '@mui/material'
@@ -15,7 +15,6 @@ import { Add } from '@mui/icons-material'
 
 import { NewFaturamentoDialog } from '../components/NewFaturamentoDialog'
 import { ReloadContext } from '../contexts/FaturamentoContext'
-import { db } from '../services/firebase'
 
 interface DataValue {
   values: number[]
@@ -28,6 +27,7 @@ export function Faturamento() {
   const [lastMonthFilled, setLastMonthFilled] = useState<number>()
   const [selectedMonth, setSelectedMonth] = useState<string>('')
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
+  const [selectedStore, setselectedStore] = useState<string>(stores[2])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [yearsData, setYearsData] = useState<DataValue | undefined>({
     values: [],
@@ -41,34 +41,18 @@ export function Faturamento() {
   })
   const [isVisible, setIsVisible] = useState<string>()
   const [open, setOpen] = useState<boolean>(false)
-  const [loja, setLoja] = useState<string>(lojas[2])
-
-  useEffect(() => {
-    const databaseRef = db.ref('antunes/2024') // Caminho dos dados
-    const fetchData = async () => {
-      try {
-        const snapshot = await databaseRef.once('value')
-        const data = snapshot.val() // Atualize o estado com os dados obtidos
-      } catch (error) {
-        console.error('Erro ao buscar os dados do banco de dados: ', error)
-      }
-    }
-
-    fetchData()
-  }, [])
 
   useEffect(() => {
     async function fetchLastMonthFilled() {
       if (reload) {
-        const lastMonth = await getLastMonthFilled('antunes')
-        console.log(lastMonth)
+        const lastMonth = await getLastMonthFilled(selectedStore)
         setLastMonthFilled(lastMonth)
         setSelectedMonth(months[lastMonth])
         setReload(false)
       }
     }
     fetchLastMonthFilled()
-  }, [reload])
+  }, [reload, selectedStore])
   // Observa para ver se está carregando, se tiver ele põe o componente de carregamento
   useEffect(() => {
     function loading() {
@@ -89,7 +73,7 @@ export function Faturamento() {
     async function fetchYears() {
       try {
         if (lastMonthFilled) {
-          const response = await getYearsValues('antunes', selectedMonth)
+          const response = await getYearsValues(selectedStore, selectedMonth)
           // console.log(response)
           setYearsData(response)
           setIsLoading(false)
@@ -97,14 +81,14 @@ export function Faturamento() {
       } catch (error) {}
     }
     fetchYears()
-  }, [selectedMonth, lastMonthFilled])
+  }, [selectedStore, selectedMonth, lastMonthFilled])
 
   useEffect(() => {
     async function fetchMonths() {
       try {
         if (lastMonthFilled) {
           const response = await getMonthsValues(
-            'antunes',
+            selectedStore,
             selectedMonth,
             selectedYear,
           )
@@ -115,7 +99,7 @@ export function Faturamento() {
       } catch (error) {}
     }
     fetchMonths()
-  }, [selectedMonth, selectedYear, lastMonthFilled])
+  }, [selectedStore, selectedMonth, selectedYear, lastMonthFilled])
 
   function handleMonthOnChange(event: ChangeEvent<HTMLSelectElement>) {
     setSelectedMonth(event.target.value)
@@ -126,6 +110,12 @@ export function Faturamento() {
     setSelectedYear(event.target.value)
     setIsLoading(true)
   }
+
+  function handleOnChangeLoja(event: ChangeEvent<HTMLSelectElement>) {
+    setselectedStore(event.target.value)
+    setIsLoading(true)
+  }
+
   function handleNewFaturamentoOnClick() {
     setReload(!reload)
     setOpen(true)
@@ -136,10 +126,6 @@ export function Faturamento() {
     setOpen(false)
   }
 
-  function handleOnChangeLoja(event: ChangeEvent<HTMLSelectElement>) {
-    setLoja(event.target.value)
-  }
-
   return (
     <ReloadContext.Provider value={{ reload, setReload, lastMonthFilled }}>
       <div className="flex h-screen w-auto flex-1 flex-col">
@@ -147,8 +133,8 @@ export function Faturamento() {
           <h1 className="text-3xl">Faturamento</h1>
           <Select
             id="lojas"
-            options={lojas}
-            value={loja}
+            options={stores}
+            value={selectedStore}
             onChange={handleOnChangeLoja}
           />
         </header>

@@ -1,4 +1,3 @@
-import { doc, setDoc } from 'firebase/firestore'
 import { db } from '../services/firebase'
 import { camelCase } from 'lodash'
 
@@ -11,7 +10,7 @@ export function capitalizeFirstLetters(string: string) {
     .join(' ')
 }
 
-export const lojas = ['São Rafael', 'Estrela', 'Antunes', 'São Rafael 2']
+export const stores = ['São Rafael', 'Estrela', 'Antunes', 'São Rafael 2']
 export const months = [
   'janeiro',
   'fevereiro',
@@ -58,6 +57,25 @@ async function getValues(
   return data
 }
 
+async function setValues(
+  value: number,
+  lojaUnformatted: string,
+  year: string,
+  month: string,
+) {
+  try {
+    const loja = camelCase(lojaUnformatted.toLowerCase())
+    const databaseRef = db.ref(`${loja}/${year}/${month}`)
+    await databaseRef.set(value, (error) => {
+      if (error) {
+        console.error('Erro ao adicionar ao banco de dados: ', error)
+      } else {
+        console.log('Dados adicionados com sucesso!')
+      }
+    })
+  } catch (error) {}
+}
+
 export async function getLastMonthFilled(
   lojaUnformatted: string,
 ): Promise<number> {
@@ -79,10 +97,15 @@ export async function getLastMonthFilled(
 
 export async function setNewFaturamentoMonth(
   value: number,
+  lojaUnformatted: string,
   month: string,
   year: string,
 ) {
-  await db.collection(year).doc(month).set({ value })
+  try {
+    await setValues(value, lojaUnformatted, year, month)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 function getLastSixMonths(month: string, monthYear: string) {
@@ -207,45 +230,4 @@ export function getPreviousSixMonths(
   }
 
   return result
-}
-
-// export async function getValues(month: string, year: string) {
-//   try {
-//     const [lastMonth, lastMonthYear] = getPreviousMonth(month, year);
-//     const lastYear = years[years.indexOf(year) - 1];
-
-//     if (month === "março") {
-//       month = "marco";
-//     }
-
-//     const monthDoc = db.collection(year).doc(month);
-//     const lastMonthDoc = db.collection(lastMonthYear).doc(lastMonth);
-//     const lastYearDoc = db.collection(lastYear).doc(month);
-
-//     const monthValue: number = (await monthDoc.get()).data()!.value;
-//     const lastMonthValue: number = (await lastMonthDoc.get()).data()!.value;
-//     const lastYearValue: number = await (await lastYearDoc.get()).data()!.value;
-
-//     const lastMonthGrowth = percentage(monthValue, lastMonthValue);
-//     const lastYearGrowth = percentage(monthValue, lastYearValue);
-
-//     const monthRow = [monthValue, lastMonthValue, lastYearValue];
-//     const monthGrowth = ["Crescimento", lastMonthGrowth, lastYearGrowth];
-
-//     return {
-//       monthRow: monthRow,
-//       monthGrowth: monthGrowth,
-//     };
-//   } catch (error) {
-//     console.log("Erro no acesso ao banco");
-//     console.error(error);
-//   }
-// }
-
-export async function addFaturamentoMonth(
-  year: string,
-  month: string,
-  value: number,
-) {
-  await setDoc(doc(db, year, month), { value })
 }

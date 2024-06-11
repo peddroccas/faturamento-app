@@ -44,7 +44,12 @@ export function NewFaturamentoDialog({
   async function handleSubmitNewFaturamento() {
     try {
       const valueNumber = Number(value.replace(/[^\d,]/g, '').replace(',', '.'))
-      await setNewFaturamentoMonth(valueNumber, selectedMonth, selectedYear)
+      await setNewFaturamentoMonth(
+        valueNumber,
+        'antunes',
+        selectedMonth,
+        selectedYear,
+      )
       setIsAlertOpen(true)
       setSeverity('success')
     } catch (error) {
