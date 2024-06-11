@@ -1,6 +1,5 @@
 import { doc, setDoc } from 'firebase/firestore'
 import { db } from '../services/firebase'
-import { useEffect } from 'react'
 
 export function capitalizeFirstLetters(string: string) {
   return string
@@ -37,8 +36,6 @@ export const years = [
   '2024',
 ]
 
-async function add() {}
-add()
 // Faturamento
 
 function percentage(reference: number, compared: number) {

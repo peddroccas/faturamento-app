@@ -25,12 +25,12 @@ interface DataValue {
 
 export function Faturamento() {
   useEffect(() => {
-    const databaseRef = db.ref('antunes/2017/janeiro') // Caminho dos dados
+    const databaseRef = db.ref('antunes/2024') // Caminho dos dados
     const fetchData = async () => {
       try {
         const snapshot = await databaseRef.once('value')
-        console.log(snapshot.val()) // Atualize o estado com os dados obtidos
-        console.log('aquiiiiiiiiii')
+        const data = snapshot.val() // Atualize o estado com os dados obtidos
+        console.log(data.Junho)
       } catch (error) {
         console.error('Erro ao buscar os dados do banco de dados: ', error)
       }
