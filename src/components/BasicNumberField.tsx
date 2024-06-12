@@ -10,7 +10,7 @@ export function BasicNumberField({
     <NumericFormat
       disabled={disabled}
       customInput={BasicTextField}
-      type="value"
+      type="text"
       value={value}
       onChange={onChange}
       allowNegative={false}
