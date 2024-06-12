@@ -9,14 +9,7 @@ import {
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { BasicNumberField } from './BasicNumberField'
 import { Select } from './Select'
-import {
-  getValues,
-  months,
-  setNewFaturamentoMonth,
-  setValues,
-  years,
-} from '../services/api'
-import { AlertComponent, Severity } from './AlertComponent'
+import { getValues, months, setFaturamentoMonth, years } from '../services/api'
 import { ReloadContext } from '../contexts/FaturamentoContext'
 
 interface EditFaturamentoDialogProps {
@@ -28,13 +21,11 @@ export function EditFaturamentoDialog({
   open,
   onClose,
 }: EditFaturamentoDialogProps) {
-  const { lastMonthFilled, handleReload, selectedStore } =
+  const { lastMonthFilled, handleReload, selectedStore, handleAlertSeverity } =
     useContext(ReloadContext)
   const [value, setValue] = useState<string>('')
   const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedYear, setSelectedYear] = useState('')
-  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
-  const [severity, setSeverity] = useState<Severity>()
 
   useEffect(() => {
     async function fetchData() {
@@ -50,28 +41,20 @@ export function EditFaturamentoDialog({
     fetchData()
   }, [lastMonthFilled, selectedMonth, selectedStore, selectedYear])
 
-  const handleAlertClose = () => {
-    setIsAlertOpen(false)
-    handleOnClose()
-  }
-
   async function handleSubmitNewFaturamento() {
     try {
       const valueNumber = Number(value.replace(/[^\d,]/g, '').replace(',', '.'))
-      await setNewFaturamentoMonth(
+      await setFaturamentoMonth(
         valueNumber,
         selectedStore,
         selectedMonth,
         selectedYear,
       )
-
-      setIsAlertOpen(true)
-      setSeverity('success')
+      handleAlertSeverity('success')
+      handleOnClose()
       handleReload()
-      setValue('')
     } catch (error) {
-      setIsAlertOpen(true)
-      setSeverity('error')
+      handleAlertSeverity('error')
       console.error(error)
     }
   }
@@ -84,7 +67,6 @@ export function EditFaturamentoDialog({
     setValue('')
     setSelectedMonth('')
     setSelectedYear('')
-    setIsAlertOpen(false)
     onClose()
   }
 
@@ -107,6 +89,7 @@ export function EditFaturamentoDialog({
           <Select
             id="months"
             value={selectedMonth}
+            disabledOptions={lastMonthFilled}
             options={months}
             onChange={handleMonthOnChange}
           />
@@ -135,11 +118,6 @@ export function EditFaturamentoDialog({
         >
           Salvar
         </Button>
-        <AlertComponent
-          open={isAlertOpen}
-          onClose={handleAlertClose}
-          severity={severity}
-        ></AlertComponent>
       </DialogActions>
     </Dialog>
   )

@@ -16,6 +16,7 @@ import { Add, Edit } from '@mui/icons-material'
 import { NewFaturamentoDialog } from '../components/NewFaturamentoDialog'
 import { ReloadContext } from '../contexts/FaturamentoContext'
 import { EditFaturamentoDialog } from '../components/EditFaturamentoDialog'
+import { AlertComponent, Severity } from '../components/AlertComponent'
 
 interface DataValue {
   values: number[]
@@ -43,6 +44,22 @@ export function Faturamento() {
   const [isVisible, setIsVisible] = useState<string>()
   const [open, setOpen] = useState<boolean>(false)
   const [editOpen, setEditOpen] = useState<boolean>(false)
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
+  const [severity, setSeverity] = useState<Severity>()
+
+  // Fecha alerta depois de 5 segundos
+  useEffect(() => {
+    function closeAlert() {
+      try {
+        if (isAlertOpen) {
+          setTimeout(() => {
+            setIsAlertOpen(false)
+          }, 5000)
+        }
+      } catch (error) {}
+    }
+    closeAlert()
+  }, [isAlertOpen])
 
   // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
   useEffect(() => {
@@ -67,10 +84,9 @@ export function Faturamento() {
       } catch (error) {}
     }
     loading()
-  }, [isLoading])
+  }, [isLoading, reload])
 
   // Busca no db os dados assim que carrega a página e toda vez que o usuário selecionar mês ou ano diferentes
-
   useEffect(() => {
     async function fetchYears() {
       try {
@@ -83,7 +99,7 @@ export function Faturamento() {
       } catch (error) {}
     }
     fetchYears()
-  }, [selectedStore, selectedMonth, lastMonthFilled])
+  }, [isLoading, selectedStore, selectedMonth, lastMonthFilled])
 
   useEffect(() => {
     async function fetchMonths() {
@@ -101,7 +117,19 @@ export function Faturamento() {
       } catch (error) {}
     }
     fetchMonths()
-  }, [selectedStore, selectedMonth, selectedYear, lastMonthFilled])
+  }, [isLoading, selectedStore, selectedMonth, selectedYear, lastMonthFilled])
+
+  function handleAlertClose() {
+    setIsAlertOpen(false)
+  }
+
+  function handleAlertSeverity(severity: Severity) {
+    if (severity === 'error') {
+      setSeverity('error')
+    } else {
+      setSeverity('success')
+    }
+  }
 
   function handleMonthOnChange(event: ChangeEvent<HTMLSelectElement>) {
     setSelectedMonth(event.target.value)
@@ -129,6 +157,7 @@ export function Faturamento() {
   function handleReload() {
     setReload(true)
     setIsLoading(true)
+    setTimeout(() => setIsAlertOpen(true), 1000)
   }
 
   function handleOnClickEditFaturamento() {
@@ -141,7 +170,13 @@ export function Faturamento() {
 
   return (
     <ReloadContext.Provider
-      value={{ reload, handleReload, lastMonthFilled, selectedStore }}
+      value={{
+        reload,
+        handleReload,
+        lastMonthFilled,
+        selectedStore,
+        handleAlertSeverity,
+      }}
     >
       <div className="flex h-screen w-auto flex-1 flex-col">
         <header className="flex gap-4 border-b border-b-slate-400 p-4">
@@ -196,6 +231,11 @@ export function Faturamento() {
               open={open}
               onClose={handleCloseFaturamentoDialog}
             />
+            <AlertComponent
+              open={isAlertOpen}
+              onClose={handleAlertClose}
+              severity={severity}
+            ></AlertComponent>
           </div>
           <article className="my-4 flex w-5/6 flex-1 flex-col items-center justify-center rounded-2xl bg-aliceblue p-2">
             <h2 className="font-roboto text-2xl font-medium">Últimos anos</h2>

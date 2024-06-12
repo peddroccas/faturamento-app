@@ -9,8 +9,7 @@ import {
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { BasicNumberField } from './BasicNumberField'
 import { Select } from './Select'
-import { months, setNewFaturamentoMonth, years } from '../services/api'
-import { AlertComponent, Severity } from './AlertComponent'
+import { months, setFaturamentoMonth, years } from '../services/api'
 import { ReloadContext } from '../contexts/FaturamentoContext'
 
 interface NewFaturamentoDialogProps {
@@ -22,13 +21,11 @@ export function NewFaturamentoDialog({
   open,
   onClose,
 }: NewFaturamentoDialogProps) {
-  const { lastMonthFilled, handleReload, selectedStore } =
+  const { lastMonthFilled, handleReload, selectedStore, handleAlertSeverity } =
     useContext(ReloadContext)
   const [value, setValue] = useState<string>('')
   const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
-  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
-  const [severity, setSeverity] = useState<Severity>()
 
   useEffect(() => {
     async function fetchLastMonthFilled() {
@@ -37,28 +34,20 @@ export function NewFaturamentoDialog({
     fetchLastMonthFilled()
   }, [lastMonthFilled])
 
-  const handleAlertClose = () => {
-    setIsAlertOpen(false)
-    handleOnClose()
-  }
-
   async function handleSubmitNewFaturamento() {
     try {
       const valueNumber = Number(value.replace(/[^\d,]/g, '').replace(',', '.'))
-      await setNewFaturamentoMonth(
+      await setFaturamentoMonth(
         valueNumber,
         selectedStore,
         selectedMonth,
         selectedYear,
       )
-
-      setIsAlertOpen(true)
-      setSeverity('success')
+      handleAlertSeverity('success')
+      handleOnClose()
       handleReload()
-      setValue('')
     } catch (error) {
-      setIsAlertOpen(true)
-      setSeverity('error')
+      handleAlertSeverity('error')
       console.error(error)
     }
   }
@@ -69,7 +58,6 @@ export function NewFaturamentoDialog({
 
   function handleOnClose() {
     setValue('')
-    setIsAlertOpen(false)
     onClose()
   }
 
@@ -119,11 +107,6 @@ export function NewFaturamentoDialog({
         >
           Cadastrar
         </Button>
-        <AlertComponent
-          open={isAlertOpen}
-          onClose={handleAlertClose}
-          severity={severity}
-        ></AlertComponent>
       </DialogActions>
     </Dialog>
   )

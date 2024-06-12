@@ -13,8 +13,14 @@ export function AlertComponent({ severity, open, onClose }: AlertProps) {
     <Snackbar
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       open={open}
+      TransitionProps={{
+        timeout: {
+          enter: 1000, // Define a duração da transição de entrada (em milissegundos)
+          exit: 1000, // Define a duração da transição de saída (em milissegundos)
+        },
+      }}
     >
-      <Alert severity={severity} onClose={onClose}>
+      <Alert variant="filled" severity={severity} onClose={onClose}>
         {' '}
         {severity === 'success'
           ? `Dados cadastrados com sucesso`

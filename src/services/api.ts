@@ -100,7 +100,7 @@ export async function getLastMonthFilled(
   }
 }
 
-export async function setNewFaturamentoMonth(
+export async function setFaturamentoMonth(
   value: number,
   lojaUnformatted: string,
   month: string,
