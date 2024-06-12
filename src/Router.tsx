@@ -13,7 +13,6 @@ export function Router() {
           <Route path="/home" element={<Home />} />
           <Route path="/home/faturamento" element={<Faturamento />} />
         </Route>
-
         <Route path="/login" element={<LoginForm />} />
       </Route>
     </Routes>
