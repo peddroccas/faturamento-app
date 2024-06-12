@@ -1,10 +1,12 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useContext, useState } from 'react'
 import { auth } from '../services/firebase.ts'
 import { useNavigate } from 'react-router-dom'
 import { BasicTextField } from '../components/BasicTextField.tsx'
 import { LoadingButtonComponent } from '../components/LoadingButton.tsx'
+import { AuthContext } from '../contexts/AuthContext.tsx'
 
 export function LoginForm() {
+  const { handleUser } = useContext(AuthContext)
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -15,6 +17,7 @@ export function LoginForm() {
     try {
       setLoading(true)
       await auth.signInWithEmailAndPassword(email, password)
+      handleUser()
       navigate('/home/faturamento')
       // Lógica adicional após o login bem-sucedido (redirecionamento, etc.)
     } catch (error) {

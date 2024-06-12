@@ -17,6 +17,8 @@ import { NewFaturamentoDialog } from '../components/NewFaturamentoDialog'
 import { ReloadContext } from '../contexts/FaturamentoContext'
 import { EditFaturamentoDialog } from '../components/EditFaturamentoDialog'
 import { AlertComponent, Severity } from '../components/AlertComponent'
+import { auth } from '../services/firebase'
+import { useNavigate } from 'react-router-dom'
 
 interface DataValue {
   values: number[]
@@ -25,6 +27,18 @@ interface DataValue {
 }
 
 export function Faturamento() {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // auth.signOut()
+    const isLogged = auth.onAuthStateChanged((user) => {
+      if (!user) {
+        navigate('/login')
+      }
+    })
+    return () => isLogged()
+  }, [navigate])
+
   const [reload, setReload] = useState<boolean>(false)
   const [lastMonthFilled, setLastMonthFilled] = useState<number>()
   const [selectedMonth, setSelectedMonth] = useState<string>('')
