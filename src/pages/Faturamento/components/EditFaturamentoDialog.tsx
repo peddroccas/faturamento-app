@@ -7,10 +7,15 @@ import {
   DialogTitle,
 } from '@mui/material'
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
-import { BasicNumberField } from './BasicNumberField'
-import { Select } from './Select'
-import { getValues, months, setFaturamentoMonth, years } from '../services/api'
-import { ReloadContext } from '../contexts/FaturamentoContext'
+import { BasicNumberField } from '../../../components/BasicNumberField'
+import { Select } from '../../../components/Select'
+import {
+  getValues,
+  months,
+  setFaturamentoMonth,
+  years,
+} from '../../../services/api'
+import { FaturamentoContext } from '../../../contexts/FaturamentoContext'
 
 interface EditFaturamentoDialogProps {
   open: boolean
@@ -22,7 +27,7 @@ export function EditFaturamentoDialog({
   onClose,
 }: EditFaturamentoDialogProps) {
   const { lastMonthFilled, handleReload, selectedStore, handleAlertSeverity } =
-    useContext(ReloadContext)
+    useContext(FaturamentoContext)
   const [value, setValue] = useState<string>('')
   const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedYear, setSelectedYear] = useState('')

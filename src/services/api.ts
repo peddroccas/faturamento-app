@@ -220,7 +220,7 @@ export async function getMonthsValues(
 
 // Ticket Médio
 
-function daysPerMonth(month: string, year: string) {
+export function daysPerMonth(month: string, year: string) {
   switch (month) {
     case 'janeiro':
       return 31
@@ -250,5 +250,95 @@ function daysPerMonth(month: string, year: string) {
       return 30
     case 'dezembro':
       return 31
+  }
+}
+
+export async function getMonthsTicketMedioValues(
+  lojaUnformatted: string,
+  month: string,
+  year: string,
+) {
+  try {
+    const lastSixMonths = getLastMonths(month, year, 6).reverse()
+
+    const monthsTicketMedioValues: number[] = []
+    const monthsTicketMedioGrowth: (number | string)[] = []
+    const dates: string[] = []
+
+    for (const month of lastSixMonths) {
+      const monthValue = await getValues(
+        lojaUnformatted,
+        month.year,
+        month.month,
+      )
+      const monthTicketMedioValue =
+        monthValue / daysPerMonth(month.month, month.year)!
+      const monthTicketMedioGrowth = percentage(
+        monthTicketMedioValue,
+        monthsTicketMedioValues[monthsTicketMedioValues.length - 1],
+      )
+
+      if (monthTicketMedioValue) {
+        monthsTicketMedioValues.push(monthTicketMedioValue)
+        monthsTicketMedioGrowth.push(monthTicketMedioGrowth)
+
+        dates.push(capitalizeFirstLetters(`${month.month}/${month.year}`))
+      }
+    }
+    monthsTicketMedioGrowth.shift()
+    monthsTicketMedioGrowth.unshift('Sem valor de referência')
+
+    return {
+      dates,
+      values: monthsTicketMedioValues,
+      growth: monthsTicketMedioGrowth,
+    }
+  } catch (error) {
+    console.log('Erro no acesso ao banco')
+    console.error(error)
+  }
+}
+
+export async function getYearsTicketMedioValues(
+  lojaUnformatted: string,
+  month: string,
+): Promise<
+  | {
+      values: number[]
+      growth: (string | number)[]
+      dates: string[]
+    }
+  | undefined
+> {
+  try {
+    const yearsTicketMedioValues: number[] = []
+    const yearsTicketMedioGrowth: (number | string)[] = []
+    const dates: string[] = []
+
+    for (const year of years) {
+      const monthValue: number = await getValues(lojaUnformatted, year, month)
+      const monthTicketMedioValue: number =
+        monthValue / daysPerMonth(month, year)!
+      const monthTicketMedioGrowth = percentage(
+        monthTicketMedioValue,
+        yearsTicketMedioValues[yearsTicketMedioValues.length - 1],
+      )
+      if (monthTicketMedioValue) {
+        yearsTicketMedioValues.push(monthTicketMedioValue)
+        yearsTicketMedioGrowth.push(monthTicketMedioGrowth)
+        dates.push(capitalizeFirstLetters(`${month}/${year}`))
+      }
+    }
+    yearsTicketMedioGrowth.shift()
+    yearsTicketMedioGrowth.unshift('Sem valor de referência')
+
+    return {
+      dates,
+      values: yearsTicketMedioValues,
+      growth: yearsTicketMedioGrowth,
+    }
+  } catch (error) {
+    console.log('Erro no acesso ao banco')
+    console.error(error)
   }
 }
