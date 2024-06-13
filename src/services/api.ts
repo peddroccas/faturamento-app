@@ -113,23 +113,23 @@ export async function setFaturamentoMonth(
   }
 }
 
-function getLastSixMonths(month: string, monthYear: string) {
+function getLastMonths(month: string, monthYear: string, last: number) {
   const indexMonth = months.indexOf(month)
-  const lastSixMonths = []
+  const lastMonths = []
 
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < last; i++) {
     const monthIndex = (indexMonth - i + 12) % 12
     if ((indexMonth - i + 12) / 12 < 1) {
-      lastSixMonths.push({
+      lastMonths.push({
         month: months[monthIndex],
         year: String(Number(monthYear) - 1),
       })
     } else {
-      lastSixMonths.push({ month: months[monthIndex], year: String(monthYear) })
+      lastMonths.push({ month: months[monthIndex], year: String(monthYear) })
     }
   }
 
-  return lastSixMonths
+  return lastMonths
 }
 
 export async function getYearsValues(
@@ -180,7 +180,7 @@ export async function getMonthsValues(
   year: string,
 ) {
   try {
-    const lastSixMonths = getLastSixMonths(month, year).reverse()
+    const lastSixMonths = getLastMonths(month, year, 6).reverse()
 
     const monthsValues: number[] = []
     const monthsGrowth: (number | string)[] = []
@@ -215,5 +215,40 @@ export async function getMonthsValues(
   } catch (error) {
     console.log('Erro no acesso ao banco')
     console.error(error)
+  }
+}
+
+// Ticket Médio
+
+function daysPerMonth(month: string, year: string) {
+  switch (month) {
+    case 'janeiro':
+      return 31
+    case 'fevereiro':
+      if (Number(year) % 4 === 0) {
+        return 29
+      } else {
+        return 28
+      }
+    case 'março':
+      return 31
+    case 'abril':
+      return 30
+    case 'maio':
+      return 31
+    case 'junho':
+      return 30
+    case 'julho':
+      return 31
+    case 'agosto':
+      return 31
+    case 'setembro':
+      return 30
+    case 'outubro':
+      return 31
+    case 'novembro':
+      return 30
+    case 'dezembro':
+      return 31
   }
 }

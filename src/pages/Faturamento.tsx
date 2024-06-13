@@ -194,7 +194,7 @@ export function Faturamento() {
     >
       <div className="flex h-screen w-auto flex-1 flex-col">
         <header className="flex gap-4 border-b border-b-slate-400 p-4">
-          <h1 className="text-3xl">Faturamento</h1>
+          <h1 className="text-3xl ">Faturamento</h1>
           <Select
             id="Stores"
             options={stores}
@@ -251,30 +251,42 @@ export function Faturamento() {
               severity={severity}
             ></AlertComponent>
           </div>
-          <article className="my-4 flex w-5/6 flex-1 flex-col items-center justify-center rounded-2xl bg-aliceblue p-2">
-            <h2 className="font-roboto text-2xl font-medium">Últimos anos</h2>
-            <Table
-              headers={yearsData!.dates}
-              rows={[yearsData!.values, yearsData!.growth]}
-              isLoading={isLoading}
-            ></Table>
-            <CircularProgress
-              color="bluesr-200"
-              className={`${isVisible} fixed`}
-            />
-          </article>
-          <article className="my-4 flex w-5/6 flex-1 flex-col items-center justify-center rounded-2xl bg-aliceblue p-2">
-            <h2 className="font-roboto text-2xl font-medium">Últimos meses</h2>
-            <Table
-              headers={monthsData!.dates}
-              rows={[monthsData!.values, monthsData!.growth]}
-              isLoading={isLoading}
-            ></Table>
-            <CircularProgress
-              color="bluesr-200"
-              className={`${isVisible} fixed`}
-            />
-          </article>
+          <div className="m-2 flex w-11/12 flex-1 flex-col items-center justify-center rounded-3xl bg-bluesr-500 p-4">
+            <h2 className="text-2xl font-bold text-aliceblue">
+              Faturamento Mensal
+            </h2>
+            <article className="my-4 flex w-full flex-1 flex-col items-center justify-center rounded-2xl bg-aliceblue p-2">
+              <h3 className="font-roboto text-2xl font-medium text-redsr-400">
+                Últimos anos
+              </h3>
+              <Table
+                headers={yearsData!.dates}
+                rows={[yearsData!.values, yearsData!.growth]}
+                isLoading={isLoading}
+              ></Table>
+              <CircularProgress
+                color="bluesr-200"
+                className={`${isVisible} fixed`}
+              />
+            </article>
+            <article className="my-4 flex w-full flex-1 flex-col items-center justify-center rounded-2xl bg-aliceblue p-2">
+              <h3 className="font-roboto text-2xl font-medium text-redsr-400">
+                Últimos meses
+              </h3>
+              <Table
+                headers={monthsData!.dates}
+                rows={[monthsData!.values, monthsData!.growth]}
+                isLoading={isLoading}
+              ></Table>
+              <CircularProgress
+                color="bluesr-200"
+                className={`${isVisible} fixed`}
+              />
+            </article>
+          </div>
+          <div className="m-2 flex w-11/12 flex-1 flex-col items-center justify-center rounded-3xl bg-bluesr-500 p-4">
+            <h2 className="text-2xl font-bold text-aliceblue">Ticket Médio</h2>
+          </div>
         </main>
       </div>
     </ReloadContext.Provider>
