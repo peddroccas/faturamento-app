@@ -1,4 +1,4 @@
-import { FormEvent, useContext, useState } from 'react'
+import { FormEvent, useContext, useEffect, useState } from 'react'
 import { auth } from '../services/firebase.ts'
 import { useNavigate } from 'react-router-dom'
 import { BasicTextField } from '../components/BasicTextField.tsx'
@@ -11,6 +11,16 @@ export function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    // auth.signOut()
+    const isLogged = auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigate('/home/faturamento')
+      }
+    })
+    return () => isLogged()
+  }, [navigate])
 
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault()
