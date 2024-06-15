@@ -179,7 +179,7 @@ export function Faturamento() {
         isLoading,
       }}
     >
-      <div className="flex h-screen w-auto flex-1 flex-col">
+      <div className="flex  w-auto flex-1 flex-col">
         <header className="flex gap-4 border-b border-b-slate-400 p-4">
           <h1 className="text-3xl ">Faturamento</h1>
           <Select

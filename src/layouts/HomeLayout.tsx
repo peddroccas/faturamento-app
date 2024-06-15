@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom'
 export function HomeLayout() {
   return (
     // grid grid-cols-app
-    <div className="h-screen bg-bluesr-400 font-montserrat text-aliceblue">
+    <div className=" min-h-screen overflow-auto bg-bluesr-400 font-montserrat text-aliceblue">
       {/* <Sidebar > */}
       <Outlet />
     </div>
