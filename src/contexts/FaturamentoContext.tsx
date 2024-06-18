@@ -1,11 +1,14 @@
 import { createContext } from 'react'
 import { Severity } from '../components/AlertComponent'
 
-interface ReloadContextType {
+interface FaturamentoContextType {
   reload: boolean
   handleReload: () => void // Tipagem do setState
   lastMonthFilled?: number
   selectedStore: string
+  selectedYear: string
+  selectedMonth: string
   handleAlertSeverity: (severity: Severity) => void
+  isLoading: boolean
 }
-export const ReloadContext = createContext({} as ReloadContextType)
+export const FaturamentoContext = createContext({} as FaturamentoContextType)

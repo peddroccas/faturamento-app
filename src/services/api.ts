@@ -113,23 +113,23 @@ export async function setFaturamentoMonth(
   }
 }
 
-function getLastSixMonths(month: string, monthYear: string) {
+function getLastMonths(month: string, monthYear: string, last: number) {
   const indexMonth = months.indexOf(month)
-  const lastSixMonths = []
+  const lastMonths = []
 
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < last; i++) {
     const monthIndex = (indexMonth - i + 12) % 12
     if ((indexMonth - i + 12) / 12 < 1) {
-      lastSixMonths.push({
+      lastMonths.push({
         month: months[monthIndex],
         year: String(Number(monthYear) - 1),
       })
     } else {
-      lastSixMonths.push({ month: months[monthIndex], year: String(monthYear) })
+      lastMonths.push({ month: months[monthIndex], year: String(monthYear) })
     }
   }
 
-  return lastSixMonths
+  return lastMonths
 }
 
 export async function getYearsValues(
@@ -180,7 +180,7 @@ export async function getMonthsValues(
   year: string,
 ) {
   try {
-    const lastSixMonths = getLastSixMonths(month, year).reverse()
+    const lastSixMonths = getLastMonths(month, year, 6).reverse()
 
     const monthsValues: number[] = []
     const monthsGrowth: (number | string)[] = []
@@ -211,6 +211,131 @@ export async function getMonthsValues(
       dates,
       values: monthsValues,
       growth: monthsGrowth,
+    }
+  } catch (error) {
+    console.log('Erro no acesso ao banco')
+    console.error(error)
+  }
+}
+
+// Ticket Médio
+
+export function daysPerMonth(month: string, year: string) {
+  switch (month) {
+    case 'janeiro':
+      return 31
+    case 'fevereiro':
+      if (Number(year) % 4 === 0) {
+        return 29
+      } else {
+        return 28
+      }
+    case 'março':
+      return 31
+    case 'abril':
+      return 30
+    case 'maio':
+      return 31
+    case 'junho':
+      return 30
+    case 'julho':
+      return 31
+    case 'agosto':
+      return 31
+    case 'setembro':
+      return 30
+    case 'outubro':
+      return 31
+    case 'novembro':
+      return 30
+    case 'dezembro':
+      return 31
+  }
+}
+
+export async function getMonthsDailyValueValues(
+  lojaUnformatted: string,
+  month: string,
+  year: string,
+) {
+  try {
+    const lastSixMonths = getLastMonths(month, year, 6).reverse()
+
+    const monthsDailyValueValues: number[] = []
+    const monthsDailyValueGrowth: (number | string)[] = []
+    const dates: string[] = []
+
+    for (const month of lastSixMonths) {
+      const monthValue = await getValues(
+        lojaUnformatted,
+        month.year,
+        month.month,
+      )
+      const monthDailyValueValue =
+        monthValue / daysPerMonth(month.month, month.year)!
+      const monthDailyValueGrowth = percentage(
+        monthDailyValueValue,
+        monthsDailyValueValues[monthsDailyValueValues.length - 1],
+      )
+
+      if (monthDailyValueValue) {
+        monthsDailyValueValues.push(monthDailyValueValue)
+        monthsDailyValueGrowth.push(monthDailyValueGrowth)
+
+        dates.push(capitalizeFirstLetters(`${month.month}/${month.year}`))
+      }
+    }
+    monthsDailyValueGrowth.shift()
+    monthsDailyValueGrowth.unshift('Sem valor de referência')
+
+    return {
+      dates,
+      values: monthsDailyValueValues,
+      growth: monthsDailyValueGrowth,
+    }
+  } catch (error) {
+    console.log('Erro no acesso ao banco')
+    console.error(error)
+  }
+}
+
+export async function getYearsDailyValueValues(
+  lojaUnformatted: string,
+  month: string,
+): Promise<
+  | {
+      values: number[]
+      growth: (string | number)[]
+      dates: string[]
+    }
+  | undefined
+> {
+  try {
+    const yearsDailyValueValues: number[] = []
+    const yearsDailyValueGrowth: (number | string)[] = []
+    const dates: string[] = []
+
+    for (const year of years) {
+      const monthValue: number = await getValues(lojaUnformatted, year, month)
+      const monthDailyValueValue: number =
+        monthValue / daysPerMonth(month, year)!
+      const monthDailyValueGrowth = percentage(
+        monthDailyValueValue,
+        yearsDailyValueValues[yearsDailyValueValues.length - 1],
+      )
+      if (monthDailyValueValue) {
+        yearsDailyValueValues.push(monthDailyValueValue)
+        yearsDailyValueGrowth.push(monthDailyValueGrowth)
+        dates.push(capitalizeFirstLetters(`${month}/${year}`))
+      }
+    }
+    yearsDailyValueGrowth.shift()
+    yearsDailyValueGrowth.unshift('Sem valor de referência')
+
+    return {
+      dates,
+      values: yearsDailyValueValues,
+      growth: yearsDailyValueGrowth,
     }
   } catch (error) {
     console.log('Erro no acesso ao banco')

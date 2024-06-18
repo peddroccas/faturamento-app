@@ -3,7 +3,7 @@ import { LoginForm } from './pages/LoginForm'
 import { Home } from './pages/Home'
 import { HeaderLayout } from './layouts/HeaderLayout'
 import { HomeLayout } from './layouts/HomeLayout'
-import { Faturamento } from './pages/Faturamento'
+import { Faturamento } from './pages/Faturamento/Faturamento'
 
 export function Router() {
   return (
