@@ -6,6 +6,8 @@ interface FaturamentoContextType {
   handleReload: () => void // Tipagem do setState
   lastMonthFilled?: number
   selectedStore: string
+  selectedYear: string
+  selectedMonth: string
   handleAlertSeverity: (severity: Severity) => void
   isLoading: boolean
 }

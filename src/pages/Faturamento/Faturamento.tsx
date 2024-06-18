@@ -93,46 +93,40 @@ export function Faturamento() {
 
   // Busca no db os dados assim que carrega a página e toda vez que o usuário selecionar mês ou ano diferentes
   useEffect(() => {
-    async function fetchYears() {
+    async function fetchData() {
       try {
         if (lastMonthFilled) {
-          const responseTicketMedio = await getYearsTicketMedioValues(
+          const responseTicketMedioYears = await getYearsTicketMedioValues(
             selectedStore,
             selectedMonth,
           )
-          const response = await getYearsValues(selectedStore, selectedMonth)
+          const responseYears = await getYearsValues(
+            selectedStore,
+            selectedMonth,
+          )
           // console.log(response)
-          setYearsData(response)
-          setYearsTicketMedioData(responseTicketMedio)
-          setIsLoading(false)
-        }
-      } catch (error) {}
-    }
-    fetchYears()
-  }, [isLoading, selectedStore, selectedMonth, lastMonthFilled])
 
-  useEffect(() => {
-    async function fetchMonths() {
-      try {
-        if (lastMonthFilled) {
-          const responseTicketMedio = await getMonthsTicketMedioValues(
+          const responseTicketMedioMonths = await getMonthsTicketMedioValues(
             selectedStore,
             selectedMonth,
             selectedYear,
           )
-          const response = await getMonthsValues(
+          const responseMonths = await getMonthsValues(
             selectedStore,
             selectedMonth,
             selectedYear,
           )
           // console.log(response)
-          setMonthsTicketMedioData(responseTicketMedio)
-          setMonthsData(response)
+          setMonthsTicketMedioData(responseTicketMedioMonths)
+          setMonthsData(responseMonths)
+          setYearsData(responseYears)
+          setYearsTicketMedioData(responseTicketMedioYears)
+
           setIsLoading(false)
         }
       } catch (error) {}
     }
-    fetchMonths()
+    fetchData()
   }, [isLoading, selectedStore, selectedMonth, selectedYear, lastMonthFilled])
 
   function handleAlertSeverity(severity: Severity) {
@@ -175,6 +169,8 @@ export function Faturamento() {
         handleReload,
         lastMonthFilled,
         selectedStore,
+        selectedMonth,
+        selectedYear,
         handleAlertSeverity,
         isLoading,
       }}
