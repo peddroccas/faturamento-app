@@ -253,7 +253,7 @@ export function daysPerMonth(month: string, year: string) {
   }
 }
 
-export async function getMonthsTicketMedioValues(
+export async function getMonthsDailyValueValues(
   lojaUnformatted: string,
   month: string,
   year: string,
@@ -261,8 +261,8 @@ export async function getMonthsTicketMedioValues(
   try {
     const lastSixMonths = getLastMonths(month, year, 6).reverse()
 
-    const monthsTicketMedioValues: number[] = []
-    const monthsTicketMedioGrowth: (number | string)[] = []
+    const monthsDailyValueValues: number[] = []
+    const monthsDailyValueGrowth: (number | string)[] = []
     const dates: string[] = []
 
     for (const month of lastSixMonths) {
@@ -271,27 +271,27 @@ export async function getMonthsTicketMedioValues(
         month.year,
         month.month,
       )
-      const monthTicketMedioValue =
+      const monthDailyValueValue =
         monthValue / daysPerMonth(month.month, month.year)!
-      const monthTicketMedioGrowth = percentage(
-        monthTicketMedioValue,
-        monthsTicketMedioValues[monthsTicketMedioValues.length - 1],
+      const monthDailyValueGrowth = percentage(
+        monthDailyValueValue,
+        monthsDailyValueValues[monthsDailyValueValues.length - 1],
       )
 
-      if (monthTicketMedioValue) {
-        monthsTicketMedioValues.push(monthTicketMedioValue)
-        monthsTicketMedioGrowth.push(monthTicketMedioGrowth)
+      if (monthDailyValueValue) {
+        monthsDailyValueValues.push(monthDailyValueValue)
+        monthsDailyValueGrowth.push(monthDailyValueGrowth)
 
         dates.push(capitalizeFirstLetters(`${month.month}/${month.year}`))
       }
     }
-    monthsTicketMedioGrowth.shift()
-    monthsTicketMedioGrowth.unshift('Sem valor de referência')
+    monthsDailyValueGrowth.shift()
+    monthsDailyValueGrowth.unshift('Sem valor de referência')
 
     return {
       dates,
-      values: monthsTicketMedioValues,
-      growth: monthsTicketMedioGrowth,
+      values: monthsDailyValueValues,
+      growth: monthsDailyValueGrowth,
     }
   } catch (error) {
     console.log('Erro no acesso ao banco')
@@ -299,7 +299,7 @@ export async function getMonthsTicketMedioValues(
   }
 }
 
-export async function getYearsTicketMedioValues(
+export async function getYearsDailyValueValues(
   lojaUnformatted: string,
   month: string,
 ): Promise<
@@ -311,31 +311,31 @@ export async function getYearsTicketMedioValues(
   | undefined
 > {
   try {
-    const yearsTicketMedioValues: number[] = []
-    const yearsTicketMedioGrowth: (number | string)[] = []
+    const yearsDailyValueValues: number[] = []
+    const yearsDailyValueGrowth: (number | string)[] = []
     const dates: string[] = []
 
     for (const year of years) {
       const monthValue: number = await getValues(lojaUnformatted, year, month)
-      const monthTicketMedioValue: number =
+      const monthDailyValueValue: number =
         monthValue / daysPerMonth(month, year)!
-      const monthTicketMedioGrowth = percentage(
-        monthTicketMedioValue,
-        yearsTicketMedioValues[yearsTicketMedioValues.length - 1],
+      const monthDailyValueGrowth = percentage(
+        monthDailyValueValue,
+        yearsDailyValueValues[yearsDailyValueValues.length - 1],
       )
-      if (monthTicketMedioValue) {
-        yearsTicketMedioValues.push(monthTicketMedioValue)
-        yearsTicketMedioGrowth.push(monthTicketMedioGrowth)
+      if (monthDailyValueValue) {
+        yearsDailyValueValues.push(monthDailyValueValue)
+        yearsDailyValueGrowth.push(monthDailyValueGrowth)
         dates.push(capitalizeFirstLetters(`${month}/${year}`))
       }
     }
-    yearsTicketMedioGrowth.shift()
-    yearsTicketMedioGrowth.unshift('Sem valor de referência')
+    yearsDailyValueGrowth.shift()
+    yearsDailyValueGrowth.unshift('Sem valor de referência')
 
     return {
       dates,
-      values: yearsTicketMedioValues,
-      growth: yearsTicketMedioGrowth,
+      values: yearsDailyValueValues,
+      growth: yearsDailyValueGrowth,
     }
   } catch (error) {
     console.log('Erro no acesso ao banco')

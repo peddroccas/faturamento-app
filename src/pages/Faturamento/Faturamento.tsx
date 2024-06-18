@@ -6,8 +6,8 @@ import {
   years,
   getLastMonthFilled,
   stores,
-  getYearsTicketMedioValues,
-  getMonthsTicketMedioValues,
+  getYearsDailyValueValues,
+  getMonthsDailyValueValues,
 } from '../../services/api'
 
 import { Select } from '../../components/Select'
@@ -17,7 +17,7 @@ import { auth } from '../../services/firebase'
 import { useNavigate } from 'react-router-dom'
 import { FaturamentoMensal } from './components/FaturamentoMensal'
 import { ToolBar } from './components/ToolBar'
-import { TicketMedio } from './components/TicketMedio'
+import { DailyValue } from './components/DailyValue'
 
 export interface DataValue {
   values: number[]
@@ -44,10 +44,10 @@ export function Faturamento() {
     growth: [],
     dates: [],
   })
-  const [yearsTicketMedioData, setYearsTicketMedioData] = useState<
+  const [yearsDailyValueData, setYearsDailyValueData] = useState<
     DataValue | undefined
   >({ values: [], growth: [], dates: [] })
-  const [monthsTicketMedioData, setMonthsTicketMedioData] = useState<
+  const [monthsDailyValueData, setMonthsDailyValueData] = useState<
     DataValue | undefined
   >({ values: [], growth: [], dates: [] })
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
@@ -96,7 +96,7 @@ export function Faturamento() {
     async function fetchData() {
       try {
         if (lastMonthFilled) {
-          const responseTicketMedioYears = await getYearsTicketMedioValues(
+          const responseDailyValueYears = await getYearsDailyValueValues(
             selectedStore,
             selectedMonth,
           )
@@ -106,7 +106,7 @@ export function Faturamento() {
           )
           // console.log(response)
 
-          const responseTicketMedioMonths = await getMonthsTicketMedioValues(
+          const responseDailyValueMonths = await getMonthsDailyValueValues(
             selectedStore,
             selectedMonth,
             selectedYear,
@@ -117,10 +117,10 @@ export function Faturamento() {
             selectedYear,
           )
           // console.log(response)
-          setMonthsTicketMedioData(responseTicketMedioMonths)
+          setMonthsDailyValueData(responseDailyValueMonths)
           setMonthsData(responseMonths)
           setYearsData(responseYears)
-          setYearsTicketMedioData(responseTicketMedioYears)
+          setYearsDailyValueData(responseDailyValueYears)
 
           setIsLoading(false)
         }
@@ -193,9 +193,9 @@ export function Faturamento() {
             handleYearOnChange={handleYearOnChange}
           />
           <FaturamentoMensal yearsData={yearsData} monthsData={monthsData} />
-          <TicketMedio
-            yearsData={yearsTicketMedioData}
-            monthsData={monthsTicketMedioData}
+          <DailyValue
+            yearsData={yearsDailyValueData}
+            monthsData={monthsDailyValueData}
           />
           <AlertComponent
             open={isAlertOpen}
