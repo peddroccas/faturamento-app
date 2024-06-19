@@ -24,6 +24,17 @@ declare module '@mui/material/TextField' {
     'redsr-500': true
   }
 }
+declare module '@mui/material/IconButton' {
+  interface IconButtonPropsColorOverrides {
+    aliceblue: true
+    'bluesr-200': true
+    'bluesr-400': true
+    'bluesr-500': true
+    'bluesr-800': true
+    'redsr-400': true
+    'redsr-500': true
+  }
+}
 
 declare module '@mui/material/Button' {
   interface ButtonPropsColorOverrides {

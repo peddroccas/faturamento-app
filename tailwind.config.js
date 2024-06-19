@@ -3,9 +3,6 @@ export default {
   content: ['./src/**/*.{html,tsx,ts}'],
   theme: {
     extend: {
-      gridTemplateColumns: {
-        app: 'minmax(15rem, 20rem) 1fr',
-      },
       fontFamily: {
         roboto: 'Roboto',
         agdasima: 'Agdasima',
