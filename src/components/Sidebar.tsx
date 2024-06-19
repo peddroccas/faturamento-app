@@ -11,10 +11,10 @@ export function Sidebar() {
   }
 
   return (
-    <div className="h-screen border-r border-aliceblue">
+    <div className="min-h-screen border-r border-aliceblue">
       <Drawer
         variant="permanent"
-        className="h-full"
+        className=" h-full"
         open={isOpen}
         sx={{
           '& .MuiDrawer-paper': {
