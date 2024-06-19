@@ -52,7 +52,7 @@ export async function getValues(
 ) {
   try {
     const loja = camelCase(lojaUnformatted.toLowerCase())
-    const databaseRef = db.ref(`${loja}/${year}/${month}`)
+    const databaseRef = db.ref(`${loja}/faturamento/${year}/${month}`)
     const snapShot = await databaseRef.once('value')
     const data = snapShot.val()
     // console.log(data)
@@ -70,7 +70,7 @@ export async function setValues(
 ) {
   try {
     const loja = camelCase(lojaUnformatted.toLowerCase())
-    const databaseRef = db.ref(`${loja}/${year}/${month}`)
+    const databaseRef = db.ref(`${loja}/faturamento/${year}/${month}`)
     await databaseRef.set(value, (error) => {
       if (error) {
         console.error('Erro ao adicionar ao banco de dados: ', error)
