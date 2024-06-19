@@ -9,12 +9,7 @@ import {
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { BasicNumberField } from '../../../components/BasicNumberField'
 import { Select } from '../../../components/Select'
-import {
-  getValues,
-  months,
-  setFaturamentoMonth,
-  years,
-} from '../../../services/api'
+import { FaturamentoClass, months, years } from '../../../services/api'
 import { FaturamentoContext } from '../../../contexts/FaturamentoContext'
 
 interface EditFaturamentoDialogProps {
@@ -35,7 +30,7 @@ export function EditFaturamentoDialog({
   useEffect(() => {
     async function fetchData() {
       if (lastMonthFilled) {
-        const month = await getValues(
+        const month = await FaturamentoClass.getValues(
           selectedStore,
           selectedYear,
           selectedMonth,
@@ -49,7 +44,7 @@ export function EditFaturamentoDialog({
   async function handleSubmitNewFaturamento() {
     try {
       const valueNumber = Number(value.replace(/[^\d,]/g, '').replace(',', '.'))
-      await setFaturamentoMonth(
+      await FaturamentoClass.setFaturamentoMonth(
         valueNumber,
         selectedStore,
         selectedMonth,

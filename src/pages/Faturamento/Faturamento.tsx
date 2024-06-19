@@ -1,14 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import {
-  getMonthsValues,
-  getYearsValues,
-  months,
-  years,
-  getLastMonthFilled,
-  stores,
-  getYearsDailyValueValues,
-  getMonthsDailyValueValues,
-} from '../../services/api'
+import { FaturamentoClass, months, years, stores } from '../../services/api'
 
 import { Select } from '../../components/Select'
 import { FaturamentoContext } from '../../contexts/FaturamentoContext'
@@ -83,7 +74,7 @@ export function Faturamento() {
   // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
   useEffect(() => {
     async function fetchLastMonthFilled() {
-      const lastMonth = await getLastMonthFilled(selectedStore)
+      const lastMonth = await FaturamentoClass.getLastMonthFilled(selectedStore)
       setLastMonthFilled(lastMonth)
       setSelectedMonth(months[lastMonth])
       setReload(false)
@@ -96,22 +87,24 @@ export function Faturamento() {
     async function fetchData() {
       try {
         if (lastMonthFilled) {
-          const responseDailyValueYears = await getYearsDailyValueValues(
-            selectedStore,
-            selectedMonth,
-          )
-          const responseYears = await getYearsValues(
+          const responseDailyValueYears =
+            await FaturamentoClass.getYearsDailyValueValues(
+              selectedStore,
+              selectedMonth,
+            )
+          const responseYears = await FaturamentoClass.getYearsValues(
             selectedStore,
             selectedMonth,
           )
           // console.log(response)
 
-          const responseDailyValueMonths = await getMonthsDailyValueValues(
-            selectedStore,
-            selectedMonth,
-            selectedYear,
-          )
-          const responseMonths = await getMonthsValues(
+          const responseDailyValueMonths =
+            await FaturamentoClass.getMonthsDailyValueValues(
+              selectedStore,
+              selectedMonth,
+              selectedYear,
+            )
+          const responseMonths = await FaturamentoClass.getMonthsValues(
             selectedStore,
             selectedMonth,
             selectedYear,
