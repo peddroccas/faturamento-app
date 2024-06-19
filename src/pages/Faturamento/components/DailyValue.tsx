@@ -1,7 +1,7 @@
 import { Table } from './Table'
 import { DataValue } from '../Faturamento'
 import { useContext } from 'react'
-import { FaturamentoContext } from '../../../contexts/FaturamentoContext'
+import { FaturamentoContext } from '../../../contexts/HomeContext'
 
 interface DailyValueProps {
   yearsData: DataValue | undefined

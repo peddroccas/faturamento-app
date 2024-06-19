@@ -1,7 +1,7 @@
-import { ChangeEvent, useEffect, useState } from 'react'
-import { FaturamentoClass, months, years, stores } from '../../services/api'
-import { FaturamentoContext } from '../../contexts/FaturamentoContext'
-import { AlertComponent, Severity } from '../../components/AlertComponent'
+import { useContext, useEffect, useState } from 'react'
+import { FaturamentoClass, months } from '../../services/api'
+import { HomeContext } from '../../contexts/HomeContext'
+import { AlertComponent } from '../../components/AlertComponent'
 import { auth } from '../../services/firebase'
 import { useNavigate } from 'react-router-dom'
 import { FaturamentoMensal } from './components/FaturamentoMensal'
@@ -15,14 +15,24 @@ export interface DataValue {
 }
 
 export function Faturamento() {
-  const [reload, setReload] = useState<boolean>(false)
-  const [lastMonthFilled, setLastMonthFilled] = useState<number>()
-  const [selectedMonth, setSelectedMonth] = useState<string>('')
-  const [selectedYear, setSelectedYear] = useState<string>(
-    years[years.length - 1],
-  )
-  const [selectedStore, setselectedStore] = useState<string>(stores[0])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const {
+    reload,
+    isLoading,
+    selectedMonth,
+    selectedStore,
+    selectedYear,
+    lastMonthFilled,
+    isAlertOpen,
+    handleAlertSeverity,
+    handleMonthOnChange,
+    handleReload,
+    handleEndReload,
+    handleStoreOnChange,
+    handleYearOnChange,
+    handleLastMonthFilled,
+    severity,
+  } = useContext(HomeContext)
+
   const [yearsData, setYearsData] = useState<DataValue | undefined>({
     values: [],
     growth: [],
@@ -39,8 +49,6 @@ export function Faturamento() {
   const [monthsDailyValueData, setMonthsDailyValueData] = useState<
     DataValue | undefined
   >({ values: [], growth: [], dates: [] })
-  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
-  const [severity, setSeverity] = useState<Severity>()
 
   const navigate = useNavigate()
 
@@ -73,12 +81,12 @@ export function Faturamento() {
   useEffect(() => {
     async function fetchLastMonthFilled() {
       const lastMonth = await FaturamentoClass.getLastMonthFilled(selectedStore)
-      setLastMonthFilled(lastMonth)
+      handleLastMonthFilled(lastMonth)
       setSelectedMonth(months[lastMonth])
-      setReload(false)
+      handleEndReload()
     }
     fetchLastMonthFilled()
-  }, [reload, selectedStore])
+  }, [handleEndReload, handleLastMonthFilled, reload, selectedStore])
 
   // Busca no db os dados assim que carrega a página e toda vez que o usuário selecionar mês ou ano diferentes
   useEffect(() => {
@@ -120,77 +128,35 @@ export function Faturamento() {
     fetchData()
   }, [isLoading, selectedStore, selectedMonth, selectedYear, lastMonthFilled])
 
-  function handleAlertSeverity(severity: Severity) {
-    if (severity === 'error') {
-      setSeverity('error')
-    } else {
-      setSeverity('success')
-    }
-  }
-
-  function handleReload() {
-    setReload(true)
-    setIsLoading(true)
-    setTimeout(() => setIsAlertOpen(true), 1000)
-  }
-
-  function handleOnChangeStore(event: ChangeEvent<HTMLSelectElement>) {
-    setselectedStore(event.target.value)
-    setIsLoading(true)
-  }
-
   function handleAlertClose() {
     setIsAlertOpen(false)
   }
 
-  function handleMonthOnChange(event: ChangeEvent<HTMLSelectElement>) {
-    setSelectedMonth(event.target.value)
-    setIsLoading(true)
-  }
-
-  function handleYearOnChange(event: ChangeEvent<HTMLSelectElement>) {
-    setSelectedYear(event.target.value)
-    setIsLoading(true)
-  }
-
   return (
-    <FaturamentoContext.Provider
-      value={{
-        reload,
-        handleReload,
-        lastMonthFilled,
-        selectedStore,
-        selectedMonth,
-        selectedYear,
-        handleAlertSeverity,
-        isLoading,
-      }}
-    >
-      <div className="flex w-auto flex-1 flex-col overflow-hidden">
-        <header className="flex items-center border-b border-b-aliceblue p-4">
-          <h1 className="text-3xl ">Faturamento</h1>
-        </header>
-        <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
-          <ToolBar
-            selectedMonth={selectedMonth}
-            selectedYear={selectedYear}
-            selectedStore={selectedStore}
-            handleStoreOnChange={handleOnChangeStore}
-            handleMonthOnChange={handleMonthOnChange}
-            handleYearOnChange={handleYearOnChange}
-          />
-          <FaturamentoMensal yearsData={yearsData} monthsData={monthsData} />
-          <DailyValue
-            yearsData={yearsDailyValueData}
-            monthsData={monthsDailyValueData}
-          />
-          <AlertComponent
-            open={isAlertOpen}
-            onClose={handleAlertClose}
-            severity={severity}
-          ></AlertComponent>
-        </main>
-      </div>
-    </FaturamentoContext.Provider>
+    <div className="flex w-auto flex-1 flex-col overflow-hidden">
+      <header className="flex items-center border-b border-b-aliceblue p-4">
+        <h1 className="text-3xl ">Faturamento</h1>
+      </header>
+      <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
+        <ToolBar
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
+          selectedStore={selectedStore}
+          handleStoreOnChange={handleStoreOnChange}
+          handleMonthOnChange={handleMonthOnChange}
+          handleYearOnChange={handleYearOnChange}
+        />
+        <FaturamentoMensal yearsData={yearsData} monthsData={monthsData} />
+        <DailyValue
+          yearsData={yearsDailyValueData}
+          monthsData={monthsDailyValueData}
+        />
+        <AlertComponent
+          open={isAlertOpen}
+          onClose={handleAlertClose}
+          severity={severity}
+        ></AlertComponent>
+      </main>
+    </div>
   )
 }

@@ -10,7 +10,7 @@ import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { BasicNumberField } from '../../../components/BasicNumberField'
 import { Select } from '../../../components/Select'
 import { FaturamentoClass, months, years } from '../../../services/api'
-import { FaturamentoContext } from '../../../contexts/FaturamentoContext'
+import { FaturamentoContext } from '../../../contexts/HomeContext'
 
 interface EditFaturamentoDialogProps {
   open: boolean
