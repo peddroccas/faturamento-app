@@ -350,4 +350,172 @@ export class FaturamentoClass {
   }
 }
 
-export class PerdasClass {}
+// Perdas
+export class PerdasClass {
+  // static percentage(reference: number, compared: number) {
+  //   const percentage = ((reference - compared) / reference) * 100
+  //   // console.log(percentage)
+
+  //   return Number(percentage.toFixed(2))
+  // }
+
+  static async getValues(
+    lojaUnformatted: string,
+    year: string = '',
+    month: string = '',
+  ) {
+    try {
+      const loja = camelCase(lojaUnformatted.toLowerCase())
+      const databaseRef = db.ref(`${loja}/perdas/${year}/${month}`)
+      const snapShot = await databaseRef.once('value')
+      const data = snapShot.val()
+      // console.log(data)
+      if (data) {
+        return data
+      }
+    } catch (error) {}
+  }
+
+  static async setValues(
+    value: number,
+    lojaUnformatted: string,
+    year: string,
+    month: string,
+  ) {
+    try {
+      const loja = camelCase(lojaUnformatted.toLowerCase())
+      const databaseRef = db.ref(`${loja}/perdas/${year}/${month}`)
+      await databaseRef.set(value, (error) => {
+        if (error) {
+          console.error('Erro ao adicionar ao banco de dados: ', error)
+        } else {
+          console.log('Dados adicionados com sucesso!')
+        }
+      })
+    } catch (error) {}
+  }
+
+  static async getLastMonthFilled(lojaUnformatted: string): Promise<number> {
+    try {
+      const yearData = await this.getValues(lojaUnformatted, '2024')
+      let lastMonth = 0
+      for (const month in yearData) {
+        if (months.indexOf(month) > lastMonth) {
+          lastMonth = months.indexOf(month)
+        }
+      }
+
+      return lastMonth
+    } catch (error) {
+      console.error('Erro ao ler mês não preenchido')
+      return 11
+    }
+  }
+
+  static async setPerdaMonth(
+    value: number,
+    lojaUnformatted: string,
+    month: string,
+    year: string,
+  ) {
+    try {
+      await this.setValues(value, lojaUnformatted, year, month)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  static getLastMonths(month: string, monthYear: string, last: number) {
+    const indexMonth = months.indexOf(month)
+    const lastMonths = []
+
+    for (let i = 0; i < last; i++) {
+      const monthIndex = (indexMonth - i + 12) % 12
+      if ((indexMonth - i + 12) / 12 < 1) {
+        lastMonths.push({
+          month: months[monthIndex],
+          year: String(Number(monthYear) - 1),
+        })
+      } else {
+        lastMonths.push({ month: months[monthIndex], year: String(monthYear) })
+      }
+    }
+
+    return lastMonths
+  }
+
+  static async getYearsValues(
+    lojaUnformatted: string,
+    month: string,
+  ): Promise<
+    | {
+        values: number[]
+        dates: string[]
+      }
+    | undefined
+  > {
+    try {
+      const yearsValues: number[] = []
+
+      const dates: string[] = []
+
+      for (const year of years) {
+        const monthValue: number = await this.getValues(
+          lojaUnformatted,
+          year,
+          month,
+        )
+
+        if (monthValue) {
+          yearsValues.push(monthValue)
+
+          dates.push(capitalizeFirstLetters(`${month}/${year}`))
+        }
+      }
+
+      return {
+        dates,
+        values: yearsValues,
+      }
+    } catch (error) {
+      console.log('Erro no acesso ao banco')
+      console.error(error)
+    }
+  }
+
+  static async getMonthsValues(
+    lojaUnformatted: string,
+    month: string,
+    year: string,
+  ) {
+    try {
+      const lastSixMonths = this.getLastMonths(month, year, 6).reverse()
+
+      const monthsValues: number[] = []
+
+      const dates: string[] = []
+
+      for (const month of lastSixMonths) {
+        const monthValue = await this.getValues(
+          lojaUnformatted,
+          month.year,
+          month.month,
+        )
+
+        if (monthValue) {
+          monthsValues.push(monthValue)
+
+          dates.push(capitalizeFirstLetters(`${month.month}/${month.year}`))
+        }
+      }
+
+      return {
+        dates,
+        values: monthsValues,
+      }
+    } catch (error) {
+      console.log('Erro no acesso ao banco')
+      console.error(error)
+    }
+  }
+}

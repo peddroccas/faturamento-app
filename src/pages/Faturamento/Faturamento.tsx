@@ -1,7 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { FaturamentoClass, months, years, stores } from '../../services/api'
-
-import { Select } from '../../components/Select'
 import { FaturamentoContext } from '../../contexts/FaturamentoContext'
 import { AlertComponent, Severity } from '../../components/AlertComponent'
 import { auth } from '../../services/firebase'
@@ -169,19 +167,15 @@ export function Faturamento() {
       }}
     >
       <div className="flex w-auto flex-1 flex-col overflow-hidden">
-        <header className="flex gap-4 border-b border-b-aliceblue p-4">
+        <header className="flex items-center border-b border-b-aliceblue p-4">
           <h1 className="text-3xl ">Faturamento</h1>
-          <Select
-            id="Stores"
-            options={stores}
-            value={selectedStore}
-            onChange={handleOnChangeStore}
-          />
         </header>
         <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
           <ToolBar
             selectedMonth={selectedMonth}
             selectedYear={selectedYear}
+            selectedStore={selectedStore}
+            handleStoreOnChange={handleOnChangeStore}
             handleMonthOnChange={handleMonthOnChange}
             handleYearOnChange={handleYearOnChange}
           />
