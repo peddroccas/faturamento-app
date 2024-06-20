@@ -1,13 +1,21 @@
 import { Tooltip } from '@mui/material'
-import { Select } from '../../../components/Select'
-import { EditFaturamentoDialog } from './EditFaturamentoDialog'
-import { NewFaturamentoDialog } from './NewFaturamentoDialog'
-import { months, stores, years } from '../../../services/api'
+import { Select } from '../components/Select'
+import { months, stores, years } from '../services/api'
 import { Add, Edit } from '@mui/icons-material'
 import { useContext, useState } from 'react'
-import { HomeContext } from '../../../contexts/HomeContext'
+import { HomeContext } from '../contexts/HomeContext'
 
-export function ToolBar() {
+interface DialogProps {
+  open: boolean
+  onClose: () => void
+}
+
+interface ToolBarProps {
+  EditDialog: React.ComponentType<DialogProps>
+  NewDialog: React.ComponentType<DialogProps>
+}
+
+export function ToolBar({ EditDialog, NewDialog }: ToolBarProps) {
   const {
     selectedMonth,
     selectedYear,
@@ -16,15 +24,15 @@ export function ToolBar() {
     handleStoreOnChange,
     handleYearOnChange,
   } = useContext(HomeContext)
-  const [open, setOpen] = useState<boolean>(false)
+  const [newOpen, setNewOpen] = useState<boolean>(false)
   const [editOpen, setEditOpen] = useState<boolean>(false)
 
   function handleNewFaturamentoOnClick() {
-    setOpen(true)
+    setNewOpen(true)
   }
 
   function handleCloseFaturamentoDialog() {
-    setOpen(false)
+    setNewOpen(false)
   }
 
   function handleOnClickEditFaturamento() {
@@ -68,10 +76,11 @@ export function ToolBar() {
           <Edit />
         </button>
       </Tooltip>
-      <EditFaturamentoDialog
+      <EditDialog open={editOpen} onClose={handleCloseEditFaturamentoDialog} />
+      {/* <EditFaturamentoDialog
         open={editOpen}
         onClose={handleCloseEditFaturamentoDialog}
-      />
+      /> */}
       <Tooltip title="Adicionar novo faturamento" placement="right">
         <button
           onClick={handleNewFaturamentoOnClick}
@@ -80,10 +89,7 @@ export function ToolBar() {
           <Add />
         </button>
       </Tooltip>
-      <NewFaturamentoDialog
-        open={open}
-        onClose={handleCloseFaturamentoDialog}
-      />
+      <NewDialog open={newOpen} onClose={handleCloseFaturamentoDialog} />
     </div>
   )
 }

@@ -4,8 +4,10 @@ import { AlertComponent } from '../../components/AlertComponent'
 import { auth } from '../../services/firebase'
 import { useNavigate } from 'react-router-dom'
 import { FaturamentoMensal } from './components/FaturamentoMensal'
-import { ToolBar } from './components/ToolBar'
+import { ToolBar } from '../../components/ToolBar'
 import { DailyValue } from './components/DailyValue'
+import { EditFaturamentoDialog } from './components/EditFaturamentoDialog'
+import { NewFaturamentoDialog } from './components/NewFaturamentoDialog'
 
 export function Faturamento() {
   const { severity, isAlertOpen, handleAlertClose } = useContext(HomeContext)
@@ -43,7 +45,10 @@ export function Faturamento() {
         <h1 className="text-3xl ">Faturamento</h1>
       </header>
       <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
-        <ToolBar />
+        <ToolBar
+          EditDialog={EditFaturamentoDialog}
+          NewDialog={NewFaturamentoDialog}
+        />
         <FaturamentoMensal />
         <DailyValue />
         <AlertComponent
