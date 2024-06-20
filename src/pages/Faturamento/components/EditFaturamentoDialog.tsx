@@ -10,7 +10,7 @@ import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { BasicNumberField } from '../../../components/BasicNumberField'
 import { Select } from '../../../components/Select'
 import { FaturamentoClass, months, years } from '../../../services/api'
-import { FaturamentoContext } from '../../../contexts/HomeContext'
+import { HomeContext } from '../../../contexts/HomeContext'
 
 interface EditFaturamentoDialogProps {
   open: boolean
@@ -22,7 +22,7 @@ export function EditFaturamentoDialog({
   onClose,
 }: EditFaturamentoDialogProps) {
   const { lastMonthFilled, handleReload, selectedStore, handleAlertSeverity } =
-    useContext(FaturamentoContext)
+    useContext(HomeContext)
   const [value, setValue] = useState<string>('')
   const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedYear, setSelectedYear] = useState('')

@@ -1,6 +1,18 @@
-import { ChangeEvent, ReactNode, createContext, useState } from 'react'
+import {
+  ChangeEvent,
+  ReactNode,
+  createContext,
+  useEffect,
+  useState,
+} from 'react'
 import { Severity } from '../components/AlertComponent'
-import { stores, years } from '../services/api'
+import { FaturamentoClass, months, stores, years } from '../services/api'
+
+export interface DataValue {
+  values: number[]
+  growth: (string | number)[]
+  dates: string[]
+}
 
 interface HomeContextProviderProps {
   children: ReactNode
@@ -14,14 +26,16 @@ interface HomeContextType {
   selectedStore: string
   selectedYear: string
   selectedMonth: string
-  lastMonthFilled?: number
+  lastMonthFilled: number | undefined
+  monthsMensalData: DataValue | undefined
+  yearsMensalData: DataValue | undefined
+  yearsDailyValueData: DataValue | undefined
+  monthsDailyValueData: DataValue | undefined
   handleReload: () => void
   handleAlertSeverity: (severity: Severity) => void
   handleMonthOnChange: (event: ChangeEvent<HTMLSelectElement>) => void
   handleYearOnChange: (event: ChangeEvent<HTMLSelectElement>) => void
   handleStoreOnChange: (event: ChangeEvent<HTMLSelectElement>) => void
-  handleLastMonthFilled: (value: number) => void
-  handleEndReload: () => void
 }
 export const HomeContext = createContext({} as HomeContextType)
 
@@ -32,18 +46,82 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   const [selectedYear, setSelectedYear] = useState<string>(
     years[years.length - 1],
   )
+
+  const [yearsMensalData, setYearsMensalData] = useState<DataValue | undefined>(
+    {
+      values: [],
+      growth: [],
+      dates: [],
+    },
+  )
+  const [monthsMensalData, setMonthsMensalData] = useState<
+    DataValue | undefined
+  >({
+    values: [],
+    growth: [],
+    dates: [],
+  })
+  const [yearsDailyValueData, setYearsDailyValueData] = useState<
+    DataValue | undefined
+  >({ values: [], growth: [], dates: [] })
+  const [monthsDailyValueData, setMonthsDailyValueData] = useState<
+    DataValue | undefined
+  >({ values: [], growth: [], dates: [] })
   const [selectedStore, setselectedStore] = useState<string>(stores[0])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [severity, setSeverity] = useState<Severity>()
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
 
-  function handleLastMonthFilled(value: number) {
-    setLastMonthFilled(value)
-  }
+  // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
+  useEffect(() => {
+    async function fetchLastMonthFilled() {
+      const lastMonth = await FaturamentoClass.getLastMonthFilled(selectedStore)
+      setLastMonthFilled(lastMonth)
+      setSelectedMonth(months[lastMonth])
+      setReload(false)
+    }
+    fetchLastMonthFilled()
+  }, [reload, selectedStore])
 
-  function handleEndReload() {
-    setReload(false)
-  }
+  // Busca no db os dados assim que carrega a página e toda vez que o usuário selecionar mês ou ano diferentes
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (lastMonthFilled) {
+          const responseDailyValueYears =
+            await FaturamentoClass.getYearsDailyValueValues(
+              selectedStore,
+              selectedMonth,
+            )
+          const responseYears = await FaturamentoClass.getYearsValues(
+            selectedStore,
+            selectedMonth,
+          )
+          // console.log(response)
+
+          const responseDailyValueMonths =
+            await FaturamentoClass.getMonthsDailyValueValues(
+              selectedStore,
+              selectedMonth,
+              selectedYear,
+            )
+          const responseMonths = await FaturamentoClass.getMonthsValues(
+            selectedStore,
+            selectedMonth,
+            selectedYear,
+          )
+          // console.log(response)
+          setMonthsDailyValueData(responseDailyValueMonths)
+          setMonthsMensalData(responseMonths)
+          setYearsMensalData(responseYears)
+          setYearsDailyValueData(responseDailyValueYears)
+
+          setIsLoading(false)
+        }
+      } catch (error) {}
+    }
+    fetchData()
+  }, [isLoading, selectedStore, selectedMonth, selectedYear, lastMonthFilled])
 
   function handleReload() {
     setReload(true)
@@ -83,13 +161,15 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
         selectedMonth,
         selectedYear,
         lastMonthFilled,
+        monthsMensalData,
+        yearsMensalData,
+        monthsDailyValueData,
+        yearsDailyValueData,
         handleReload,
-        handleEndReload,
         handleMonthOnChange,
         handleYearOnChange,
         handleStoreOnChange,
         handleAlertSeverity,
-        handleLastMonthFilled,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 import { Table } from './Table'
 import { DataValue } from '../Faturamento'
 import { useContext } from 'react'
-import { FaturamentoContext } from '../../../contexts/HomeContext'
+import { HomeContext } from '../../../contexts/HomeContext'
 
 interface FaturamentoMensalProps {
   yearsData: DataValue | undefined
@@ -12,7 +12,7 @@ export function FaturamentoMensal({
   yearsData,
   monthsData,
 }: FaturamentoMensalProps) {
-  const { isLoading } = useContext(FaturamentoContext)
+  const { isLoading } = useContext(HomeContext)
 
   return (
     <div className="m-2 flex w-11/12 flex-1 flex-col items-center justify-center rounded-3xl bg-bluesr-500 p-4">

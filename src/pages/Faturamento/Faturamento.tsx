@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react'
-import { FaturamentoClass, months } from '../../services/api'
 import { HomeContext } from '../../contexts/HomeContext'
 import { AlertComponent } from '../../components/AlertComponent'
 import { auth } from '../../services/firebase'
@@ -8,47 +7,22 @@ import { FaturamentoMensal } from './components/FaturamentoMensal'
 import { ToolBar } from './components/ToolBar'
 import { DailyValue } from './components/DailyValue'
 
-export interface DataValue {
-  values: number[]
-  growth: (string | number)[]
-  dates: string[]
-}
-
 export function Faturamento() {
   const {
-    reload,
-    isLoading,
     selectedMonth,
     selectedStore,
     selectedYear,
-    lastMonthFilled,
+    severity,
     isAlertOpen,
+    monthsMensalData,
+    yearsMensalData,
+    monthsDailyValueData,
+    yearsDailyValueData,
     handleAlertSeverity,
     handleMonthOnChange,
-    handleReload,
-    handleEndReload,
     handleStoreOnChange,
     handleYearOnChange,
-    handleLastMonthFilled,
-    severity,
   } = useContext(HomeContext)
-
-  const [yearsData, setYearsData] = useState<DataValue | undefined>({
-    values: [],
-    growth: [],
-    dates: [],
-  })
-  const [monthsData, setMonthsData] = useState<DataValue | undefined>({
-    values: [],
-    growth: [],
-    dates: [],
-  })
-  const [yearsDailyValueData, setYearsDailyValueData] = useState<
-    DataValue | undefined
-  >({ values: [], growth: [], dates: [] })
-  const [monthsDailyValueData, setMonthsDailyValueData] = useState<
-    DataValue | undefined
-  >({ values: [], growth: [], dates: [] })
 
   const navigate = useNavigate()
 
@@ -77,57 +51,6 @@ export function Faturamento() {
     closeAlert()
   }, [isAlertOpen])
 
-  // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
-  useEffect(() => {
-    async function fetchLastMonthFilled() {
-      const lastMonth = await FaturamentoClass.getLastMonthFilled(selectedStore)
-      handleLastMonthFilled(lastMonth)
-      setSelectedMonth(months[lastMonth])
-      handleEndReload()
-    }
-    fetchLastMonthFilled()
-  }, [handleEndReload, handleLastMonthFilled, reload, selectedStore])
-
-  // Busca no db os dados assim que carrega a página e toda vez que o usuário selecionar mês ou ano diferentes
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        if (lastMonthFilled) {
-          const responseDailyValueYears =
-            await FaturamentoClass.getYearsDailyValueValues(
-              selectedStore,
-              selectedMonth,
-            )
-          const responseYears = await FaturamentoClass.getYearsValues(
-            selectedStore,
-            selectedMonth,
-          )
-          // console.log(response)
-
-          const responseDailyValueMonths =
-            await FaturamentoClass.getMonthsDailyValueValues(
-              selectedStore,
-              selectedMonth,
-              selectedYear,
-            )
-          const responseMonths = await FaturamentoClass.getMonthsValues(
-            selectedStore,
-            selectedMonth,
-            selectedYear,
-          )
-          // console.log(response)
-          setMonthsDailyValueData(responseDailyValueMonths)
-          setMonthsData(responseMonths)
-          setYearsData(responseYears)
-          setYearsDailyValueData(responseDailyValueYears)
-
-          setIsLoading(false)
-        }
-      } catch (error) {}
-    }
-    fetchData()
-  }, [isLoading, selectedStore, selectedMonth, selectedYear, lastMonthFilled])
-
   function handleAlertClose() {
     setIsAlertOpen(false)
   }
@@ -146,7 +69,10 @@ export function Faturamento() {
           handleMonthOnChange={handleMonthOnChange}
           handleYearOnChange={handleYearOnChange}
         />
-        <FaturamentoMensal yearsData={yearsData} monthsData={monthsData} />
+        <FaturamentoMensal
+          yearsData={yearsMensalData}
+          monthsData={monthsMensalData}
+        />
         <DailyValue
           yearsData={yearsDailyValueData}
           monthsData={monthsDailyValueData}
