@@ -27,19 +27,19 @@ export function ToolBar({ EditDialog, NewDialog }: ToolBarProps) {
   const [newOpen, setNewOpen] = useState<boolean>(false)
   const [editOpen, setEditOpen] = useState<boolean>(false)
 
-  function handleNewFaturamentoOnClick() {
+  function handleNewOnClick() {
     setNewOpen(true)
   }
 
-  function handleCloseFaturamentoDialog() {
+  function handleCloseDialog() {
     setNewOpen(false)
   }
 
-  function handleOnClickEditFaturamento() {
+  function handleOnClickEdit() {
     setEditOpen(true)
   }
 
-  function handleCloseEditFaturamentoDialog() {
+  function handleCloseEditDialog() {
     setEditOpen(false)
   }
 
@@ -68,28 +68,24 @@ export function ToolBar({ EditDialog, NewDialog }: ToolBarProps) {
           options={years}
         />
       </div>
-      <Tooltip title="Editar faturamento" placement="right">
+      <Tooltip title="Editar " placement="top">
         <button
-          onClick={handleOnClickEditFaturamento}
+          onClick={handleOnClickEdit}
           className="flex h-fit items-center rounded-full p-1 transition-all hover:bg-bluesr-500"
         >
           <Edit />
         </button>
       </Tooltip>
-      <EditDialog open={editOpen} onClose={handleCloseEditFaturamentoDialog} />
-      {/* <EditFaturamentoDialog
-        open={editOpen}
-        onClose={handleCloseEditFaturamentoDialog}
-      /> */}
-      <Tooltip title="Adicionar novo faturamento" placement="right">
+      <EditDialog open={editOpen} onClose={handleCloseEditDialog} />
+      <Tooltip title="Adicionar novo" placement="right">
         <button
-          onClick={handleNewFaturamentoOnClick}
+          onClick={handleNewOnClick}
           className="flex h-fit items-center rounded-full p-1 transition-all hover:bg-bluesr-500"
         >
           <Add />
         </button>
       </Tooltip>
-      <NewDialog open={newOpen} onClose={handleCloseFaturamentoDialog} />
+      <NewDialog open={newOpen} onClose={handleCloseDialog} />
     </div>
   )
 }
