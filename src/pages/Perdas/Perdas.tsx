@@ -4,8 +4,9 @@ import { AlertComponent } from '../../components/AlertComponent'
 import { auth } from '../../services/firebase'
 import { useNavigate } from 'react-router-dom'
 import { ToolBar } from '../../components/ToolBar'
+import { PerdasMensal } from './components/PerdasMensal'
 
-export function Faturamento() {
+export function Perdas() {
   const { severity, isAlertOpen, handleAlertClose, monthsMensalData } =
     useContext(HomeContext)
 
@@ -39,12 +40,13 @@ export function Faturamento() {
   return (
     <div className="flex w-auto flex-1 flex-col overflow-hidden">
       <header className="flex items-center border-b border-b-aliceblue p-4">
-        <h1 className="text-3xl ">Faturamento</h1>
+        <h1 className="text-3xl ">Perdas</h1>
       </header>
       <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
-        <ToolBar EditDialog={} NewDialog={} />
+        {/* <ToolBar EditDialog={} NewDialog={} /> */}
         {/* <FaturamentoMensal />
         <DailyValue /> */}
+        <PerdasMensal />
         <AlertComponent
           open={isAlertOpen}
           onClose={handleAlertClose}

@@ -1,9 +1,21 @@
-import { Table } from './Table'
-import { useContext } from 'react'
+import { Table } from '../../../components/Table'
+import { useContext, useEffect, useState } from 'react'
 import { HomeContext } from '../../../contexts/HomeContext'
 
 export function PerdasMensal() {
-  const { isLoading, monthsMensalData } = useContext(HomeContext)
+  const { isLoading, monthsMensalData, monthsPerdasData } =
+    useContext(HomeContext)
+
+  const [percentage, setPercentage] = useState<number[]>([])
+
+  useEffect(() => {
+    try {
+      const porcent = monthsPerdasData?.values.map((num, index) =>
+        Number(((num / monthsMensalData!.values[index]) * 100).toFixed(2)),
+      )
+      setPercentage(porcent!)
+    } catch (error) {}
+  }, [monthsMensalData, monthsPerdasData])
 
   return (
     <div className="m-2 flex w-11/12 flex-1 flex-col items-center justify-center rounded-3xl bg-bluesr-500 p-4">
@@ -13,9 +25,10 @@ export function PerdasMensal() {
           Últimos meses
         </h3>
         <Table
-          headers={monthsMensalData!.dates}
-          rows={[monthsMensalData!.values, monthsMensalData!.growth]}
+          headers={monthsPerdasData!.dates}
+          rows={[monthsPerdasData!.values, percentage]}
           isLoading={isLoading}
+          isPerdas={true}
         ></Table>
       </article>
     </div>

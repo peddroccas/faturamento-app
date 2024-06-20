@@ -6,11 +6,17 @@ import {
   useState,
 } from 'react'
 import { Severity } from '../components/AlertComponent'
-import { FaturamentoClass, months, stores, years } from '../services/api'
+import {
+  FaturamentoClass,
+  PerdasClass,
+  months,
+  stores,
+  years,
+} from '../services/api'
 
 export interface DataValue {
   values: number[]
-  growth: (string | number)[]
+  growth?: (string | number)[]
   dates: string[]
 }
 
@@ -27,10 +33,15 @@ interface HomeContextType {
   selectedYear: string
   selectedMonth: string
   lastMonthFilled: number | undefined
+  // Faturamento
   monthsMensalData: DataValue | undefined
   yearsMensalData: DataValue | undefined
   yearsDailyValueData: DataValue | undefined
   monthsDailyValueData: DataValue | undefined
+  // Perdas
+  monthsPerdasData: DataValue | undefined
+  yearsPerdasData: DataValue | undefined
+
   handleReload: () => void
   handleAlertClose: () => void
   handleAlertSeverity: (severity: Severity) => void
@@ -80,6 +91,19 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
     growth: [],
     dates: [],
   })
+  const [yearsPerdasData, setYearsPerdasData] = useState<DataValue | undefined>(
+    {
+      values: [],
+      dates: [],
+    },
+  )
+
+  const [monthsPerdasData, setMonthsPerdasData] = useState<
+    DataValue | undefined
+  >({
+    values: [],
+    dates: [],
+  })
 
   // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
   useEffect(() => {
@@ -119,7 +143,12 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
             selectedMonth,
             selectedYear,
           )
-          console.log(responseMonths)
+          const responsePerdas = await PerdasClass.getMonthsValues(
+            selectedStore,
+            selectedMonth,
+            selectedYear,
+          )
+          setMonthsPerdasData(responsePerdas)
           setMonthsDailyValueData(responseDailyValueMonths)
           setMonthsMensalData(responseMonths)
           setYearsMensalData(responseYears)
@@ -162,10 +191,6 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
       setSeverity('success')
     }
   }
-
-  console.log(yearsDailyValueData)
-  console.log(monthsDailyValueData)
-
   return (
     <HomeContext.Provider
       value={{
@@ -181,6 +206,8 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
         yearsMensalData,
         monthsDailyValueData,
         yearsDailyValueData,
+        monthsPerdasData,
+        yearsPerdasData,
         handleReload,
         handleAlertClose,
         handleMonthOnChange,
