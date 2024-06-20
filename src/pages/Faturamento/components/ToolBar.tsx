@@ -4,25 +4,18 @@ import { EditFaturamentoDialog } from './EditFaturamentoDialog'
 import { NewFaturamentoDialog } from './NewFaturamentoDialog'
 import { months, stores, years } from '../../../services/api'
 import { Add, Edit } from '@mui/icons-material'
-import { ChangeEvent, useState } from 'react'
+import { useContext, useState } from 'react'
+import { HomeContext } from '../../../contexts/HomeContext'
 
-interface ToolBarProps {
-  selectedMonth: string
-  selectedYear: string
-  selectedStore: string
-  handleMonthOnChange: (event: ChangeEvent<HTMLSelectElement>) => void
-  handleYearOnChange: (event: ChangeEvent<HTMLSelectElement>) => void
-  handleStoreOnChange: (event: ChangeEvent<HTMLSelectElement>) => void
-}
-
-export function ToolBar({
-  selectedMonth,
-  selectedYear,
-  selectedStore,
-  handleMonthOnChange,
-  handleYearOnChange,
-  handleStoreOnChange,
-}: ToolBarProps) {
+export function ToolBar() {
+  const {
+    selectedMonth,
+    selectedYear,
+    selectedStore,
+    handleMonthOnChange,
+    handleStoreOnChange,
+    handleYearOnChange,
+  } = useContext(HomeContext)
   const [open, setOpen] = useState<boolean>(false)
   const [editOpen, setEditOpen] = useState<boolean>(false)
 

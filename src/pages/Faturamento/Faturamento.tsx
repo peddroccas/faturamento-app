@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { HomeContext } from '../../contexts/HomeContext'
 import { AlertComponent } from '../../components/AlertComponent'
 import { auth } from '../../services/firebase'
@@ -8,21 +8,7 @@ import { ToolBar } from './components/ToolBar'
 import { DailyValue } from './components/DailyValue'
 
 export function Faturamento() {
-  const {
-    selectedMonth,
-    selectedStore,
-    selectedYear,
-    severity,
-    isAlertOpen,
-    monthsMensalData,
-    yearsMensalData,
-    monthsDailyValueData,
-    yearsDailyValueData,
-    handleAlertSeverity,
-    handleMonthOnChange,
-    handleStoreOnChange,
-    handleYearOnChange,
-  } = useContext(HomeContext)
+  const { severity, isAlertOpen, handleAlertClose } = useContext(HomeContext)
 
   const navigate = useNavigate()
 
@@ -43,17 +29,13 @@ export function Faturamento() {
       try {
         if (isAlertOpen) {
           setTimeout(() => {
-            setIsAlertOpen(false)
+            handleAlertClose()
           }, 5000)
         }
       } catch (error) {}
     }
     closeAlert()
-  }, [isAlertOpen])
-
-  function handleAlertClose() {
-    setIsAlertOpen(false)
-  }
+  }, [handleAlertClose, isAlertOpen])
 
   return (
     <div className="flex w-auto flex-1 flex-col overflow-hidden">
@@ -61,22 +43,9 @@ export function Faturamento() {
         <h1 className="text-3xl ">Faturamento</h1>
       </header>
       <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
-        <ToolBar
-          selectedMonth={selectedMonth}
-          selectedYear={selectedYear}
-          selectedStore={selectedStore}
-          handleStoreOnChange={handleStoreOnChange}
-          handleMonthOnChange={handleMonthOnChange}
-          handleYearOnChange={handleYearOnChange}
-        />
-        <FaturamentoMensal
-          yearsData={yearsMensalData}
-          monthsData={monthsMensalData}
-        />
-        <DailyValue
-          yearsData={yearsDailyValueData}
-          monthsData={monthsDailyValueData}
-        />
+        <ToolBar />
+        <FaturamentoMensal />
+        <DailyValue />
         <AlertComponent
           open={isAlertOpen}
           onClose={handleAlertClose}

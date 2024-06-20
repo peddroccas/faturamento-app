@@ -32,6 +32,7 @@ interface HomeContextType {
   yearsDailyValueData: DataValue | undefined
   monthsDailyValueData: DataValue | undefined
   handleReload: () => void
+  handleAlertClose: () => void
   handleAlertSeverity: (severity: Severity) => void
   handleMonthOnChange: (event: ChangeEvent<HTMLSelectElement>) => void
   handleYearOnChange: (event: ChangeEvent<HTMLSelectElement>) => void
@@ -46,7 +47,10 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   const [selectedYear, setSelectedYear] = useState<string>(
     years[years.length - 1],
   )
-
+  const [selectedStore, setselectedStore] = useState<string>(stores[0])
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [severity, setSeverity] = useState<Severity>()
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
   const [yearsMensalData, setYearsMensalData] = useState<DataValue | undefined>(
     {
       values: [],
@@ -54,6 +58,7 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
       dates: [],
     },
   )
+
   const [monthsMensalData, setMonthsMensalData] = useState<
     DataValue | undefined
   >({
@@ -63,14 +68,18 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   })
   const [yearsDailyValueData, setYearsDailyValueData] = useState<
     DataValue | undefined
-  >({ values: [], growth: [], dates: [] })
+  >({
+    values: [],
+    growth: [],
+    dates: [],
+  })
   const [monthsDailyValueData, setMonthsDailyValueData] = useState<
     DataValue | undefined
-  >({ values: [], growth: [], dates: [] })
-  const [selectedStore, setselectedStore] = useState<string>(stores[0])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [severity, setSeverity] = useState<Severity>()
-  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
+  >({
+    values: [],
+    growth: [],
+    dates: [],
+  })
 
   // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
   useEffect(() => {
@@ -97,7 +106,7 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
             selectedStore,
             selectedMonth,
           )
-          // console.log(response)
+          console.log(responseYears)
 
           const responseDailyValueMonths =
             await FaturamentoClass.getMonthsDailyValueValues(
@@ -110,7 +119,7 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
             selectedMonth,
             selectedYear,
           )
-          // console.log(response)
+          console.log(responseMonths)
           setMonthsDailyValueData(responseDailyValueMonths)
           setMonthsMensalData(responseMonths)
           setYearsMensalData(responseYears)
@@ -122,6 +131,10 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
     }
     fetchData()
   }, [isLoading, selectedStore, selectedMonth, selectedYear, lastMonthFilled])
+
+  function handleAlertClose() {
+    setIsAlertOpen(false)
+  }
 
   function handleReload() {
     setReload(true)
@@ -150,6 +163,9 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
     }
   }
 
+  console.log(yearsDailyValueData)
+  console.log(monthsDailyValueData)
+
   return (
     <HomeContext.Provider
       value={{
@@ -166,6 +182,7 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
         monthsDailyValueData,
         yearsDailyValueData,
         handleReload,
+        handleAlertClose,
         handleMonthOnChange,
         handleYearOnChange,
         handleStoreOnChange,

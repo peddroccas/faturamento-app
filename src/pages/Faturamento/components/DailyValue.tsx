@@ -1,15 +1,10 @@
 import { Table } from './Table'
-import { DataValue } from '../Faturamento'
-import { useContext } from 'react'
 import { HomeContext } from '../../../contexts/HomeContext'
+import { useContext } from 'react'
 
-interface DailyValueProps {
-  yearsData: DataValue | undefined
-  monthsData: DataValue | undefined
-}
-
-export function DailyValue({ yearsData, monthsData }: DailyValueProps) {
-  const { isLoading } = useContext(HomeContext)
+export function DailyValue() {
+  const { isLoading, yearsDailyValueData, monthsDailyValueData } =
+    useContext(HomeContext)
 
   return (
     <div className="m-2 flex w-11/12 flex-1 flex-col items-center justify-center rounded-3xl bg-bluesr-500 p-4">
@@ -19,8 +14,8 @@ export function DailyValue({ yearsData, monthsData }: DailyValueProps) {
           Últimos meses
         </h3>
         <Table
-          headers={monthsData!.dates}
-          rows={[monthsData!.values, monthsData!.growth]}
+          headers={monthsDailyValueData!.dates}
+          rows={[monthsDailyValueData!.values, monthsDailyValueData!.growth]}
           isLoading={isLoading}
         ></Table>
       </article>
@@ -29,8 +24,8 @@ export function DailyValue({ yearsData, monthsData }: DailyValueProps) {
           Últimos anos
         </h3>
         <Table
-          headers={yearsData!.dates}
-          rows={[yearsData!.values, yearsData!.growth]}
+          headers={yearsDailyValueData!.dates}
+          rows={[yearsDailyValueData!.values, yearsDailyValueData!.growth]}
           isLoading={isLoading}
         ></Table>
       </article>
