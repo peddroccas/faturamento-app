@@ -77,8 +77,6 @@ export function NewPerdasDialog({ open, onClose }: NewPerdasDialogProps) {
           <Select
             className="p-1"
             id="months"
-            disabledOptions={lastMonthFilled}
-            reverse
             value={selectedMonth}
             onChange={handleMonthOnChange}
             options={months}
