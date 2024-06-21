@@ -130,8 +130,6 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
             selectedStore,
             selectedMonth,
           )
-          console.log(responseYears)
-
           const responseDailyValueMonths =
             await FaturamentoClass.getMonthsDailyValueValues(
               selectedStore,
@@ -143,11 +141,16 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
             selectedMonth,
             selectedYear,
           )
+          const responsePerdasYears = await PerdasClass.getYearsValues(
+            selectedStore,
+            selectedMonth,
+          )
           const responsePerdas = await PerdasClass.getMonthsValues(
             selectedStore,
             selectedMonth,
             selectedYear,
           )
+          setYearsPerdasData(responsePerdasYears)
           setMonthsPerdasData(responsePerdas)
           setMonthsDailyValueData(responseDailyValueMonths)
           setMonthsMensalData(responseMonths)

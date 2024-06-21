@@ -31,7 +31,7 @@ export function ToolBar({ EditDialog, NewDialog }: ToolBarProps) {
     setNewOpen(true)
   }
 
-  function handleCloseDialog() {
+  function handleCloseNewDialog() {
     setNewOpen(false)
   }
 
@@ -85,7 +85,7 @@ export function ToolBar({ EditDialog, NewDialog }: ToolBarProps) {
           <Add />
         </button>
       </Tooltip>
-      <NewDialog open={newOpen} onClose={handleCloseDialog} />
+      <NewDialog open={newOpen} onClose={handleCloseNewDialog} />
     </div>
   )
 }

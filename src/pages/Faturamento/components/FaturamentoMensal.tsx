@@ -15,7 +15,7 @@ export function FaturamentoMensal() {
         </h3>
         <Table
           headers={yearsMensalData!.dates}
-          rows={[yearsMensalData!.values, yearsMensalData!.growth]}
+          rows={[yearsMensalData!.values, yearsMensalData!.growth!]}
           isLoading={isLoading}
         ></Table>
       </article>
@@ -25,7 +25,7 @@ export function FaturamentoMensal() {
         </h3>
         <Table
           headers={monthsMensalData!.dates}
-          rows={[monthsMensalData!.values, monthsMensalData!.growth]}
+          rows={[monthsMensalData!.values, monthsMensalData!.growth!]}
           isLoading={isLoading}
         ></Table>
       </article>

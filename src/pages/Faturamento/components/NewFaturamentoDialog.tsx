@@ -78,19 +78,20 @@ export function NewFaturamentoDialog({
         </DialogContentText>
         <div className="flex h-8 gap-2">
           <Select
+            className="p-1"
             id="months"
             value={selectedMonth}
             disabledOptions={lastMonthFilled}
             reverse
-            options={months}
             onChange={handleMonthOnChange}
+            options={months}
           />
           <Select
+            className="p-1"
             id="years"
             value={selectedYear}
-            disabledOptions={years.length + 1}
-            options={years}
             onChange={handleYearOnChange}
+            options={years}
           />
         </div>
         <BasicNumberField value={value} onChange={handleOnChangeValue} />

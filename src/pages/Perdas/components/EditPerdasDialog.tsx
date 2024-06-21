@@ -9,18 +9,15 @@ import {
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { BasicNumberField } from '../../../components/BasicNumberField'
 import { Select } from '../../../components/Select'
-import { FaturamentoClass, months, years } from '../../../services/api'
+import { PerdasClass, months, years } from '../../../services/api'
 import { HomeContext } from '../../../contexts/HomeContext'
 
-interface EditFaturamentoDialogProps {
+interface EditPerdaDialogProps {
   open: boolean
   onClose: () => void
 }
 
-export function EditFaturamentoDialog({
-  open,
-  onClose,
-}: EditFaturamentoDialogProps) {
+export function EditPerdasDialog({ open, onClose }: EditPerdaDialogProps) {
   const { lastMonthFilled, handleReload, selectedStore, handleAlertSeverity } =
     useContext(HomeContext)
   const [value, setValue] = useState<string>('')
@@ -30,7 +27,7 @@ export function EditFaturamentoDialog({
   useEffect(() => {
     async function fetchData() {
       if (lastMonthFilled) {
-        const month = await FaturamentoClass.getValues(
+        const month = await PerdasClass.getValues(
           selectedStore,
           selectedYear,
           selectedMonth,
@@ -41,10 +38,10 @@ export function EditFaturamentoDialog({
     fetchData()
   }, [lastMonthFilled, selectedMonth, selectedStore, selectedYear])
 
-  async function handleSubmitNewFaturamento() {
+  async function handleSubmitNewPerda() {
     try {
       const valueNumber = Number(value.replace(/[^\d,]/g, '').replace(',', '.'))
-      await FaturamentoClass.setFaturamentoMonth(
+      await PerdasClass.setPerdaMonth(
         valueNumber,
         selectedStore,
         selectedMonth,
@@ -80,17 +77,17 @@ export function EditFaturamentoDialog({
 
   return (
     <Dialog open={open} onClose={handleOnClose} className="">
-      <DialogTitle className="text-bluesr-500">Editar faturamento</DialogTitle>
+      <DialogTitle className="text-bluesr-500">Editar perda</DialogTitle>
       <DialogContent className="flex flex-col gap-3 !pb-2 !pt-2">
         <DialogContentText>
-          Selecione a data e preencha o valor
+          Selecione a loja, e data, e preencha o valor
         </DialogContentText>
         <div className="flex h-8 gap-2">
           <Select
             className="p-1"
             id="months"
-            disabledOptions={lastMonthFilled}
             value={selectedMonth}
+            disabledOptions={lastMonthFilled}
             onChange={handleMonthOnChange}
             options={months}
           />
@@ -113,7 +110,7 @@ export function EditFaturamentoDialog({
           Cancelar
         </Button>
         <Button
-          onClick={handleSubmitNewFaturamento}
+          onClick={handleSubmitNewPerda}
           type="submit"
           color="bluesr-500"
           disabled={!value}

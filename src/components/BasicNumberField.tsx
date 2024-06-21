@@ -4,7 +4,7 @@ import { BasicTextField, TextFieldProps } from './BasicTextField'
 export function BasicNumberField({
   value,
   onChange,
-  disabled,
+  disabled = false,
 }: TextFieldProps) {
   return (
     <NumericFormat
