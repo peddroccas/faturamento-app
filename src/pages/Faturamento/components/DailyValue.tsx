@@ -15,7 +15,7 @@ export function DailyValue() {
         </h3>
         <Table
           headers={monthsDailyValueData!.dates}
-          rows={[monthsDailyValueData!.values, monthsDailyValueData!.growth]}
+          rows={[monthsDailyValueData!.values, monthsDailyValueData!.growth!]}
           isLoading={isLoading}
         ></Table>
       </article>
@@ -25,7 +25,7 @@ export function DailyValue() {
         </h3>
         <Table
           headers={yearsDailyValueData!.dates}
-          rows={[yearsDailyValueData!.values, yearsDailyValueData!.growth]}
+          rows={[yearsDailyValueData!.values, yearsDailyValueData!.growth!]}
           isLoading={isLoading}
         ></Table>
       </article>
