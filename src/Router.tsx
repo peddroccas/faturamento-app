@@ -4,7 +4,7 @@ import { Home } from './pages/Home'
 import { HeaderLayout } from './layouts/HeaderLayout'
 import { HomeLayout } from './layouts/HomeLayout'
 import { Faturamento } from './pages/Faturamento/Faturamento'
-import { Perdas } from './pages/Perdas'
+import { Perdas } from './pages/Perdas/Perdas'
 
 export function Router() {
   return (

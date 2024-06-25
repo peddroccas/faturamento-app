@@ -1,18 +1,10 @@
-import { Table } from './Table'
-import { DataValue } from '../Faturamento'
+import { Table } from '../../../components/Table'
 import { useContext } from 'react'
-import { FaturamentoContext } from '../../../contexts/FaturamentoContext'
+import { HomeContext } from '../../../contexts/HomeContext'
 
-interface FaturamentoMensalProps {
-  yearsData: DataValue | undefined
-  monthsData: DataValue | undefined
-}
-
-export function FaturamentoMensal({
-  yearsData,
-  monthsData,
-}: FaturamentoMensalProps) {
-  const { isLoading } = useContext(FaturamentoContext)
+export function FaturamentoMensal() {
+  const { isLoading, yearsMensalData, monthsMensalData } =
+    useContext(HomeContext)
 
   return (
     <div className="m-2 flex w-11/12 flex-1 flex-col items-center justify-center rounded-3xl bg-bluesr-500 p-4">
@@ -22,8 +14,8 @@ export function FaturamentoMensal({
           Últimos anos
         </h3>
         <Table
-          headers={yearsData!.dates}
-          rows={[yearsData!.values, yearsData!.growth]}
+          headers={yearsMensalData!.dates}
+          rows={[yearsMensalData!.values, yearsMensalData!.growth!]}
           isLoading={isLoading}
         ></Table>
       </article>
@@ -32,8 +24,8 @@ export function FaturamentoMensal({
           Últimos meses
         </h3>
         <Table
-          headers={monthsData!.dates}
-          rows={[monthsData!.values, monthsData!.growth]}
+          headers={monthsMensalData!.dates}
+          rows={[monthsMensalData!.values, monthsMensalData!.growth!]}
           isLoading={isLoading}
         ></Table>
       </article>

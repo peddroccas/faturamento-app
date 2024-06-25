@@ -9,8 +9,8 @@ import {
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { BasicNumberField } from '../../../components/BasicNumberField'
 import { Select } from '../../../components/Select'
-import { months, setFaturamentoMonth, years } from '../../../services/api'
-import { FaturamentoContext } from '../../../contexts/FaturamentoContext'
+import { months, FaturamentoClass, years } from '../../../services/api'
+import { HomeContext } from '../../../contexts/HomeContext'
 
 interface NewFaturamentoDialogProps {
   open: boolean
@@ -22,7 +22,7 @@ export function NewFaturamentoDialog({
   onClose,
 }: NewFaturamentoDialogProps) {
   const { lastMonthFilled, handleReload, selectedStore, handleAlertSeverity } =
-    useContext(FaturamentoContext)
+    useContext(HomeContext)
   const [value, setValue] = useState<string>('')
   const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
@@ -37,7 +37,7 @@ export function NewFaturamentoDialog({
   async function handleSubmitNewFaturamento() {
     try {
       const valueNumber = Number(value.replace(/[^\d,]/g, '').replace(',', '.'))
-      await setFaturamentoMonth(
+      await FaturamentoClass.setFaturamentoMonth(
         valueNumber,
         selectedStore,
         selectedMonth,
@@ -78,19 +78,20 @@ export function NewFaturamentoDialog({
         </DialogContentText>
         <div className="flex h-8 gap-2">
           <Select
+            className="p-1"
             id="months"
             value={selectedMonth}
             disabledOptions={lastMonthFilled}
             reverse
-            options={months}
             onChange={handleMonthOnChange}
+            options={months}
           />
           <Select
+            className="p-1"
             id="years"
             value={selectedYear}
-            disabledOptions={years.length + 1}
-            options={years}
             onChange={handleYearOnChange}
+            options={years}
           />
         </div>
         <BasicNumberField value={value} onChange={handleOnChangeValue} />

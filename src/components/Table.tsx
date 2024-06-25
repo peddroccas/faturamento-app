@@ -4,9 +4,10 @@ interface TableProps {
   headers: string[] | []
   rows: (number | string)[][]
   isLoading: boolean
+  isPerdas?: boolean
 }
 
-export function Table({ headers, rows, isLoading }: TableProps) {
+export function Table({ headers, rows, isLoading, isPerdas }: TableProps) {
   return (
     <div className="w-full p-4 font-montserrat">
       <div
@@ -42,7 +43,11 @@ export function Table({ headers, rows, isLoading }: TableProps) {
                   <tr key={rowIndex}>
                     {row.map((cell, cellIndex) => {
                       const bgColor =
-                        Number(cell) >= 0 ? 'bg-green-700' : 'bg-redsr-400'
+                        Number(cell) >= 0
+                          ? isPerdas
+                            ? 'bg-aliceblue-500 text-bluesr-400 font-medium'
+                            : 'bg-green-700'
+                          : 'bg-redsr-400'
                       const roundedClass = `
                         ${rowIndex === 0 && cellIndex === 0 ? 'rounded-tl-lg' : ''}
                         ${rowIndex === 0 && cellIndex === row.length - 1 ? 'rounded-tr-lg' : ''}
@@ -52,11 +57,11 @@ export function Table({ headers, rows, isLoading }: TableProps) {
                       return (
                         <td
                           key={cellIndex}
-                          className={`border border-aliceblue p-2 leading-4 ${cellIndex && rowIndex ? bgColor : 'bg-bluesr-400'} text-aliceblue ${roundedClass} `}
+                          className={`border border-aliceblue p-2 leading-4 ${rowIndex && (cellIndex || isPerdas) ? bgColor : 'bg-bluesr-400'} text-aliceblue ${roundedClass} `}
                         >
                           {rowIndex
                             ? cell.toLocaleString('pt-br') +
-                              (!cellIndex || !rowIndex ? '' : '%')
+                              (rowIndex && (cellIndex || isPerdas) ? '%' : '')
                             : cell.toLocaleString('pt-br', {
                                 style: 'currency',
                                 currency: 'BRL',

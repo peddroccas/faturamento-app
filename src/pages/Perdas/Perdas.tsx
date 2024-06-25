@@ -3,14 +3,21 @@ import { HomeContext } from '../../contexts/HomeContext'
 import { AlertComponent } from '../../components/AlertComponent'
 import { auth } from '../../services/firebase'
 import { useNavigate } from 'react-router-dom'
-import { FaturamentoMensal } from './components/FaturamentoMensal'
 import { ToolBar } from '../../components/ToolBar'
-import { DailyValue } from './components/DailyValue'
-import { EditFaturamentoDialog } from './components/EditFaturamentoDialog'
-import { NewFaturamentoDialog } from './components/NewFaturamentoDialog'
+import { PerdasMensal } from './components/PerdasMensal'
+import { EditPerdasDialog } from './components/EditPerdasDialog'
+import { NewPerdasDialog } from './components/NewPerdasDialog'
 
-export function Faturamento() {
-  const { severity, isAlertOpen, handleAlertClose } = useContext(HomeContext)
+export function Perdas() {
+  const {
+    severity,
+    isAlertOpen,
+    handleAlertClose,
+    handleAlertOpen,
+    handleAlertSeverity,
+    lastMonthFilled,
+    perdasLastMonthFilled,
+  } = useContext(HomeContext)
 
   const navigate = useNavigate()
 
@@ -39,18 +46,34 @@ export function Faturamento() {
     closeAlert()
   }, [handleAlertClose, isAlertOpen])
 
+  // Fecha alerta depois de 5 segundos
+  useEffect(() => {
+    function openAlert() {
+      try {
+        if (lastMonthFilled! > perdasLastMonthFilled!) {
+          handleAlertSeverity('warning')
+          handleAlertOpen()
+        }
+      } catch (error) {}
+    }
+    openAlert()
+  }, [
+    handleAlertClose,
+    handleAlertOpen,
+    handleAlertSeverity,
+    isAlertOpen,
+    lastMonthFilled,
+    perdasLastMonthFilled,
+  ])
+
   return (
     <div className="flex w-auto flex-1 flex-col overflow-hidden">
       <header className="flex items-center border-b border-b-aliceblue p-4">
-        <h1 className="text-3xl ">Faturamento</h1>
+        <h1 className="text-3xl ">Perdas</h1>
       </header>
       <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
-        <ToolBar
-          EditDialog={EditFaturamentoDialog}
-          NewDialog={NewFaturamentoDialog}
-        />
-        <FaturamentoMensal />
-        <DailyValue />
+        <ToolBar EditDialog={EditPerdasDialog} NewDialog={NewPerdasDialog} />
+        <PerdasMensal />
         <AlertComponent
           open={isAlertOpen}
           onClose={handleAlertClose}

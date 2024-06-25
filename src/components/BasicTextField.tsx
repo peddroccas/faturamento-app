@@ -28,6 +28,8 @@ export function BasicTextField({
         return 'Selecione'
       case 'value':
         return 'Valor'
+      case 'text':
+        return 'Valor'
       case 'dae':
         return 'Data'
     }

@@ -9,42 +9,36 @@ import {
 import { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { BasicNumberField } from '../../../components/BasicNumberField'
 import { Select } from '../../../components/Select'
-import { FaturamentoClass, months, years } from '../../../services/api'
+import { months, PerdasClass, years } from '../../../services/api'
 import { HomeContext } from '../../../contexts/HomeContext'
 
-interface EditFaturamentoDialogProps {
+interface NewPerdasDialogProps {
   open: boolean
   onClose: () => void
 }
 
-export function EditFaturamentoDialog({
-  open,
-  onClose,
-}: EditFaturamentoDialogProps) {
-  const { lastMonthFilled, handleReload, selectedStore, handleAlertSeverity } =
-    useContext(HomeContext)
+export function NewPerdasDialog({ open, onClose }: NewPerdasDialogProps) {
+  const {
+    perdasLastMonthFilled,
+    handleReload,
+    selectedStore,
+    handleAlertSeverity,
+  } = useContext(HomeContext)
   const [value, setValue] = useState<string>('')
   const [selectedMonth, setSelectedMonth] = useState('')
-  const [selectedYear, setSelectedYear] = useState('')
+  const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
 
   useEffect(() => {
-    async function fetchData() {
-      if (lastMonthFilled) {
-        const month = await FaturamentoClass.getValues(
-          selectedStore,
-          selectedYear,
-          selectedMonth,
-        )
-        setValue(String(month))
-      }
+    async function fetchLastMonthFilled() {
+      setSelectedMonth(months[perdasLastMonthFilled! + 1])
     }
-    fetchData()
-  }, [lastMonthFilled, selectedMonth, selectedStore, selectedYear])
+    fetchLastMonthFilled()
+  }, [perdasLastMonthFilled])
 
-  async function handleSubmitNewFaturamento() {
+  async function handleSubmitNewPerdas() {
     try {
       const valueNumber = Number(value.replace(/[^\d,]/g, '').replace(',', '.'))
-      await FaturamentoClass.setFaturamentoMonth(
+      await PerdasClass.setPerdaMonth(
         valueNumber,
         selectedStore,
         selectedMonth,
@@ -65,8 +59,6 @@ export function EditFaturamentoDialog({
 
   function handleOnClose() {
     setValue('')
-    setSelectedMonth('')
-    setSelectedYear('')
     onClose()
   }
 
@@ -80,7 +72,7 @@ export function EditFaturamentoDialog({
 
   return (
     <Dialog open={open} onClose={handleOnClose} className="">
-      <DialogTitle className="text-bluesr-500">Editar faturamento</DialogTitle>
+      <DialogTitle className="text-bluesr-500">Nova Perda</DialogTitle>
       <DialogContent className="flex flex-col gap-3 !pb-2 !pt-2">
         <DialogContentText>
           Selecione a data e preencha o valor
@@ -89,7 +81,6 @@ export function EditFaturamentoDialog({
           <Select
             className="p-1"
             id="months"
-            disabledOptions={lastMonthFilled}
             value={selectedMonth}
             onChange={handleMonthOnChange}
             options={months}
@@ -102,23 +93,19 @@ export function EditFaturamentoDialog({
             options={years}
           />
         </div>
-        <BasicNumberField
-          disabled={!(selectedMonth && selectedYear)}
-          value={value}
-          onChange={handleOnChangeValue}
-        />
+        <BasicNumberField value={value} onChange={handleOnChangeValue} />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleOnClose} color="redsr-400">
           Cancelar
         </Button>
         <Button
-          onClick={handleSubmitNewFaturamento}
+          onClick={handleSubmitNewPerdas}
           type="submit"
           color="bluesr-500"
           disabled={!value}
         >
-          Salvar
+          Cadastrar
         </Button>
       </DialogActions>
     </Dialog>
