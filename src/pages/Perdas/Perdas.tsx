@@ -9,7 +9,15 @@ import { EditPerdasDialog } from './components/EditPerdasDialog'
 import { NewPerdasDialog } from './components/NewPerdasDialog'
 
 export function Perdas() {
-  const { severity, isAlertOpen, handleAlertClose } = useContext(HomeContext)
+  const {
+    severity,
+    isAlertOpen,
+    handleAlertClose,
+    handleAlertOpen,
+    handleAlertSeverity,
+    lastMonthFilled,
+    perdasLastMonthFilled,
+  } = useContext(HomeContext)
 
   const navigate = useNavigate()
 
@@ -37,6 +45,26 @@ export function Perdas() {
     }
     closeAlert()
   }, [handleAlertClose, isAlertOpen])
+
+  // Fecha alerta depois de 5 segundos
+  useEffect(() => {
+    function openAlert() {
+      try {
+        if (lastMonthFilled! > perdasLastMonthFilled!) {
+          handleAlertSeverity('warning')
+          handleAlertOpen()
+        }
+      } catch (error) {}
+    }
+    openAlert()
+  }, [
+    handleAlertClose,
+    handleAlertOpen,
+    handleAlertSeverity,
+    isAlertOpen,
+    lastMonthFilled,
+    perdasLastMonthFilled,
+  ])
 
   return (
     <div className="flex w-auto flex-1 flex-col overflow-hidden">

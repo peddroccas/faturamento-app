@@ -29,6 +29,7 @@ interface HomeContextType {
   severity: Severity | undefined
   isLoading: boolean
   isAlertOpen: boolean
+  handleAlertOpen: () => void
   selectedStore: string
   selectedYear: string
   selectedMonth: string
@@ -41,6 +42,7 @@ interface HomeContextType {
   // Perdas
   monthsPerdasData: DataValue | undefined
   yearsPerdasData: DataValue | undefined
+  perdasLastMonthFilled: number | undefined
 
   handleReload: () => void
   handleAlertClose: () => void
@@ -54,6 +56,7 @@ export const HomeContext = createContext({} as HomeContextType)
 export function HomeContextProvider({ children }: HomeContextProviderProps) {
   const [reload, setReload] = useState<boolean>(false)
   const [lastMonthFilled, setLastMonthFilled] = useState<number>()
+  const [perdasLastMonthFilled, setPerdasLastMonthFilled] = useState<number>()
   const [selectedMonth, setSelectedMonth] = useState<string>('')
   const [selectedYear, setSelectedYear] = useState<string>(
     years[years.length - 1],
@@ -108,8 +111,11 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
   useEffect(() => {
     async function fetchLastMonthFilled() {
+      const perdasLastMonth =
+        await PerdasClass.getLastMonthFilled(selectedStore)
       const lastMonth = await FaturamentoClass.getLastMonthFilled(selectedStore)
       setLastMonthFilled(lastMonth)
+      setPerdasLastMonthFilled(perdasLastMonth)
       setSelectedMonth(months[lastMonth])
       setReload(false)
     }
@@ -164,6 +170,10 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
     fetchData()
   }, [isLoading, selectedStore, selectedMonth, selectedYear, lastMonthFilled])
 
+  function handleAlertOpen() {
+    setIsAlertOpen(true)
+  }
+
   function handleAlertClose() {
     setIsAlertOpen(false)
   }
@@ -188,10 +198,16 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   }
 
   function handleAlertSeverity(severity: Severity) {
-    if (severity === 'error') {
-      setSeverity('error')
-    } else {
-      setSeverity('success')
+    switch (severity) {
+      case 'error':
+        setSeverity('error')
+        break
+      case 'success':
+        setSeverity('success')
+        break
+      case 'warning':
+        setSeverity('warning')
+        break
     }
   }
   return (
@@ -211,12 +227,14 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
         yearsDailyValueData,
         monthsPerdasData,
         yearsPerdasData,
+        perdasLastMonthFilled,
         handleReload,
         handleAlertClose,
         handleMonthOnChange,
         handleYearOnChange,
         handleStoreOnChange,
         handleAlertSeverity,
+        handleAlertOpen,
       }}
     >
       {children}

@@ -9,6 +9,20 @@ interface AlertProps {
 }
 
 export function AlertComponent({ severity, open, onClose }: AlertProps) {
+  function handleSeverity(severity: Severity | undefined) {
+    switch (severity) {
+      case 'success':
+        return 'Dados cadastrados com sucesso'
+      case 'error':
+        return 'Erro ao cadastrar dados'
+      case 'warning':
+        return 'Mês em destaque não possui dados'
+
+      default:
+        break
+    }
+  }
+
   return (
     <Snackbar
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -22,9 +36,7 @@ export function AlertComponent({ severity, open, onClose }: AlertProps) {
     >
       <Alert variant="filled" severity={severity} onClose={onClose}>
         {' '}
-        {severity === 'success'
-          ? `Dados cadastrados com sucesso`
-          : `Erro ao cadastrar dados`}
+        {handleSeverity(severity)}
       </Alert>
     </Snackbar>
   )

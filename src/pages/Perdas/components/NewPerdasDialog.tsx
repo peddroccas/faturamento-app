@@ -18,18 +18,22 @@ interface NewPerdasDialogProps {
 }
 
 export function NewPerdasDialog({ open, onClose }: NewPerdasDialogProps) {
-  const { lastMonthFilled, handleReload, selectedStore, handleAlertSeverity } =
-    useContext(HomeContext)
+  const {
+    perdasLastMonthFilled,
+    handleReload,
+    selectedStore,
+    handleAlertSeverity,
+  } = useContext(HomeContext)
   const [value, setValue] = useState<string>('')
   const [selectedMonth, setSelectedMonth] = useState('')
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1])
 
   useEffect(() => {
     async function fetchLastMonthFilled() {
-      setSelectedMonth(months[lastMonthFilled! + 1])
+      setSelectedMonth(months[perdasLastMonthFilled! + 1])
     }
     fetchLastMonthFilled()
-  }, [lastMonthFilled])
+  }, [perdasLastMonthFilled])
 
   async function handleSubmitNewPerdas() {
     try {
@@ -68,7 +72,7 @@ export function NewPerdasDialog({ open, onClose }: NewPerdasDialogProps) {
 
   return (
     <Dialog open={open} onClose={handleOnClose} className="">
-      <DialogTitle className="text-bluesr-500">Novo Perdas</DialogTitle>
+      <DialogTitle className="text-bluesr-500">Nova Perda</DialogTitle>
       <DialogContent className="flex flex-col gap-3 !pb-2 !pt-2">
         <DialogContentText>
           Selecione a data e preencha o valor
