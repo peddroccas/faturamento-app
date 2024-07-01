@@ -25,7 +25,7 @@ export function AlertComponent({
         if (isPerdas) {
           return 'Mês em destaque não possui dados de perdas'
         }
-        return 'Mês em destaque não possui dados'
+        break
 
       default:
         break
@@ -35,7 +35,7 @@ export function AlertComponent({
   return (
     <Snackbar
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      open={open}
+      open={!isPerdas && severity === 'warning' ? false : open}
       TransitionProps={{
         timeout: {
           enter: 1000, // Define a duração da transição de entrada (em milissegundos)
