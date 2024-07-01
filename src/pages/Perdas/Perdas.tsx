@@ -75,6 +75,7 @@ export function Perdas() {
         <ToolBar EditDialog={EditPerdasDialog} NewDialog={NewPerdasDialog} />
         <PerdasMensal />
         <AlertComponent
+          isPerdas={true}
           open={isAlertOpen}
           onClose={handleAlertClose}
           severity={severity}

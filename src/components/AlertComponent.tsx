@@ -3,12 +3,18 @@ import { Alert, Snackbar } from '@mui/material'
 export type Severity = 'error' | 'info' | 'success' | 'warning'
 
 interface AlertProps {
+  isPerdas?: boolean
   severity?: Severity
   open: boolean
   onClose?: () => void
 }
 
-export function AlertComponent({ severity, open, onClose }: AlertProps) {
+export function AlertComponent({
+  severity,
+  open,
+  onClose,
+  isPerdas = false,
+}: AlertProps) {
   function handleSeverity(severity: Severity | undefined) {
     switch (severity) {
       case 'success':
@@ -16,6 +22,9 @@ export function AlertComponent({ severity, open, onClose }: AlertProps) {
       case 'error':
         return 'Erro ao cadastrar dados'
       case 'warning':
+        if (isPerdas) {
+          return 'Mês em destaque não possui dados de perdas'
+        }
         return 'Mês em destaque não possui dados'
 
       default:
