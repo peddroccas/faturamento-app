@@ -1,81 +1,153 @@
-import { Skeleton } from '@mui/material'
+import { useContext } from 'react'
+import {
+  capitalizeFirstLetters,
+  months,
+  years,
+  Data,
+  FaturamentoClass,
+} from '../services/api'
+import { HomeContext } from '../contexts/HomeContext'
 
 interface TableProps {
-  headers: string[] | []
-  rows: (number | string)[][]
-  isLoading: boolean
-  isPerdas?: boolean
+  data: Data | undefined
 }
 
-export function Table({ headers, rows, isLoading, isPerdas }: TableProps) {
+export function Table({ data }: TableProps) {
+  const { selectedStore } = useContext(HomeContext)
+  if (!data || !data.values) return null // Handling case where data is undefined or empty
+
   return (
-    <div className="w-full p-4 font-montserrat">
-      <div
-        className={`transition-opacity duration-700 ${isLoading ? 'opacity-100' : 'opacity-0'}`}
-      >
-        {isLoading && (
-          <Skeleton
-            className="rounded"
-            animation="wave"
-            variant="rectangular"
-            width="100%"
-            height={100}
-          />
-        )}
-      </div>
-      <div
-        className={`transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-      >
-        {!isLoading && (
-          <div className="w-full overflow-x-scroll">
-            <table className="w-full table-auto border-collapse truncate">
-              <thead>
-                <tr>
-                  {headers.map((header) => (
-                    <th key={header} className="pb-4 text-center" id={header}>
-                      {header}
+    <div className="w-full overflow-x-scroll text-bluesr-400">
+      <table className="w-full table-auto border-collapse truncate">
+        <thead>
+          <tr>
+            <th></th>
+            {selectedStore === 'São Rafael 2'
+              ? years.slice(3).map((year, yearIndex) =>
+                  // Verifica se o ano existe nos dados
+                  data.values && yearIndex < data.values.length ? (
+                    <th className="pb-4 text-center" key={year} id={year}>
+                      {year}
                     </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="text-center">
-                {rows.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row.map((cell, cellIndex) => {
-                      const bgColor =
-                        Number(cell) >= 0
-                          ? isPerdas
-                            ? 'bg-aliceblue-500 text-bluesr-400 font-medium'
-                            : 'bg-green-700'
-                          : 'bg-redsr-400'
-                      const roundedClass = `
-                        ${rowIndex === 0 && cellIndex === 0 ? 'rounded-tl-lg' : ''}
-                        ${rowIndex === 0 && cellIndex === row.length - 1 ? 'rounded-tr-lg' : ''}
-                        ${rowIndex === rows.length - 1 && cellIndex === 0 ? 'rounded-bl-lg' : ''}
-                        ${rowIndex === rows.length - 1 && cellIndex === row.length - 1 ? 'rounded-br-lg' : ''}
-                      `
-                      return (
-                        <td
-                          key={cellIndex}
-                          className={`border border-aliceblue p-2 leading-4 ${rowIndex && (cellIndex || isPerdas) ? bgColor : 'bg-bluesr-400'} text-aliceblue ${roundedClass} `}
-                        >
-                          {rowIndex
-                            ? cell.toLocaleString('pt-br') +
-                              (rowIndex && (cellIndex || isPerdas) ? '%' : '')
-                            : cell.toLocaleString('pt-br', {
+                  ) : null,
+                )
+              : years.map((year, yearIndex) =>
+                  // Verifica se o ano existe nos dados
+                  data.values && yearIndex < data.values.length ? (
+                    <th className="pb-4 text-center" key={year} id={year}>
+                      {year}
+                    </th>
+                  ) : null,
+                )}
+          </tr>
+        </thead>
+        <tbody className="text-center">
+          {months.map((month, monthIndex) => (
+            <tr key={month} className="pb-4 text-center">
+              <td className="font-semibold">{capitalizeFirstLetters(month)}</td>
+              {data.values!.map((value, yearIndex) => {
+                if (!value[month]) {
+                  // Se o mês não estiver presente nos dados para este ano, retorna uma célula vazia
+                  return <td key={`${yearIndex}-${month}`}></td>
+                }
+
+                let previousMonthValue
+                let sameMonthLastYearValue
+
+                if (month === 'janeiro' && Number(years[yearIndex]) === 2017) {
+                  // Exibindo o valor de janeiro de 2017 sem calcular porcentagens
+                  const currentMonthValue = Number(value[month])
+
+                  return (
+                    <td key={`${yearIndex}-${month}`}>
+                      <div className="flex flex-col gap-px rounded-xl bg-bluesr-400 p-2 text-aliceblue">
+                        <div className="flex items-center justify-around gap-4">
+                          {isNaN(currentMonthValue)
+                            ? ' '
+                            : currentMonthValue.toLocaleString('pt-br', {
                                 style: 'currency',
                                 currency: 'BRL',
                               })}
-                        </td>
-                      )
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+                        </div>
+                      </div>
+                    </td>
+                  )
+                }
+
+                // Para os outros meses e anos, calcular as porcentagens como antes
+                if (month === 'janeiro' && yearIndex > 0) {
+                  // Comparando janeiro com dezembro do ano anterior
+                  previousMonthValue = data.values![yearIndex - 1].dezembro
+                } else if (monthIndex > 0) {
+                  // Comparando com o mês anterior no mesmo ano
+                  previousMonthValue = value[months[monthIndex - 1]]
+                }
+
+                if (yearIndex > 0) {
+                  // Comparando com o mesmo mês do ano anterior
+                  sameMonthLastYearValue = data.values![yearIndex - 1][month]
+                }
+
+                const currentMonthValue = Number(value[month])
+                const previousValue = Number(previousMonthValue)
+                const lastYearValue = Number(sameMonthLastYearValue)
+
+                // Verificar se algum valor é NaN
+                if (isNaN(currentMonthValue) || isNaN(previousValue)) {
+                  return (
+                    <td key={`${yearIndex}-${month}`}></td> // Se algum valor for NaN, não renderiza nada na célula
+                  )
+                }
+
+                const percentageMonthComparison = FaturamentoClass.percentage(
+                  currentMonthValue,
+                  previousValue,
+                )
+                const percentageColorMonth =
+                  percentageMonthComparison > 0
+                    ? 'text-green-500'
+                    : 'text-red-500'
+
+                let percentageYearComparison
+                let percentageColorYear
+                if (sameMonthLastYearValue !== undefined) {
+                  percentageYearComparison = FaturamentoClass.percentage(
+                    currentMonthValue,
+                    lastYearValue,
+                  )
+                  percentageColorYear =
+                    percentageYearComparison > 0
+                      ? 'text-green-500'
+                      : 'text-red-500'
+                }
+
+                return (
+                  <td key={`${yearIndex}-${month}`}>
+                    <div className="flex flex-col gap-px rounded-xl bg-bluesr-400 p-2 text-aliceblue">
+                      <div
+                        className={`flex justify-end ${percentageColorMonth}`}
+                      >
+                        {percentageMonthComparison}%
+                      </div>
+                      <div className="flex items-center justify-around gap-4">
+                        <p className={percentageColorYear}>
+                          {percentageYearComparison !== undefined
+                            ? `${percentageYearComparison}%`
+                            : ''}
+                        </p>
+                        {currentMonthValue.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })}
+                      </div>
+                    </div>
+                  </td>
+                )
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

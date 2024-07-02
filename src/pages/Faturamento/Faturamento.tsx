@@ -50,7 +50,7 @@ export function Faturamento() {
           NewDialog={NewFaturamentoDialog}
         />
         <FaturamentoMensal />
-        <DailyValue />
+        {/* <DailyValue /> */}
         <AlertComponent
           open={isAlertOpen}
           onClose={handleAlertClose}

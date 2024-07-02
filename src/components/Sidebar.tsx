@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 export function Sidebar() {
-  const [isOpen, setIsOpen] = useState<boolean>(true)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   function handleSidebar() {
     setIsOpen(!isOpen)
