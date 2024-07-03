@@ -53,7 +53,7 @@ export function ToolBar({ EditDialog, NewDialog }: ToolBarProps) {
           value={selectedStore}
           onChange={handleStoreOnChange}
         />
-        <Select
+        {/* <Select
           className="p-1"
           id="months"
           value={selectedMonth}
@@ -66,7 +66,7 @@ export function ToolBar({ EditDialog, NewDialog }: ToolBarProps) {
           value={selectedYear}
           onChange={handleYearOnChange}
           options={years}
-        />
+        /> */}
       </div>
       <Tooltip title="Editar " placement="top">
         <button

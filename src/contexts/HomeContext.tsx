@@ -7,6 +7,7 @@ import {
 } from 'react'
 import { Severity } from '../components/AlertComponent'
 import {
+  Data,
   FaturamentoClass,
   PerdasClass,
   months,
@@ -35,8 +36,7 @@ interface HomeContextType {
   selectedMonth: string
   lastMonthFilled: number | undefined
   // Faturamento
-  monthsMensalData: DataValue | undefined
-  yearsMensalData: DataValue | undefined
+  data: Data | undefined
   yearsDailyValueData: DataValue | undefined
   monthsDailyValueData: DataValue | undefined
   // Perdas
@@ -65,21 +65,7 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [severity, setSeverity] = useState<Severity>()
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
-  const [yearsMensalData, setYearsMensalData] = useState<DataValue | undefined>(
-    {
-      values: [],
-      growth: [],
-      dates: [],
-    },
-  )
-
-  const [monthsMensalData, setMonthsMensalData] = useState<
-    DataValue | undefined
-  >({
-    values: [],
-    growth: [],
-    dates: [],
-  })
+  const [data, setData] = useState<Data | undefined>()
   const [yearsDailyValueData, setYearsDailyValueData] = useState<
     DataValue | undefined
   >({
@@ -122,6 +108,18 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
     fetchLastMonthFilled()
   }, [reload, selectedStore])
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const yearData = await FaturamentoClass.getYears(selectedStore)
+        setData(yearData)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+    fetchData()
+  }, [selectedStore, lastMonthFilled, isLoading])
+
   // Busca no db os dados assim que carrega a página e toda vez que o usuário selecionar mês ou ano diferentes
   useEffect(() => {
     async function fetchData() {
@@ -132,21 +130,14 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
               selectedStore,
               selectedMonth,
             )
-          const responseYears = await FaturamentoClass.getYearsValues(
-            selectedStore,
-            selectedMonth,
-          )
+
           const responseDailyValueMonths =
             await FaturamentoClass.getMonthsDailyValueValues(
               selectedStore,
               selectedMonth,
               selectedYear,
             )
-          const responseMonths = await FaturamentoClass.getMonthsValues(
-            selectedStore,
-            selectedMonth,
-            selectedYear,
-          )
+
           const responsePerdasYears = await PerdasClass.getYearsValues(
             selectedStore,
             selectedMonth,
@@ -159,8 +150,6 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
           setYearsPerdasData(responsePerdasYears)
           setMonthsPerdasData(responsePerdas)
           setMonthsDailyValueData(responseDailyValueMonths)
-          setMonthsMensalData(responseMonths)
-          setYearsMensalData(responseYears)
           setYearsDailyValueData(responseDailyValueYears)
 
           setIsLoading(false)
@@ -221,8 +210,7 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
         selectedMonth,
         selectedYear,
         lastMonthFilled,
-        monthsMensalData,
-        yearsMensalData,
+        data,
         monthsDailyValueData,
         yearsDailyValueData,
         monthsPerdasData,

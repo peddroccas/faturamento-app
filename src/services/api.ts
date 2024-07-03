@@ -9,6 +9,14 @@ export function capitalizeFirstLetters(string: string) {
     })
     .join(' ')
 }
+export interface MonthlyData {
+  [key: string]: number | string // Ajuste os tipos conforme necessário
+}
+
+export interface Data {
+  values: MonthlyData[] | undefined
+  yearsAvailable: (string | number)[]
+}
 
 export const stores = ['São Rafael', 'Estrela', 'Antunes', 'São Rafael 2']
 export const months = [
@@ -128,6 +136,41 @@ export class FaturamentoClass {
     }
 
     return lastMonths
+  }
+
+  static async getYears(lojaUnformatted: string): Promise<Data | undefined> {
+    try {
+      const yearsValues: MonthlyData[] = []
+      const yearsAvailable = []
+      // const yearsGrowth: (number | string)[] = []
+
+      for (const year of years) {
+        const monthValue: MonthlyData = await this.getValues(
+          lojaUnformatted,
+          year,
+        )
+        // const monthGrowth = this.percentage(
+        //   monthValue,
+        //   yearsValues[yearsValues.length - 1],
+        // )
+        if (monthValue) {
+          yearsValues.push(monthValue)
+          yearsAvailable.push(year)
+          // yearsGrowth.push(monthGrowth)
+        }
+      }
+      // yearsGrowth.shift()
+      // yearsGrowth.unshift('Sem valor de referência')
+
+      return {
+        values: yearsValues,
+        yearsAvailable,
+        // growth: yearsGrowth,
+      }
+    } catch (error) {
+      console.log('Erro no acesso ao banco')
+      console.error(error)
+    }
   }
 
   static async getYearsValues(
