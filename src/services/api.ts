@@ -15,6 +15,7 @@ export interface MonthlyData {
 
 export interface Data {
   values: MonthlyData[] | undefined
+  yearsAvailable: (string | number)[]
 }
 
 export const stores = ['São Rafael', 'Estrela', 'Antunes', 'São Rafael 2']
@@ -140,6 +141,7 @@ export class FaturamentoClass {
   static async getYears(lojaUnformatted: string): Promise<Data | undefined> {
     try {
       const yearsValues: MonthlyData[] = []
+      const yearsAvailable = []
       // const yearsGrowth: (number | string)[] = []
 
       for (const year of years) {
@@ -153,6 +155,7 @@ export class FaturamentoClass {
         // )
         if (monthValue) {
           yearsValues.push(monthValue)
+          yearsAvailable.push(year)
           // yearsGrowth.push(monthGrowth)
         }
       }
@@ -161,6 +164,7 @@ export class FaturamentoClass {
 
       return {
         values: yearsValues,
+        yearsAvailable,
         // growth: yearsGrowth,
       }
     } catch (error) {

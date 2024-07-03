@@ -118,7 +118,7 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
       }
     }
     fetchData()
-  }, [selectedStore])
+  }, [selectedStore, lastMonthFilled, isLoading])
 
   // Busca no db os dados assim que carrega a página e toda vez que o usuário selecionar mês ou ano diferentes
   useEffect(() => {
