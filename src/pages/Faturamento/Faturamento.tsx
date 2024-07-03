@@ -5,7 +5,6 @@ import { auth } from '../../services/firebase'
 import { useNavigate } from 'react-router-dom'
 import { FaturamentoMensal } from './components/FaturamentoMensal'
 import { ToolBar } from '../../components/ToolBar'
-import { DailyValue } from './components/DailyValue'
 import { EditFaturamentoDialog } from './components/EditFaturamentoDialog'
 import { NewFaturamentoDialog } from './components/NewFaturamentoDialog'
 

@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { HomeContext } from '../../../contexts/HomeContext'
 
 export function FaturamentoMensal() {
-  const { isLoading, data } = useContext(HomeContext)
+  const { data } = useContext(HomeContext)
 
   return (
     <div className="m-2 flex w-11/12 flex-1 flex-col items-center justify-center rounded-3xl bg-bluesr-500 p-4">
