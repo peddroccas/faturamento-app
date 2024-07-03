@@ -111,7 +111,8 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const yearData = await FaturamentoClass.getYears(selectedStore)
+        const yearData =
+          await FaturamentoClass.getStoreFaturamento(selectedStore)
         setData(yearData)
       } catch (error) {
         console.error('Error fetching data:', error)

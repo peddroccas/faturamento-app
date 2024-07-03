@@ -5,6 +5,7 @@ import { HeaderLayout } from './layouts/HeaderLayout'
 import { HomeLayout } from './layouts/HomeLayout'
 import { Faturamento } from './pages/Faturamento/Faturamento'
 import { Perdas } from './pages/Perdas/Perdas'
+import { ValorDiario } from './pages/ValorDiario/ValorDiario'
 
 export function Router() {
   return (
@@ -14,6 +15,7 @@ export function Router() {
         <Route path="home" element={<HomeLayout />}>
           <Route index element={<Home />} />
           <Route path="faturamento" element={<Faturamento />} />
+          <Route path="valormedio" element={<ValorDiario />} />
           <Route path="perdas" element={<Perdas />} />
         </Route>
         <Route path="login" element={<LoginForm />} />

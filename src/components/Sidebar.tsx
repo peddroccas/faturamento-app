@@ -59,6 +59,17 @@ export function Sidebar() {
                 isActive ? 'bg-aliceblue-500 text-bluesr-500' : 'text-aliceblue'
               } ${isOpen ? 'justify-start' : 'justify-center'}`
             }
+            to="/home/valormedio"
+          >
+            <BarChart />
+            {isOpen && <span>Faturamento</span>}
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              `flex items-center gap-2 rounded-xl p-2 transition-colors hover:bg-bluesr-400 hover:text-aliceblue ${
+                isActive ? 'bg-aliceblue-500 text-bluesr-500' : 'text-aliceblue'
+              } ${isOpen ? 'justify-start' : 'justify-center'}`
+            }
             to="/home/perdas"
           >
             <PieChart />

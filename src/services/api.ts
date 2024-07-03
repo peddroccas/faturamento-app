@@ -1,23 +1,6 @@
 import { db } from '../services/firebase'
 import { camelCase } from 'lodash'
 
-export function capitalizeFirstLetters(string: string) {
-  return string
-    .split(' ')
-    .map((word) => {
-      return word.charAt(0).toUpperCase() + word.slice(1)
-    })
-    .join(' ')
-}
-export interface MonthlyData {
-  [key: string]: number | string // Ajuste os tipos conforme necessário
-}
-
-export interface Data {
-  values: MonthlyData[] | undefined
-  yearsAvailable: (string | number)[]
-}
-
 export const stores = ['São Rafael', 'Estrela', 'Antunes', 'São Rafael 2']
 export const months = [
   'janeiro',
@@ -43,6 +26,24 @@ export const years = [
   '2023',
   '2024',
 ]
+
+export interface MonthlyData {
+  [key: string]: number | string // month: value
+}
+
+export interface Data {
+  values: MonthlyData[] | undefined
+  yearsAvailable: (string | number)[]
+}
+
+export function capitalizeFirstLetters(string: string) {
+  return string
+    .split(' ')
+    .map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join(' ')
+}
 
 // Faturamento
 export class FaturamentoClass {
@@ -138,7 +139,11 @@ export class FaturamentoClass {
     return lastMonths
   }
 
-  static async getYears(lojaUnformatted: string): Promise<Data | undefined> {
+  /**
+  @returns Lista de objetos com os dados separados por anos e por meses */
+  static async getStoreFaturamento(
+    lojaUnformatted: string,
+  ): Promise<Data | undefined> {
     try {
       const yearsValues: MonthlyData[] = []
       const yearsAvailable = []
