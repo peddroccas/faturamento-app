@@ -28,12 +28,11 @@ export const years = [
 ]
 
 export interface MonthlyData {
-  [key: string]: number | string // month: value
+  [key: string]: number // month: value
 }
 
 export interface Data {
-  values: MonthlyData[] | undefined
-  yearsAvailable: (string | number)[]
+  [key: string]: MonthlyData // year: month
 }
 
 export function capitalizeFirstLetters(string: string) {
@@ -120,9 +119,19 @@ export class FaturamentoClass {
     }
   }
 
-  static getLastMonths(month: string, monthYear: string, last: number) {
+  static getLastMonths(
+    month: string,
+    monthYear: string,
+    last: number,
+  ): {
+    month: string
+    year: string
+  }[] {
     const indexMonth = months.indexOf(month)
-    const lastMonths = []
+    const lastMonths: {
+      month: string
+      year: string
+    }[] = []
 
     for (let i = 0; i < last; i++) {
       const monthIndex = (indexMonth - i + 12) % 12
@@ -145,8 +154,7 @@ export class FaturamentoClass {
     lojaUnformatted: string,
   ): Promise<Data | undefined> {
     try {
-      const yearsValues: MonthlyData[] = []
-      const yearsAvailable = []
+      const yearsValues: Data = {}
       // const yearsGrowth: (number | string)[] = []
 
       for (const year of years) {
@@ -159,19 +167,15 @@ export class FaturamentoClass {
         //   yearsValues[yearsValues.length - 1],
         // )
         if (monthValue) {
-          yearsValues.push(monthValue)
-          yearsAvailable.push(year)
+          yearsValues[year] = monthValue
           // yearsGrowth.push(monthGrowth)
         }
       }
       // yearsGrowth.shift()
       // yearsGrowth.unshift('Sem valor de referência')
 
-      return {
-        values: yearsValues,
-        yearsAvailable,
-        // growth: yearsGrowth,
-      }
+      return yearsValues
+      // growth: yearsGrowth,
     } catch (error) {
       console.log('Erro no acesso ao banco')
       console.error(error)

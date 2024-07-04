@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { HomeContext } from '../../contexts/HomeContext'
 import { AlertComponent } from '../../components/AlertComponent'
 import { auth } from '../../services/firebase'
@@ -12,7 +12,7 @@ import { Data } from '../../services/api'
 export function ValorDiario() {
   const { severity, isAlertOpen, handleAlertClose, data } =
     useContext(HomeContext)
-
+  const [dailyData, setDailyData] = useState()
   const navigate = useNavigate()
 
   // Verifica se está logado, se não tiver redireciona para o login
