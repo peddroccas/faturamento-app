@@ -13,10 +13,51 @@ interface TableProps {
   data: Data | undefined
 }
 
+type isComparedTo = 'lastYear' | 'lastMonth'
+
 export function Table({ data }: TableProps) {
   const { isLoading } = useContext(HomeContext)
 
-  console.log(data)
+  function percentage(
+    data: Data | undefined,
+    month: string,
+    year: number,
+    isComparedTo: isComparedTo,
+  ): number | undefined {
+    try {
+      if (data && data[year][month]) {
+        switch (isComparedTo) {
+          case 'lastMonth':
+            if (month === 'janeiro') {
+              const lastMonth = 'dezembro'
+              const percentage =
+                ((data[year][month] - data[year - 1][lastMonth]) /
+                  data[year][month]) *
+                100
+              return Number(percentage.toFixed(2))
+            } else {
+              const lastMonth = months[months.indexOf(month) - 1]
+              const percentage =
+                ((data[year][month] - data[year][lastMonth]) /
+                  data[year][month]) *
+                100
+              return Number(percentage.toFixed(2))
+            }
+          case 'lastYear':
+            if (year === 2017) {
+              return 0
+            } else {
+              const percentage =
+                ((data[year][month] - data[year - 1][month]) /
+                  data[year][month]) *
+                100
+              return Number(percentage.toFixed(2))
+            }
+        }
+      }
+      return 0
+    } catch {}
+  }
 
   return (
     <div className="w-full p-4 font-montserrat text-sm">
@@ -29,7 +70,7 @@ export function Table({ data }: TableProps) {
             animation="wave"
             variant="rectangular"
             width="100%"
-            height={665}
+            height={600}
           />
         )}
       </div>
@@ -38,10 +79,9 @@ export function Table({ data }: TableProps) {
       >
         {!isLoading && (
           <div className="w-full overflow-x-scroll">
-            <table className="w-full table-auto border-collapse truncate">
+            <table className="w-full table-auto border-collapse  truncate">
               <thead>
-                <tr>
-                  <th></th>
+                <tr className="w-auto">
                   {Object.keys(data!).map((year) => (
                     <th className="pb-4 text-center" key={year} id={year}>
                       {year}
@@ -52,32 +92,65 @@ export function Table({ data }: TableProps) {
               <tbody className="text-center">
                 {months.map((month) => (
                   <tr key={month}>
-                    <td className="font-semibold">
-                      {capitalizeFirstLetters(month)}
-                    </td>
-                    {Object.keys(data!).map((year, indexYear) => (
-                      <td className="font-medium" key={`${month}-${year}`}>
-                        <div className="flex justify-end pr-2">
-                          {FaturamentoClass.percentage(
-                            data![year][
-                              FaturamentoClass.getLastMonths(month, year, 2)[0]
-                                .month
-                            ],
-                            data![
-                              FaturamentoClass.getLastMonths(month, year, 2)[0]
-                                .year
-                            ][month],
-                          )}
-                        </div>
-                        <div className="flex justify-between gap-2 p-2">
-                          <p>Mes</p>
-                          {Number(data![year][month]).toLocaleString('pt-br', {
-                            style: 'currency',
-                            currency: 'BRL',
-                          })}
-                        </div>
-                      </td>
-                    ))}
+                    {Object.keys(data!).map((year) => {
+                      const lastMonthPercentage = percentage(
+                        data,
+                        month,
+                        Number(year),
+                        'lastMonth',
+                      )
+                      const lastYearPercentage = percentage(
+                        data,
+                        month,
+                        Number(year),
+                        'lastYear',
+                      )
+                      const lastMonthPercentageColor =
+                        lastMonthPercentage! >= 0
+                          ? 'text-green-400'
+                          : 'text-red-400'
+                      const lastYearPercentageColor =
+                        lastYearPercentage! >= 0
+                          ? 'text-green-400'
+                          : 'text-red-400'
+                      return (
+                        <td
+                          className="rounded-xl border border-aliceblue bg-bluesr-400 font-medium text-aliceblue"
+                          key={`${month}-${year}`}
+                        >
+                          <div className="flex justify-between px-2">
+                            <span className="opacity-50">
+                              {capitalizeFirstLetters(month)}
+                            </span>
+                            <p className={`${lastMonthPercentageColor}`}>
+                              {isNaN(lastMonthPercentage!) ||
+                              lastMonthPercentage === 0
+                                ? ' '
+                                : `${lastMonthPercentage}%`}
+                            </p>
+                          </div>
+                          <div className="flex w-full justify-between gap-2 px-2 py-px">
+                            <p className={`${lastYearPercentageColor}`}>
+                              {isNaN(lastYearPercentage!) ||
+                              lastYearPercentage === 0
+                                ? ''
+                                : `${lastYearPercentage}%`}
+                            </p>
+                            <p>
+                              {(isNaN(Number(data![year][month])) ||
+                                Number(data![year][month]).toLocaleString(
+                                  'pt-br',
+                                  {
+                                    style: 'currency',
+                                    currency: 'BRL',
+                                  },
+                                )) ??
+                                ''}
+                            </p>
+                          </div>
+                        </td>
+                      )
+                    })}
                   </tr>
                 ))}
               </tbody>

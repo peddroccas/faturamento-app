@@ -48,7 +48,6 @@ export function capitalizeFirstLetters(string: string) {
 export class FaturamentoClass {
   static percentage(reference: number, compared: number) {
     const percentage = ((reference - compared) / reference) * 100
-    // console.log(percentage)
 
     return Number(percentage.toFixed(2))
   }
