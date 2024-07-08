@@ -36,9 +36,8 @@ interface HomeContextType {
   selectedMonth: string
   lastMonthFilled: number | undefined
   // Faturamento
-  data: Data | undefined
-  yearsDailyValueData: DataValue | undefined
-  monthsDailyValueData: DataValue | undefined
+  faturamentoData: Data | undefined
+  dailyFaturamentoData: Data | undefined
   // Perdas
   monthsPerdasData: DataValue | undefined
   yearsPerdasData: DataValue | undefined
@@ -65,21 +64,10 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [severity, setSeverity] = useState<Severity>()
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
-  const [data, setData] = useState<Data | undefined>()
-  const [yearsDailyValueData, setYearsDailyValueData] = useState<
-    DataValue | undefined
-  >({
-    values: [],
-    growth: [],
-    dates: [],
-  })
-  const [monthsDailyValueData, setMonthsDailyValueData] = useState<
-    DataValue | undefined
-  >({
-    values: [],
-    growth: [],
-    dates: [],
-  })
+  const [faturamentoData, setFaturamentoData] = useState<Data | undefined>()
+  const [dailyFaturamentoData, setDailyFaturamentoData] = useState<
+    Data | undefined
+  >()
   const [yearsPerdasData, setYearsPerdasData] = useState<DataValue | undefined>(
     {
       values: [],
@@ -111,9 +99,14 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const yearData =
+        const faturamentoData =
           await FaturamentoClass.getStoreFaturamento(selectedStore)
-        setData(yearData)
+        if (faturamentoData) {
+          const dailyFaturamentoData =
+            FaturamentoClass.getStoreDailyFaturamento(faturamentoData)
+          setDailyFaturamentoData(dailyFaturamentoData)
+        }
+        setFaturamentoData(faturamentoData)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -126,19 +119,6 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
     async function fetchData() {
       try {
         if (lastMonthFilled) {
-          const responseDailyValueYears =
-            await FaturamentoClass.getYearsDailyValueValues(
-              selectedStore,
-              selectedMonth,
-            )
-
-          const responseDailyValueMonths =
-            await FaturamentoClass.getMonthsDailyValueValues(
-              selectedStore,
-              selectedMonth,
-              selectedYear,
-            )
-
           const responsePerdasYears = await PerdasClass.getYearsValues(
             selectedStore,
             selectedMonth,
@@ -150,8 +130,6 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
           )
           setYearsPerdasData(responsePerdasYears)
           setMonthsPerdasData(responsePerdas)
-          setMonthsDailyValueData(responseDailyValueMonths)
-          setYearsDailyValueData(responseDailyValueYears)
 
           setIsLoading(false)
         }
@@ -211,9 +189,8 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
         selectedMonth,
         selectedYear,
         lastMonthFilled,
-        data,
-        monthsDailyValueData,
-        yearsDailyValueData,
+        faturamentoData,
+        dailyFaturamentoData,
         monthsPerdasData,
         yearsPerdasData,
         perdasLastMonthFilled,
