@@ -125,7 +125,6 @@ export class FaturamentoClass {
   ): Promise<Data | undefined> {
     try {
       const yearsValues: Data = {}
-      // const yearsGrowth: (number | string)[] = []
 
       for (const year of years) {
         const monthValue: MonthlyData = await this.getValues(
@@ -194,7 +193,6 @@ export class FaturamentoClass {
         dailyValues[year] = yearsValues
       }
 
-      console.log(dailyValues)
       return dailyValues
       // growth: yearsGrowth,
     } catch (error) {
@@ -279,94 +277,22 @@ export class PerdasClass {
     }
   }
 
-  static getLastMonths(month: string, monthYear: string, last: number) {
-    const indexMonth = months.indexOf(month)
-    const lastMonths = []
-
-    for (let i = 0; i < last; i++) {
-      const monthIndex = (indexMonth - i + 12) % 12
-      if ((indexMonth - i + 12) / 12 < 1) {
-        lastMonths.push({
-          month: months[monthIndex],
-          year: String(Number(monthYear) - 1),
-        })
-      } else {
-        lastMonths.push({ month: months[monthIndex], year: String(monthYear) })
-      }
-    }
-
-    return lastMonths
-  }
-
-  static async getYearsValues(
-    lojaUnformatted: string,
-    month: string,
-  ): Promise<
-    | {
-        values: number[]
-        dates: string[]
-      }
-    | undefined
-  > {
+  static async getStorePerda(lojaUnformatted: string) {
     try {
-      const yearsValues: number[] = []
-
-      const dates: string[] = []
+      const yearsValues: Data = {}
 
       for (const year of years) {
-        const monthValue: number = await this.getValues(
+        const monthValue: MonthlyData = await this.getValues(
           lojaUnformatted,
           year,
-          month,
         )
 
         if (monthValue) {
-          yearsValues.push(monthValue)
-
-          dates.push(capitalizeFirstLetters(`${month}/${year}`))
+          yearsValues[year] = monthValue
         }
       }
 
-      return {
-        dates,
-        values: yearsValues,
-      }
-    } catch (error) {
-      console.log('Erro no acesso ao banco')
-      console.error(error)
-    }
-  }
-
-  static async getMonthsValues(
-    lojaUnformatted: string,
-    month: string,
-    year: string,
-  ) {
-    try {
-      const lastSixMonths = this.getLastMonths(month, year, 6).reverse()
-
-      const monthsValues: number[] = []
-
-      const dates: string[] = []
-
-      for (const month of lastSixMonths) {
-        const monthValue = await this.getValues(
-          lojaUnformatted,
-          month.year,
-          month.month,
-        )
-
-        if (monthValue) {
-          monthsValues.push(monthValue)
-
-          dates.push(capitalizeFirstLetters(`${month.month}/${month.year}`))
-        }
-      }
-
-      return {
-        dates,
-        values: monthsValues,
-      }
+      return yearsValues
     } catch (error) {
       console.log('Erro no acesso ao banco')
       console.error(error)

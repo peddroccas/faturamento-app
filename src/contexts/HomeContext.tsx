@@ -39,8 +39,7 @@ interface HomeContextType {
   faturamentoData: Data | undefined
   dailyFaturamentoData: Data | undefined
   // Perdas
-  monthsPerdasData: DataValue | undefined
-  yearsPerdasData: DataValue | undefined
+  perdasData: Data | undefined
   perdasLastMonthFilled: number | undefined
 
   handleReload: () => void
@@ -68,19 +67,7 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   const [dailyFaturamentoData, setDailyFaturamentoData] = useState<
     Data | undefined
   >()
-  const [yearsPerdasData, setYearsPerdasData] = useState<DataValue | undefined>(
-    {
-      values: [],
-      dates: [],
-    },
-  )
-
-  const [monthsPerdasData, setMonthsPerdasData] = useState<
-    DataValue | undefined
-  >({
-    values: [],
-    dates: [],
-  })
+  const [perdasData, setPerdasData] = useState<Data | undefined>()
 
   // Recarrega último campo preenchido do banco após a iniciação e/ou adição de novo mês ou troca de Store
   useEffect(() => {
@@ -97,7 +84,7 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
   }, [reload, selectedStore])
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchFaturamentoData() {
       try {
         const faturamentoData =
           await FaturamentoClass.getStoreFaturamento(selectedStore)
@@ -107,36 +94,28 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
           setDailyFaturamentoData(dailyFaturamentoData)
         }
         setFaturamentoData(faturamentoData)
+        setIsLoading(false)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
     }
-    fetchData()
+    fetchFaturamentoData()
   }, [selectedStore, lastMonthFilled, isLoading])
 
   // Busca no db os dados assim que carrega a página e toda vez que o usuário selecionar mês ou ano diferentes
   useEffect(() => {
-    async function fetchData() {
+    async function fetchPerdasData() {
       try {
-        if (lastMonthFilled) {
-          const responsePerdasYears = await PerdasClass.getYearsValues(
-            selectedStore,
-            selectedMonth,
-          )
-          const responsePerdas = await PerdasClass.getMonthsValues(
-            selectedStore,
-            selectedMonth,
-            selectedYear,
-          )
-          setYearsPerdasData(responsePerdasYears)
-          setMonthsPerdasData(responsePerdas)
+        const perdasData = await PerdasClass.getStorePerda(selectedStore)
 
-          setIsLoading(false)
-        }
-      } catch (error) {}
+        setPerdasData(perdasData)
+        setIsLoading(false)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
     }
-    fetchData()
-  }, [isLoading, selectedStore, selectedMonth, selectedYear, lastMonthFilled])
+    fetchPerdasData()
+  }, [isLoading, selectedStore, lastMonthFilled])
 
   function handleAlertOpen() {
     setIsAlertOpen(true)
@@ -191,8 +170,7 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
         lastMonthFilled,
         faturamentoData,
         dailyFaturamentoData,
-        monthsPerdasData,
-        yearsPerdasData,
+        perdasData,
         perdasLastMonthFilled,
         handleReload,
         handleAlertClose,
