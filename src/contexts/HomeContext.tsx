@@ -93,6 +93,8 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
             FaturamentoClass.getStoreDailyFaturamento(faturamentoData)
           setDailyFaturamentoData(dailyFaturamentoData)
         }
+        const perdasData = await PerdasClass.getStorePerda(selectedStore)
+        setPerdasData(perdasData)
         setFaturamentoData(faturamentoData)
         setIsLoading(false)
       } catch (error) {
@@ -101,21 +103,6 @@ export function HomeContextProvider({ children }: HomeContextProviderProps) {
     }
     fetchFaturamentoData()
   }, [selectedStore, lastMonthFilled, isLoading])
-
-  // Busca no db os dados assim que carrega a página e toda vez que o usuário selecionar mês ou ano diferentes
-  useEffect(() => {
-    async function fetchPerdasData() {
-      try {
-        const perdasData = await PerdasClass.getStorePerda(selectedStore)
-
-        setPerdasData(perdasData)
-        setIsLoading(false)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-    fetchPerdasData()
-  }, [isLoading, selectedStore, lastMonthFilled])
 
   function handleAlertOpen() {
     setIsAlertOpen(true)

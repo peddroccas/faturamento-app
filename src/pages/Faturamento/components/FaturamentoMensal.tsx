@@ -19,7 +19,7 @@ export function FaturamentoMensal() {
   }
 
   return (
-    <div className="m-2 flex w-11/12 flex-1 flex-col items-center justify-center rounded-3xl bg-bluesr-500 p-4">
+    <div className="m-2 flex w-full flex-1 flex-col items-center justify-center rounded-3xl bg-bluesr-500 p-4">
       <header className="grid w-full grid-cols-3 items-center">
         <Switch color="default" onChange={handleSwitchOnChange} />
         <h2
@@ -33,6 +33,7 @@ export function FaturamentoMensal() {
       >
         <Table
           data={table === 'Mensal' ? faturamentoData : dailyFaturamentoData}
+          tableType="faturamento"
         />
       </article>
     </div>
