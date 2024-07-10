@@ -1,178 +1,248 @@
 import { Skeleton } from '@mui/material'
-import {
-  capitalizeFirstLetters,
-  months,
-  years,
-  Data,
-  FaturamentoClass,
-} from '../services/api'
+import { capitalizeFirstLetters, months, Data } from '../services/api'
 import { useContext } from 'react'
 import { HomeContext } from '../contexts/HomeContext'
 
+type isComparedTo = 'lastYear' | 'lastMonth'
+type tableType = 'perdas' | 'faturamento'
+
 interface TableProps {
   data: Data | undefined
+  tableType: tableType
 }
 
-export function Table({ data }: TableProps) {
-  const { isLoading } = useContext(HomeContext)
-  if (!data || !data.values) return null // Handling case where data is undefined or empty
+export function Table({ data, tableType }: TableProps) {
+  const { isLoading, faturamentoData } = useContext(HomeContext)
 
-  return (
-    <div className="w-full p-4 font-montserrat text-sm">
-      <div
-        className={`transition-opacity duration-700 ${isLoading ? 'opacity-100' : 'opacity-0'}`}
-      >
-        {isLoading && (
-          <Skeleton
-            className="rounded"
-            animation="wave"
-            variant="rectangular"
-            width="100%"
-            height={665}
-          />
-        )}
-      </div>
-      <div
-        className={`transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-      >
-        {!isLoading && (
-          <div className="w-full overflow-x-scroll">
-            <table className="w-full table-auto border-collapse truncate">
-              <thead>
-                <tr>
-                  <th></th>
-                  {data.yearsAvailable.map((year, yearIndex) =>
-                    // Verifica se o ano existe nos dados
-                    data.values && yearIndex < data.values.length ? (
-                      <th
-                        className="pb-4 text-center"
-                        key={year}
-                        id={String(year)}
-                      >
-                        {year}
-                      </th>
-                    ) : null,
-                  )}
-                </tr>
-              </thead>
-              <tbody className="text-center">
-                {months.map((month, monthIndex) => (
-                  <tr key={month} className="text-center">
-                    <td className="font-semibold">
-                      {capitalizeFirstLetters(month)}
-                    </td>
-                    {data.values!.map((value, yearIndex) => {
-                      if (!value[month]) {
-                        // Se o mês não estiver presente nos dados para este ano, retorna uma célula vazia
-                        return <td key={`${yearIndex}-${month}`}></td>
-                      }
+  function percentage(
+    data: Data | undefined,
+    month: string,
+    year: number,
+    isComparedTo: isComparedTo,
+  ): number | undefined {
+    try {
+      if (data && data[year][month]) {
+        switch (isComparedTo) {
+          case 'lastMonth':
+            if (month === 'janeiro') {
+              const lastMonth = 'dezembro'
+              const percentage =
+                ((data[year][month] - data[year - 1][lastMonth]) /
+                  data[year][month]) *
+                100
+              return Number(percentage.toFixed(2))
+            } else {
+              const lastMonth = months[months.indexOf(month) - 1]
+              const percentage =
+                ((data[year][month] - data[year][lastMonth]) /
+                  data[year][month]) *
+                100
+              return Number(percentage.toFixed(2))
+            }
+          case 'lastYear':
+            if (year === 2017) {
+              return 0
+            } else {
+              const percentage =
+                ((data[year][month] - data[year - 1][month]) /
+                  data[year][month]) *
+                100
+              return Number(percentage.toFixed(2))
+            }
+        }
+      }
+      return 0
+    } catch {}
+  }
 
-                      let previousMonthValue
-                      let sameMonthLastYearValue
+  function perdasPercentage(
+    data: Data | undefined,
+    month: string,
+    year: number,
+  ): number | undefined {
+    if (data![year][month]) {
+      const percentage =
+        (data![year][month] / faturamentoData![year][month]) * 100
+      return Number(percentage.toFixed(2))
+    }
+  }
 
-                      if (
-                        month === 'janeiro' &&
-                        Number(years[yearIndex]) === 2017
-                      ) {
-                        // Exibindo o valor de janeiro de 2017 sem calcular porcentagens
-                        const currentMonthValue = Number(value[month])
-
-                        return (
-                          <td key={`${yearIndex}-${month}`}>
-                            <div className="flex flex-col gap-px rounded-xl bg-bluesr-400 p-2 text-aliceblue">
-                              <div className="gap- flex items-center justify-around">
-                                {isNaN(currentMonthValue)
-                                  ? ' '
-                                  : currentMonthValue.toLocaleString('pt-br', {
-                                      style: 'currency',
-                                      currency: 'BRL',
-                                    })}
-                              </div>
-                            </div>
-                          </td>
-                        )
-                      }
-
-                      // Para os outros meses e anos, calcular as porcentagens como antes
-                      if (month === 'janeiro' && yearIndex > 0) {
-                        // Comparando janeiro com dezembro do ano anterior
-                        previousMonthValue =
-                          data.values![yearIndex - 1].dezembro
-                      } else if (monthIndex > 0) {
-                        // Comparando com o mês anterior no mesmo ano
-                        previousMonthValue = value[months[monthIndex - 1]]
-                      }
-
-                      if (yearIndex > 0) {
-                        // Comparando com o mesmo mês do ano anterior
-                        sameMonthLastYearValue =
-                          data.values![yearIndex - 1][month]
-                      }
-
-                      const currentMonthValue = Number(value[month])
-                      const previousValue = Number(previousMonthValue)
-                      const lastYearValue = Number(sameMonthLastYearValue)
-
-                      // Verificar se algum valor é NaN
-                      if (isNaN(currentMonthValue) || isNaN(previousValue)) {
-                        return (
-                          <td key={`${yearIndex}-${month}`}></td> // Se algum valor for NaN, não renderiza nada na célula
-                        )
-                      }
-
-                      const percentageMonthComparison =
-                        FaturamentoClass.percentage(
-                          currentMonthValue,
-                          previousValue,
-                        )
-                      const percentageColorMonth =
-                        percentageMonthComparison > 0
-                          ? 'text-green-500'
-                          : 'text-red-500'
-
-                      let percentageYearComparison
-                      let percentageColorYear
-                      if (sameMonthLastYearValue !== undefined) {
-                        percentageYearComparison = FaturamentoClass.percentage(
-                          currentMonthValue,
-                          lastYearValue,
-                        )
-                        percentageColorYear =
-                          percentageYearComparison > 0
-                            ? 'text-green-500'
-                            : 'text-red-500'
-                      }
-
-                      return (
-                        <td key={`${yearIndex}-${month}`}>
-                          <div className="flex flex-col gap-px rounded-xl bg-bluesr-400 p-1 text-aliceblue">
-                            <div
-                              className={`flex justify-end ${percentageColorMonth} pr-1`}
-                            >
-                              {percentageMonthComparison}%
-                            </div>
-                            <div className="flex items-center justify-around gap-4">
-                              <p className={percentageColorYear}>
-                                {percentageYearComparison !== undefined
-                                  ? `${percentageYearComparison}%`
-                                  : ''}
-                              </p>
-                              {currentMonthValue.toLocaleString('pt-br', {
-                                style: 'currency',
-                                currency: 'BRL',
-                              })}
-                            </div>
-                          </div>
-                        </td>
-                      )
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+  switch (tableType) {
+    case 'faturamento':
+      return (
+        <div className="w-full p-4 font-montserrat text-sm">
+          <div
+            className={`transition-opacity duration-700 ${isLoading ? 'opacity-100' : 'opacity-0'}`}
+          >
+            {isLoading && (
+              <Skeleton
+                className="rounded"
+                animation="wave"
+                variant="rectangular"
+                width="100%"
+                height={600}
+              />
+            )}
           </div>
-        )}
-      </div>
-    </div>
-  )
+          <div
+            className={`transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+          >
+            {!isLoading && (
+              <div className="w-full overflow-x-scroll">
+                <table className="w-full table-auto border-collapse  truncate">
+                  <thead>
+                    <tr className="w-auto">
+                      {Object.keys(data!).map((year) => (
+                        <th className="pb-4 text-center" key={year} id={year}>
+                          {year}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="text-center">
+                    {months.map((month) => (
+                      <tr key={month}>
+                        {Object.keys(data!).map((year) => {
+                          const lastMonthPercentage = percentage(
+                            data,
+                            month,
+                            Number(year),
+                            'lastMonth',
+                          )
+                          const lastYearPercentage = percentage(
+                            data,
+                            month,
+                            Number(year),
+                            'lastYear',
+                          )
+                          const lastMonthPercentageColor =
+                            lastMonthPercentage! >= 0
+                              ? 'text-green-400'
+                              : 'text-red-400'
+                          const lastYearPercentageColor =
+                            lastYearPercentage! >= 0
+                              ? 'text-green-400'
+                              : 'text-red-400'
+                          return (
+                            <td
+                              className="rounded-xl border border-aliceblue bg-bluesr-400 font-medium text-aliceblue"
+                              key={`${month}-${year}`}
+                            >
+                              <div className="flex justify-between px-2">
+                                <span className="opacity-50">
+                                  {capitalizeFirstLetters(month)}
+                                </span>
+                                <p className={`${lastMonthPercentageColor}`}>
+                                  {isNaN(lastMonthPercentage!) ||
+                                  lastMonthPercentage === 0
+                                    ? ' '
+                                    : `${lastMonthPercentage}%`}
+                                </p>
+                              </div>
+                              <div className="flex w-full justify-between gap-2 px-2 py-px">
+                                <p className={`${lastYearPercentageColor}`}>
+                                  {isNaN(lastYearPercentage!) ||
+                                  lastYearPercentage === 0
+                                    ? ''
+                                    : `${lastYearPercentage}%`}
+                                </p>
+                                <p>
+                                  {(isNaN(Number(data![year][month])) ||
+                                    Number(data![year][month]).toLocaleString(
+                                      'pt-br',
+                                      {
+                                        style: 'currency',
+                                        currency: 'BRL',
+                                      },
+                                    )) ??
+                                    ''}
+                                </p>
+                              </div>
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )
+    case 'perdas':
+      return (
+        <div className="w-full p-4 font-montserrat text-sm">
+          <div
+            className={`transition-opacity duration-700 ${isLoading ? 'opacity-100' : 'opacity-0'}`}
+          >
+            {isLoading && (
+              <Skeleton
+                className="rounded"
+                animation="wave"
+                variant="rectangular"
+                width="100%"
+                height={600}
+              />
+            )}
+          </div>
+          <div
+            className={`transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+          >
+            {!isLoading && (
+              <div className="w-full overflow-x-scroll">
+                <table className="w-full table-auto border-collapse  truncate">
+                  <thead>
+                    <tr className="w-auto">
+                      {Object.keys(data!).map((year) => (
+                        <th className="pb-4 text-center" key={year} id={year}>
+                          {year}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="text-center">
+                    {months.map((month) => (
+                      <tr key={month}>
+                        {Object.keys(data!).map((year) => {
+                          const percentage = perdasPercentage(
+                            data,
+                            month,
+                            Number(year),
+                          )
+                          return (
+                            <td
+                              className="rounded-xl border border-aliceblue bg-bluesr-400 font-medium text-aliceblue"
+                              key={`${month}-${year}`}
+                            >
+                              <span className="flex justify-between px-2 opacity-50">
+                                {capitalizeFirstLetters(month)}
+                              </span>
+                              <div className="flex w-full justify-between gap-2 px-2 py-px">
+                                <p>{percentage ? percentage + '%' : ''}</p>
+                                <p>
+                                  {(isNaN(Number(data![year][month])) ||
+                                    Number(data![year][month]).toLocaleString(
+                                      'pt-br',
+                                      {
+                                        style: 'currency',
+                                        currency: 'BRL',
+                                      },
+                                    )) ??
+                                    ''}
+                                </p>
+                              </div>
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )
+  }
 }
