@@ -23,7 +23,7 @@ export function Select({
     <select
       value={value}
       onChange={onChange}
-      className={`focus-visible: rounded-xl bg-aliceblue-500 text-center text-bluesr-500 outline-bluesr-500 ${className}`}
+      className={`focus-visible:  rounded-xl text-center text-green-700 outline-green-700 ${className}`}
     >
       <option value="Selecione">Selecione</option>
       {options.map((option, index) => (

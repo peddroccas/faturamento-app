@@ -8,7 +8,7 @@ export function HomeLayout() {
   return (
     // grid grid-cols-app
     <HomeContextProvider>
-      <div className="flex min-h-screen overflow-auto bg-bluesr-400 font-montserrat text-aliceblue">
+      <div className="bg-brown-500 flex min-h-screen overflow-auto font-montserrat text-green-300">
         <Sidebar />
         <Outlet />
       </div>

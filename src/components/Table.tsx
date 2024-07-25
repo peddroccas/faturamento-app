@@ -88,7 +88,7 @@ export function Table({ data, tableType }: TableProps) {
             className={`transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
           >
             {!isLoading && (
-              <div className="w-full overflow-x-scroll">
+              <div className="w-full ">
                 <table className="w-full table-auto border-collapse  truncate">
                   <thead>
                     <tr className="w-auto">
@@ -117,15 +117,15 @@ export function Table({ data, tableType }: TableProps) {
                           )
                           const lastMonthPercentageColor =
                             lastMonthPercentage! >= 0
-                              ? 'text-green-400'
+                              ? 'text-green-300'
                               : 'text-red-400'
                           const lastYearPercentageColor =
                             lastYearPercentage! >= 0
-                              ? 'text-green-400'
+                              ? 'text-green-300'
                               : 'text-red-400'
                           return (
                             <td
-                              className="rounded-xl border border-aliceblue bg-bluesr-400 font-medium text-aliceblue"
+                              className="bg-brown-500 rounded-xl border border-green-700 font-medium text-aliceblue"
                               key={`${month}-${year}`}
                             >
                               <div className="flex justify-between px-2">
@@ -190,7 +190,7 @@ export function Table({ data, tableType }: TableProps) {
             className={`transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
           >
             {!isLoading && (
-              <div className="w-full overflow-x-scroll">
+              <div className="w-full ">
                 <table className="w-full table-auto border-collapse  truncate">
                   <thead>
                     <tr className="w-auto">
@@ -212,7 +212,7 @@ export function Table({ data, tableType }: TableProps) {
                           )
                           return (
                             <td
-                              className="rounded-xl border border-aliceblue bg-bluesr-400 font-medium text-aliceblue"
+                              className="bg-brown-500 rounded-xl border border-green-700 font-medium text-aliceblue"
                               key={`${month}-${year}`}
                             >
                               <span className="flex justify-between px-2 opacity-50">

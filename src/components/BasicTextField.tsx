@@ -37,6 +37,7 @@ export function BasicTextField({
 
   return (
     <Box
+      className="!text-'green-300'"
       component="form"
       sx={{
         '& > :not(style)': { m: 1, width: '20rem' },
@@ -53,12 +54,12 @@ export function BasicTextField({
             },
             '&.Mui-focused': {
               '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'bluesr-400',
+                borderColor: 'brown-300',
               },
             },
             '&:hover:not(.Mui-focused)': {
               '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#0C4B80',
+                borderColor: '#70533E',
               },
             },
           },
@@ -69,7 +70,7 @@ export function BasicTextField({
         type={type}
         label={setPlaceholder(type)}
         variant="outlined"
-        color="bluesr-400"
+        color="brown-300"
       />
     </Box>
   )

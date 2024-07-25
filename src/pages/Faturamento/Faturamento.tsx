@@ -40,10 +40,10 @@ export function Faturamento() {
 
   return (
     <div className="flex w-auto flex-1 flex-col overflow-hidden">
-      <header className="flex items-center border-b border-b-aliceblue p-4">
+      <header className="flex items-center border-b border-b-green-700 p-4">
         <h1 className="text-3xl ">Faturamento</h1>
       </header>
-      <main className="m-4 flex w-auto  flex-col items-center gap-2 text-bluesr-500 ">
+      <main className="m-4 flex w-auto  flex-col items-center gap-2 text-green-300 ">
         <ToolBar
           EditDialog={EditFaturamentoDialog}
           NewDialog={NewFaturamentoDialog}

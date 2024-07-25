@@ -44,7 +44,7 @@ export function ToolBar({ EditDialog, NewDialog }: ToolBarProps) {
   }
 
   return (
-    <div className="flex items-center justify-center gap-1 rounded-xl p-2 text-center text-aliceblue">
+    <div className="flex items-center justify-center gap-1 rounded-xl p-2 text-center text-green-700">
       <div className="flex gap-2 p-2">
         <Select
           className="p-1"
@@ -71,7 +71,7 @@ export function ToolBar({ EditDialog, NewDialog }: ToolBarProps) {
       <Tooltip title="Editar " placement="top">
         <button
           onClick={handleOnClickEdit}
-          className="flex h-fit items-center rounded-full p-1 transition-all hover:bg-bluesr-500"
+          className="flex h-fit items-center rounded-full p-2 text-green-500 transition-all hover:bg-[#463326]"
         >
           <Edit />
         </button>
@@ -80,7 +80,7 @@ export function ToolBar({ EditDialog, NewDialog }: ToolBarProps) {
       <Tooltip title="Adicionar novo" placement="right">
         <button
           onClick={handleNewOnClick}
-          className="flex h-fit items-center rounded-full p-1 transition-all hover:bg-bluesr-500"
+          className="flex h-fit items-center rounded-full p-1 text-green-500 transition-all hover:bg-[#463326]"
         >
           <Add />
         </button>

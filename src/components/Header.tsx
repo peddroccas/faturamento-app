@@ -1,9 +1,9 @@
-import saoRafaelLogo from '../assets/saoRafael-logo.png'
+import logo from '../assets/logo.png'
 
 export function Header() {
   return (
-    <header className="flex items-center justify-center bg-aliceblue px-4 py-5">
-      <img className="w-52" src={saoRafaelLogo} alt="Logo" />
+    <header className="flex items-center justify-center bg-green-700 px-4 py-5">
+      <img className="w-24" src={logo} alt="Logo" />
     </header>
   )
 }

@@ -23,7 +23,7 @@ export function LoadingButtonComponent({
         loading={loading}
         loadingPosition="end"
         variant="contained"
-        color="bluesr-400"
+        color="brown-300"
       >
         <span>{value}</span>
       </LoadingButton>

@@ -3,13 +3,13 @@ import 'firebase/compat/auth' // se você estiver usando autenticação
 import 'firebase/compat/database' // se você estiver usando o Firestore
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAYzifqO28DjM2G4xvI0BfEbdL77koBbmo',
-  authDomain: 'drogaria-sao-rafael.firebaseapp.com',
-  databaseURL: 'https://drogaria-sao-rafael-default-rtdb.firebaseio.com',
-  projectId: 'drogaria-sao-rafael',
-  storageBucket: 'drogaria-sao-rafael.appspot.com',
-  messagingSenderId: '167490251906',
-  appId: '1:167490251906:web:4113eee67e73576375989b',
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  databaseURL: process.env.databaseURL,
+  projectId: process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
+  appId: process.env.appId,
 }
 
 // Inicializar o Firebase

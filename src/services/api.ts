@@ -1,7 +1,7 @@
 import { db } from '../services/firebase'
 import { camelCase } from 'lodash'
 
-export const stores = ['São Rafael', 'Estrela', 'Antunes', 'São Rafael 2']
+export const stores = ['Loja 1', 'Loja 2', 'Loja 3', 'Loja 4']
 export const months = [
   'janeiro',
   'fevereiro',

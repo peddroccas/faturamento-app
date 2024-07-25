@@ -71,7 +71,7 @@ export function NewFaturamentoDialog({
 
   return (
     <Dialog open={open} onClose={handleOnClose} className="">
-      <DialogTitle className="text-bluesr-500">Novo Faturamento</DialogTitle>
+      <DialogTitle className="text-green-500">Novo Faturamento</DialogTitle>
       <DialogContent className="flex flex-col gap-3 !pb-2 !pt-2">
         <DialogContentText>
           Selecione a data e preencha o valor
@@ -97,13 +97,13 @@ export function NewFaturamentoDialog({
         <BasicNumberField value={value} onChange={handleOnChangeValue} />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleOnClose} color="redsr-400">
+        <Button onClick={handleOnClose} color="error">
           Cancelar
         </Button>
         <Button
           onClick={handleSubmitNewFaturamento}
           type="submit"
-          color="bluesr-500"
+          color="green-500"
           disabled={!value}
         >
           Cadastrar

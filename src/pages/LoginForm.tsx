@@ -41,7 +41,7 @@ export function LoginForm() {
     <div className="m-auto flex justify-center px-4 py-0">
       <div
         onSubmit={handleLogin}
-        className="mt-20 flex h-max flex-col items-center justify-center gap-px rounded-lg bg-aliceblue p-4 text-redsr-400"
+        className="mt-20 flex h-max flex-col items-center justify-center gap-px rounded-lg bg-aliceblue p-4 text-green-500"
       >
         <h1 className="mt-2 font-roboto  text-2xl font-medium">ENTRAR</h1>
         <div className="mt-4 flex flex-col gap-2">

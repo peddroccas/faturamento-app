@@ -11,7 +11,7 @@ export function Sidebar() {
   }
 
   return (
-    <div className="min-h-screen border-r border-aliceblue">
+    <div className="min-h-screen border-r border-green-700">
       <Drawer
         variant="permanent"
         className=" h-full"
@@ -25,27 +25,27 @@ export function Sidebar() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            backgroundColor: '#093A62',
+            backgroundColor: '#463326',
           },
         }}
       >
         <div
           className={`flex w-full ${isOpen ? 'justify-end' : 'justify-center'} p-2`}
         >
-          <IconButton onClick={handleSidebar} color="aliceblue">
+          <IconButton onClick={handleSidebar} color="green-700">
             {isOpen ? <Close /> : <Menu />}
           </IconButton>
         </div>
         <h1
-          className={`text-2xl font-semibold text-aliceblue ${isOpen ? 'block' : 'hidden'}`}
+          className={`text-2xl font-semibold text-green-700 ${isOpen ? 'block' : 'hidden'}`}
         >
           Tabelas
         </h1>
         <div className="mt-4 flex w-full flex-col gap-4">
           <NavLink
             className={({ isActive }) =>
-              `flex items-center gap-2 rounded-xl p-2 transition-colors hover:bg-bluesr-400 hover:text-aliceblue ${
-                isActive ? 'bg-aliceblue-500 text-bluesr-500' : 'text-aliceblue'
+              `hover:bg-brown-300 flex items-center gap-2 rounded-xl p-2 transition-colors hover:text-green-700 ${
+                isActive ? 'bg-brown-300 text-aliceblue' : 'text-green-700'
               } ${isOpen ? 'justify-start' : 'justify-center'}`
             }
             to="/home/faturamento"
@@ -55,8 +55,8 @@ export function Sidebar() {
           </NavLink>
           <NavLink
             className={({ isActive }) =>
-              `flex items-center gap-2 rounded-xl p-2 transition-colors hover:bg-bluesr-400 hover:text-aliceblue ${
-                isActive ? 'bg-aliceblue-500 text-bluesr-500' : 'text-aliceblue'
+              `hover:bg-brown-300 flex items-center gap-2 rounded-xl p-2 transition-colors hover:text-green-700 ${
+                isActive ? 'bg-brown-300 text-aliceblue' : 'text-green-700'
               } ${isOpen ? 'justify-start' : 'justify-center'}`
             }
             to="/home/perdas"

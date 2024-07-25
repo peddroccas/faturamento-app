@@ -77,7 +77,7 @@ export function EditPerdasDialog({ open, onClose }: EditPerdaDialogProps) {
 
   return (
     <Dialog open={open} onClose={handleOnClose} className="">
-      <DialogTitle className="text-bluesr-500">Editar perda</DialogTitle>
+      <DialogTitle className="text-green-500">Editar perda</DialogTitle>
       <DialogContent className="flex flex-col gap-3 !pb-2 !pt-2">
         <DialogContentText>
           Selecione a loja, e data, e preencha o valor
@@ -106,13 +106,13 @@ export function EditPerdasDialog({ open, onClose }: EditPerdaDialogProps) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleOnClose} color="redsr-400">
+        <Button onClick={handleOnClose} color="error">
           Cancelar
         </Button>
         <Button
           onClick={handleSubmitNewPerda}
           type="submit"
-          color="bluesr-500"
+          color="green-500"
           disabled={!value}
         >
           Salvar
