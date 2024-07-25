@@ -7,7 +7,6 @@ declare module '@mui/material/styles' {
     'green-300': PaletteColorOptions
     'bluesr-800': PaletteColorOptions
     'green-500': PaletteColorOptions
-    'redsr-500': PaletteColorOptions
   }
   interface Palette extends CustomPalette {}
   interface PaletteOptions extends CustomPalette {}
@@ -21,7 +20,6 @@ declare module '@mui/material/TextField' {
     'green-300': true
     'bluesr-800': true
     'green-500': true
-    'redsr-500': true
   }
 }
 declare module '@mui/material/IconButton' {
@@ -32,7 +30,6 @@ declare module '@mui/material/IconButton' {
     'green-300': true
     'bluesr-800': true
     'green-500': true
-    'redsr-500': true
   }
 }
 
@@ -44,7 +41,6 @@ declare module '@mui/material/Button' {
     'green-300': true
     'bluesr-800': true
     'green-500': true
-    'redsr-500': true
   }
 }
 declare module '@mui/material/CircularProgress' {
@@ -55,7 +51,6 @@ declare module '@mui/material/CircularProgress' {
     'green-300': true
     'bluesr-800': true
     'green-500': true
-    'redsr-500': true
   }
 }
 
@@ -71,6 +66,5 @@ export const theme = createTheme({
     'green-300': createColor('#093A62'),
     'bluesr-800': createColor('#041728'),
     'green-500': createColor('#35B091'),
-    'redsr-500': createColor('#C62028'),
   },
 })
