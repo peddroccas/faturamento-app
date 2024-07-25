@@ -3,12 +3,12 @@ import 'firebase/compat/auth' // se você estiver usando autenticação
 import 'firebase/compat/database' // se você estiver usando o Firestore
 
 const firebaseConfig = {
-  apiKey: process.env.ApiKey,
-  authDomain: process.env.AuthDomain,
-  projectId: process.env.ProjectId,
-  storageBucket: process.env.StorageBucket,
-  messagingSenderId: process.env.MessagingSenderId,
-  appId: process.env.AppId,
+  apiKey: import.meta.env.VITE_ApiKey,
+  authDomain: import.meta.env.VITE_AuthDomain,
+  projectId: import.meta.env.VITE_ProjectId,
+  storageBucket: import.meta.env.VITE_StorageBucket,
+  messagingSenderId: import.meta.env.VITE_MessagingSenderId,
+  appId: import.meta.env.VITE_AppId,
 }
 
 // Inicializar o Firebase
