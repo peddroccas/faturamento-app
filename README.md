@@ -1,14 +1,13 @@
 # Faturamento App
 
-## Info para login
-- **Email:** convidado@teste.br
-- **Senha:** 123456
-
 ## Descrição
 
 O Faturamento App é uma aplicação desenvolvida em React para gerenciar e acompanhar suas finanças pessoais. O app permite que você registre e visualize dados financeiros em uma tabela dinâmica, além de enviar relatórios por e-mail. É ideal para quem deseja monitorar suas despesas e receitas de maneira simples e eficiente.
 
-Acesse a aplicação em [https://faturamento-app.vercel.app/](https://faturamento-app.vercel.app/).
+## Acesse a aplicação em [https://faturamento-app.vercel.app/](https://faturamento-app.vercel.app/).
+- **Email:** convidado@teste.br
+- **Senha:** 123456
+
 
 ## Funcionalidades
 
