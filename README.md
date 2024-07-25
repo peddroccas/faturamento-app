@@ -1,30 +1,20 @@
-# React + TypeScript + Vite
+# Faturamento App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descrição
 
-Currently, two official plugins are available:
+O Faturamento App é uma aplicação desenvolvida em React para gerenciar e acompanhar suas finanças pessoais. O app permite que você registre e visualize dados financeiros em uma tabela dinâmica, além de enviar relatórios por e-mail. É ideal para quem deseja monitorar suas despesas e receitas de maneira simples e eficiente.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Acesse a aplicação em [https://faturamento-app.vercel.app/](https://faturamento-app.vercel.app/).
 
-## Expanding the ESLint configuration
+## Funcionalidades
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Registro de Dados:** Adicione informações financeiras como receitas e despesas.
+- **Visualização Dinâmica:** Exiba os dados em uma tabela ajustada dinamicamente com base no ano e mês.
 
-- Configure the top-level `parserOptions` property like this:
+## Tecnologias
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- **React:** Biblioteca principal para construção da interface.
+- **Tailwind CSS:** Framework para estilização.
+- **Material-UI:** Biblioteca de componentes React para uma interface de usuário mais sofisticada.
+- **Vite:** Ferramenta de build e desenvolvimento.
+- **Vercel:** Hospedagem da aplicação.
